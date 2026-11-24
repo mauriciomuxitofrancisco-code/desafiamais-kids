@@ -7,57 +7,196 @@
 <title>Painel Administrativo | DESAFIA+ KIDS</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{font-family:Arial,sans-serif;color:#20213a;background:#f4f3ff}*{box-sizing:border-box}body{margin:0;padding:18px}main{max-width:1000px;margin:24px auto}header,.panel{background:white;border-radius:18px;padding:22px;box-shadow:0 6px 24px #29205b12;margin-bottom:16px}h1{margin:0 0 8px;color:#5142c8;font-size:25px}h2{font-size:19px;margin:0 0 15px}p{line-height:1.5;color:#5d5c72}label{display:block;font-weight:700;margin:12px 0 6px}input,select,button{font:inherit;width:100%;padding:13px;border-radius:10px;border:1px solid #d9d7eb}button{border:0;background:#5b4be7;color:white;font-weight:700;cursor:pointer;margin-top:12px}button.secondary{background:#e9e7ff;color:#4034a8}button.danger{background:#b83250}button:disabled{opacity:.55;cursor:not-allowed}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hidden{display:none}.status{padding:12px;border-radius:10px;background:#f0efff;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:10px;border-bottom:1px solid #eee;vertical-align:top}.tablewrap{overflow-x:auto}.small{font-size:12px;color:#777}.code{font-weight:800;font-size:20px;letter-spacing:1px;overflow-wrap:anywhere}.search{margin:8px 0 14px}.muted{color:#777}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#eee9ff;color:#4739b7;font-size:12px;font-weight:700}
-@media(max-width:650px){.row{grid-template-columns:1fr}body{padding:10px}header,.panel{padding:16px}table{font-size:12px}th,td{padding:8px}}
+:root{font-family:Arial,sans-serif;color:#20213a;background:#f4f3ff}
+*{box-sizing:border-box}
+body{margin:0;padding:18px}
+main{max-width:900px;margin:24px auto}
+header,.panel{background:white;border-radius:18px;padding:22px;box-shadow:0 6px 24px #29205b12;margin-bottom:16px}
+h1{margin:0 0 8px;color:#5142c8;font-size:25px}
+h2{font-size:19px;margin:0 0 15px}
+p{line-height:1.5;color:#5d5c72}
+label{display:block;font-weight:700;margin:12px 0 6px}
+input,select,button{font:inherit;width:100%;padding:13px;border-radius:10px;border:1px solid #d9d7eb}
+button{border:0;background:#5b4be7;color:white;font-weight:700;cursor:pointer;margin-top:12px}
+button.secondary{background:#e9e7ff;color:#4034a8}
+button.danger{background:#b83250}
+button:disabled{opacity:.55;cursor:not-allowed}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hidden{display:none}
+.status{padding:12px;border-radius:10px;background:#f0efff;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #eee}
+.tablewrap{overflow-x:auto}
+.small{font-size:12px;color:#777}
+.code{font-weight:800;font-size:20px;letter-spacing:1px;overflow-wrap:anywhere}
+@media(max-width:600px){.row{grid-template-columns:1fr}body{padding:10px}header,.panel{padding:16px}}
 </style>
 </head>
 <body>
 <main>
-<header><h1>🎮 DESAFIA+ KIDS</h1><p>Painel privado do administrador — gestão dos códigos e das contas Premium.</p><p class="small">Não partilhe a palavra-passe. Utilize apenas a sua conta administrativa autorizada.</p></header>
+<header>
+<h1>🎮 DESAFIA+ KIDS</h1>
+<p>Painel privado do administrador — gestão do acesso Premium aos 13 jogos.</p>
+<p class="small">Não partilhe a palavra-passe. Utilize apenas a sua conta administrativa autorizada.</p>
+</header>
+
 <section class="panel" id="loginPanel">
 <h2>Entrar no painel</h2>
-<label for="email">E-mail do administrador</label><input id="email" type="email" autocomplete="username" placeholder="O e-mail da conta autorizada">
-<label for="password">Palavra-passe</label><input id="password" type="password" autocomplete="current-password" placeholder="Palavra-passe">
-<button id="loginBtn">Entrar</button><div id="loginMsg" class="status" aria-live="polite">Introduza os dados da conta administrativa.</div>
+<label for="email">E-mail do administrador</label>
+<input id="email" type="email" autocomplete="username" placeholder="O e-mail da conta autorizada">
+<label for="password">Palavra-passe</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="Palavra-passe">
+<button id="loginBtn">Entrar</button>
+<div id="loginMsg" class="status" aria-live="polite">Introduza os dados da conta administrativa.</div>
 </section>
+
 <section class="panel hidden" id="appPanel">
-<div class="row" style="align-items:center"><div><h2>Gestão Premium</h2><p id="who"></p></div><button class="secondary" id="logoutBtn">Terminar sessão</button></div>
+<div class="row" style="align-items:center">
+<div><h2>Gestão Premium</h2><p id="who"></p></div>
+<button class="secondary" id="logoutBtn">Terminar sessão</button>
+</div>
+
 <section>
-<h2>Gerar código Premium</h2><p>Um código desbloqueia os 13 jogos Premium. O código completo aparece apenas no momento da criação. Copie-o e entregue-o ao encarregado de educação após confirmação do pagamento.</p>
-<label for="days">Validade (dias)</label><input id="days" type="number" min="1" max="3650" value="365">
-<button id="createBtn">Gerar código</button><div id="newCode" class="status hidden" aria-live="polite"></div>
+<h2>Gerar código Premium</h2>
+<p>Um código desbloqueia os 13 jogos Premium. O código é apresentado apenas nesta criação; copie-o e entregue-o ao encarregado de educação após confirmação do pagamento.</p>
+<label for="days">Validade (dias)</label>
+<input id="days" type="number" min="1" max="3650" value="365">
+<button id="createBtn">Gerar código</button>
+<div id="newCode" class="status hidden" aria-live="polite"></div>
 </section>
+
 <section style="margin-top:28px">
-<div class="row" style="align-items:center"><h2>Códigos emitidos e respetivos clientes</h2><button class="secondary" id="refreshBtn">Atualizar lista</button></div>
-<input class="search" id="search" type="search" placeholder="Pesquisar por nome, email ou referência do cliente">
-<div class="tablewrap"><table>
-<thead><tr><th>Cliente / conta</th><th>Email</th><th>Código / registo</th><th>Estado</th><th>Emissão</th><th>Validade</th><th>Controlo</th></tr></thead>
-<tbody id="codesBody"><tr><td colspan="7">Ainda não carregado.</td></tr></tbody>
-</table></div>
-<p class="small">Por segurança, códigos antigos não são recuperáveis em texto completo: o sistema guarda apenas o respetivo hash. O registo e a conta associada continuam consultáveis.</p>
+<div class="row" style="align-items:center">
+<h2>Códigos emitidos</h2>
+<button class="secondary" id="refreshBtn">Atualizar lista</button>
+</div>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Cliente</th><th>E-mail</th><th>Referência</th><th>Estado</th><th>Validade</th><th>Controlo</th></tr></thead>
+<tbody id="codesBody"><tr><td colspan="6">Ainda não carregado.</td></tr></tbody>
+</table>
+</div>
 </section>
 <div id="appMsg" class="status" aria-live="polite">Sessão iniciada.</div>
 </section>
 </main>
 <script>
-const SUPABASE_URL="https://ounjndogaogngxchuijj.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
-const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
-const $=id=>document.getElementById(id);
-const msg=(id,text)=>{$(id).textContent=text;};
-const dateText=value=>value?new Date(value).toLocaleString():"Sem data";
-function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-let allCodes=[];
-async function showApp(user){$("loginPanel").classList.add("hidden");$("appPanel").classList.remove("hidden");msg("who","Sessão administrativa: "+user.email);await loadCodes();}
-async function checkSession(){const {data:{session}}=await client.auth.getSession();if(session)await showApp(session.user);}
-$("loginBtn").onclick=async()=>{msg("loginMsg","A iniciar sessão…");const {data,error}=await client.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error){msg("loginMsg","Não foi possível entrar: "+error.message);return;}$("password").value="";await showApp(data.user);};
-$("logoutBtn").onclick=async()=>{await client.auth.signOut();$("appPanel").classList.add("hidden");$("loginPanel").classList.remove("hidden");msg("loginMsg","Sessão terminada.");};
-$("createBtn").onclick=async()=>{const days=Number($("days").value);if(!Number.isInteger(days)||days<1||days>3650){msg("appMsg","Indique uma validade entre 1 e 3650 dias.");return;}$("createBtn").disabled=true;msg("appMsg","A gerar código…");const {data,error}=await client.rpc("create_premium_code",{p_days:days});$("createBtn").disabled=false;if(error){msg("appMsg","Erro ao gerar código: "+error.message);return;}$("newCode").classList.remove("hidden");$("newCode").innerHTML='<div><strong>Novo código Premium</strong></div><div class="code" id="codeValue"></div><button class="secondary" id="copyCodeBtn">Copiar código</button><p class="small">Guarde e entregue este código ao encarregado. Ele não poderá ser recuperado integralmente depois desta apresentação.</p>';$("codeValue").textContent=data;$("copyCodeBtn").onclick=async()=>{try{await navigator.clipboard.writeText(data);msg("appMsg","Código copiado.");}catch(e){msg("appMsg","Não foi possível copiar automaticamente. Selecione e copie o código apresentado.");}};msg("appMsg","Código criado. A lista foi atualizada.");await loadCodes();};
-async function setStatus(id,status){if(!confirm("Confirma alterar o estado deste acesso para "+status+"?"))return;const {error}=await client.rpc("admin_set_code_status",{p_code_id:id,p_status:status});if(error){msg("appMsg","Erro: "+error.message);return;}msg("appMsg","Estado atualizado.");await loadCodes();}
-function renderCodes(){const term=$("search").value.trim().toLocaleLowerCase("pt");const body=$("codesBody");body.innerHTML="";const filtered=allCodes.filter(c=>[c.guardian_name,c.email,c.client_ref,c.redeemed_by].some(v=>String(v||"").toLocaleLowerCase("pt").includes(term)));if(!filtered.length){body.innerHTML='<tr><td colspan="7">Nenhum registo corresponde à pesquisa.</td></tr>';return;}for(const c of filtered){const tr=document.createElement("tr");const status=(c.status==="active"&&c.expires_at&&new Date(c.expires_at)<new Date())?"expired":c.status;const statusLabel={active:"Ativo",suspended:"Suspenso",revoked:"Revogado",expired:"Expirado"}[status]||status;const action=status==="active"?"suspended":"active";const actionLabel=status==="active"?"Suspender":"Reativar";const ref=c.client_ref||("CLIENTE-"+String(c.redeemed_by||"").slice(0,8).toUpperCase());tr.innerHTML=`<td><strong>${escapeHtml(c.guardian_name||"Nome não informado")}</strong><br><span class="pill">${escapeHtml(ref)}</span></td><td>${escapeHtml(c.email||"Conta ainda não associada")}</td><td><span class="muted">Registo:</span> ${escapeHtml(String(c.id||"").slice(0,8).toUpperCase())}<br><span class="muted">Código:</span> ${c.redeemed_by?"Utilizado":"Disponível"}</td><td>${escapeHtml(statusLabel)}</td><td>${escapeHtml(dateText(c.created_at))}</td><td>${escapeHtml(dateText(c.expires_at))}</td><td><button class="secondary statusBtn">${actionLabel}</button><button class="danger revokeBtn">Revogar</button></td>`;tr.querySelector(".statusBtn").onclick=()=>setStatus(c.id,action);tr.querySelector(".revokeBtn").onclick=()=>setStatus(c.id,"revoked");body.appendChild(tr);}}
-async function loadCodes(){msg("appMsg","A carregar clientes e códigos…");const {data,error}=await client.rpc("admin_list_premium_codes");if(error){msg("appMsg","Não foi possível carregar. Confirme se executou a atualização SQL no Supabase. Detalhe: "+error.message);return;}allCodes=data||[];renderCodes();msg("appMsg","Lista atualizada. Registos: "+allCodes.length+".");}
-$("refreshBtn").onclick=loadCodes;$("search").addEventListener("input",renderCodes);
-client.auth.onAuthStateChange((_event,session)=>{if(!session){$("appPanel").classList.add("hidden");$("loginPanel").classList.remove("hidden");}});
+const SUPABASE_URL = "https://ounjndogaogngxchuijj.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+const $ = id => document.getElementById(id);
+const msg = (id, text) => { $(id).textContent = text; };
+const dateText = value => value ? new Date(value).toLocaleString() : "Sem data";
+function escapeHtml(s){return String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+async function showApp(user){
+  $("loginPanel").classList.add("hidden");
+  $("appPanel").classList.remove("hidden");
+  msg("who", "Sessão: " + user.email);
+  await loadCodes();
+}
+async function checkSession(){
+  const {data:{session}} = await client.auth.getSession();
+  if(session) await showApp(session.user);
+}
+$("loginBtn").onclick = async () => {
+  msg("loginMsg","A iniciar sessão…");
+  const {data,error} = await client.auth.signInWithPassword({
+    email:$("email").value.trim(), password:$("password").value
+  });
+  if(error){msg("loginMsg","Não foi possível entrar: "+error.message);return;}
+  $("password").value="";
+  await showApp(data.user);
+};
+$("logoutBtn").onclick = async () => {
+  await client.auth.signOut();
+  $("appPanel").classList.add("hidden");
+  $("loginPanel").classList.remove("hidden");
+  msg("loginMsg","Sessão terminada.");
+};
+$("createBtn").onclick = async () => {
+  const days = Number($("days").value);
+  if(!Number.isInteger(days)||days<1||days>3650){msg("appMsg","Indique uma validade entre 1 e 3650 dias.");return;}
+  $("createBtn").disabled=true;
+  msg("appMsg","A gerar código…");
+  const {data,error}=await client.rpc("create_premium_code",{p_days:days});
+  $("createBtn").disabled=false;
+  if(error){msg("appMsg","Erro ao gerar código: "+error.message);return;}
+  $("newCode").classList.remove("hidden");
+  $("newCode").innerHTML='<div><strong>Novo código Premium</strong></div><div class="code" id="codeValue"></div><button class="secondary" id="copyCodeBtn">Copiar código</button><p class="small">Guarde-o agora. Por segurança, a base de dados não guarda o código em texto legível.</p>';
+  $("codeValue").textContent=data;
+  $("copyCodeBtn").onclick=async()=>{
+    try{await navigator.clipboard.writeText(data);msg("appMsg","Código copiado.");}
+    catch(e){msg("appMsg","Não foi possível copiar automaticamente. Selecione e copie o código apresentado.");}
+  };
+  msg("appMsg","Código criado. Atualize a lista para confirmar o registo.");
+  await loadCodes();
+};
+async function setStatus(id,status){
+  if(status==="active" && !confirm("Confirma reativar este código?"))return;
+  if(status==="suspended" && !confirm("Confirma suspender este acesso Premium?"))return;
+  if(status==="revoked" && !confirm("Confirma revogar definitivamente este código? Esta ação não pode ser desfeita."))return;
+  const {error}=await client.rpc("admin_set_code_status",{p_code_id:id,p_status:status});
+  if(error){msg("appMsg","Erro: "+error.message);return;}
+  msg("appMsg","Estado atualizado.");
+  await loadCodes();
+}
+async function renewPremium(userId, name, days){
+  if(![30,90,180,365].includes(days))return;
+  if(!confirm("Confirma renovar o Premium de "+(name||"este cliente")+" por mais "+days+" dias?"))return;
+  const {data,error}=await client.rpc("admin_renew_premium",{p_user_id:userId,p_days:days});
+  if(error){msg("appMsg","Não foi possível renovar: "+error.message);return;}
+  msg("appMsg","Premium renovado. Nova validade: "+dateText(data));
+  await loadCodes();
+}
+async function loadCodes(){
+  msg("appMsg","A carregar clientes e códigos…");
+  const {data,error}=await client.rpc("admin_list_premium_codes");
+  if(error){msg("appMsg","Não foi possível carregar: "+error.message);return;}
+  const body=$("codesBody"); body.innerHTML="";
+  if(!data || !data.length){body.innerHTML='<tr><td colspan="6">Ainda não existem códigos.</td></tr>';msg("appMsg","Lista atualizada.");return;}
+  for(const c of data){
+    const tr=document.createElement("tr");
+    const clientName=c.guardian_name || (c.redeemed_by ? "Nome não informado" : "Ainda não utilizado");
+    const email=c.email || "—";
+    const ref=c.client_ref || "—";
+    const controls=document.createElement("td");
+    if(c.status==="revoked"){
+      controls.textContent="Revogado";
+    } else {
+      const statusBtn=document.createElement("button");
+      statusBtn.className="secondary";
+      statusBtn.textContent=c.status==="active"?"Suspender":"Reativar";
+      statusBtn.onclick=()=>setStatus(c.id,c.status==="active"?"suspended":"active");
+      controls.appendChild(statusBtn);
+      const revokeBtn=document.createElement("button");
+      revokeBtn.className="danger"; revokeBtn.textContent="Revogar";
+      revokeBtn.onclick=()=>setStatus(c.id,"revoked");
+      controls.appendChild(revokeBtn);
+      if(c.redeemed_by){
+        const days=document.createElement("select");
+        days.style.marginTop="8px";
+        days.innerHTML='<option value="30">Renovar 30 dias</option><option value="90">Renovar 90 dias</option><option value="180">Renovar 180 dias</option><option value="365" selected>Renovar 365 dias</option>';
+        const renew=document.createElement("button");
+        renew.textContent="Renovar Premium";
+        renew.onclick=()=>renewPremium(c.redeemed_by,clientName,Number(days.value));
+        controls.append(days,renew);
+      }
+    }
+    tr.innerHTML=`<td>${escapeHtml(clientName)}</td><td>${escapeHtml(email)}</td><td>${escapeHtml(ref)}</td><td>${escapeHtml(c.status)}</td><td>${escapeHtml(dateText(c.expires_at))}</td>`;
+    tr.appendChild(controls);
+    body.appendChild(tr);
+  }
+  msg("appMsg","Lista atualizada. Registos: "+data.length+".");
+}
+$("refreshBtn").onclick=loadCodes;
+client.auth.onAuthStateChange((_event,session)=>{
+  if(!session){
+    $("appPanel").classList.add("hidden");
+    $("loginPanel").classList.remove("hidden");
+  }
+});
 checkSession();
 </script>
 </body>
