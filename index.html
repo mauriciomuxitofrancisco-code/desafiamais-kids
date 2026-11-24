@@ -1,1 +1,217 @@
 
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#6955e8">
+<title>DESAFIA+ KIDS</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ font-family:"Trebuchet MS",Arial,sans-serif;
+ background:#f3f0ff;color:#30275c;
+}
+header{
+ background:linear-gradient(120deg,#7057ed,#a45de8);
+ color:white;padding:20px 16px 28px;
+ border-radius:0 0 30px 30px;
+ text-align:center;
+}
+.logo{font-size:29px;font-weight:1000;letter-spacing:-1px}
+.logo span{color:#ffe45c}
+header p{margin-top:7px;font-weight:bold}
+.language{
+ display:flex;justify-content:center;margin:15px;
+}
+select{
+ background:white;border:2px solid #ded7ff;
+ border-radius:15px;padding:12px;font-weight:bold;
+ color:#493b91;font-size:15px;
+}
+.hero{
+ margin:12px 15px;padding:25px 18px;
+ background:#ffe66d;border-radius:27px;
+ text-align:center;position:relative;overflow:hidden;
+}
+.hero .mascot{font-size:65px}
+.hero h1{font-size:27px;color:#49358d;margin:8px 0}
+.hero p{line-height:1.5;color:#66552a}
+.mainbtn{
+ background:#ff795e;color:white;border:0;
+ border-radius:30px;padding:15px 24px;
+ font-weight:900;font-size:16px;margin-top:17px;
+ box-shadow:0 5px 0 #d95643;
+}
+.section{padding:22px 15px}
+.section h2{font-size:22px;margin-bottom:15px}
+.intro{color:#8279a8;font-size:14px;margin-top:-8px;margin-bottom:16px}
+.games{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:13px;
+}
+.game{
+ border-radius:22px;padding:15px 10px;
+ text-align:center;background:white;
+ box-shadow:0 5px 15px #44318b12;
+ border:2px solid #fff;
+}
+.game:nth-child(4n+1){background:#fff0c2}
+.game:nth-child(4n+2){background:#dff8ee}
+.game:nth-child(4n+3){background:#e8e3ff}
+.game:nth-child(4n){background:#ffe2e7}
+.emoji{font-size:43px;margin-bottom:8px}
+.game h3{font-size:15px;min-height:36px}
+.game p{font-size:12px;color:#756b91;min-height:29px;margin-top:5px}
+.tag{
+ display:inline-block;margin-top:9px;
+ padding:6px 11px;border-radius:20px;
+ font-size:11px;font-weight:900;
+}
+.free{background:#baf1ce;color:#14683a}
+.premium{background:#ffe08b;color:#825300}
+.game button{
+ width:100%;border:0;border-radius:13px;
+ padding:11px 5px;margin-top:10px;
+ background:#7158e8;color:white;
+ font-weight:900;font-size:13px;
+}
+.game button.lock{background:#51447d}
+.info{
+ margin:15px;padding:23px 17px;
+ border-radius:25px;background:#c9edff;text-align:center;
+}
+.info .lockemoji{font-size:43px}
+.info h2{margin:8px 0;font-size:21px}
+.info p{font-size:14px;line-height:1.5}
+.info button{
+ border:0;border-radius:25px;padding:14px 22px;
+ margin-top:15px;background:#ff795e;
+ color:white;font-size:15px;font-weight:900;
+}
+footer{
+ margin-top:25px;background:#5142a3;
+ color:white;text-align:center;padding:25px 15px;
+ border-radius:25px 25px 0 0;font-size:13px;
+}
+@media(min-width:650px){
+ .games{grid-template-columns:repeat(3,1fr)}
+ .hero,.section,.info{max-width:850px;margin-left:auto;margin-right:auto}
+}
+</style>
+</head>
+
+<body>
+<header>
+ <div class="logo">🌈 DESAFIA<span>+</span> KIDS</div>
+ <p id="subtitle">O lugar onde aprender é uma aventura!</p>
+</header>
+
+<div class="language">
+ <select id="language" onchange="changeLanguage()">
+  <option value="pt">🇦🇴 Português</option>
+  <option value="en">🇬🇧 English</option>
+  <option value="fr">🇫🇷 Français</option>
+  <option value="es">🇪🇸 Español</option>
+ </select>
+</div>
+
+<section class="hero">
+ <div class="mascot">🦁🎈</div>
+ <h1 id="welcome">Olá, pequeno explorador!</h1>
+ <p id="description">Prepara-te para brincar, aprender e conquistar muitas estrelas!</p>
+ <button class="mainbtn" id="start" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">🚀 VAMOS JOGAR!</button>
+</section>
+
+<section class="section" id="games">
+ <h2 id="gamesTitle">🎮 Escolhe a tua aventura!</h2>
+ <p class="intro" id="gamesIntro">Temos 15 aventuras à tua espera!</p>
+ <div class="games" id="gameList"></div>
+</section>
+
+<section class="info">
+ <div class="lockemoji">🔐⭐</div>
+ <h2 id="premiumTitle">Queres desbloquear mais aventuras?</h2>
+ <p id="premiumText">Pede aos teus pais ou encarregados para contactar o administrador e conhecer o acesso premium.</p>
+ <button id="contact" onclick="contactAdmin()">🎁 ADQUIRIR ACESSO</button>
+</section>
+
+<footer>
+ <strong>🌈 DESAFIA+ KIDS</strong>
+ <p id="footerText" style="margin-top:8px">Aprender pode ser muito divertido!</p>
+ <p style="margin-top:12px">© 2026 DESAFIA+ KIDS</p>
+</footer>
+
+<script>
+const games=[
+ ["➕",["Matemática divertida","Math Fun","Mathématiques amusantes","Matemáticas divertidas"],["Contas e números","Numbers and sums","Calculs et nombres","Cuentas y números"]],
+ ["🐘",["Mundo dos animais","Animal World","Monde des animaux","Mundo animal"],["Descobre os animais","Discover animals","Découvre les animaux","Descubre los animales"]],
+ ["🌍",["Quiz de cultura geral","General Knowledge Quiz","Quiz de culture générale","Quiz de cultura general"],["Testa os teus conhecimentos","Test your knowledge","Teste tes connaissances","Pon a prueba tus conocimientos"]],
+ ["🇦🇴",["Explorador de Angola","Angola Explorer","Explorateur d'Angola","Explorador de Angola"],["Conhece o nosso país","Discover our country","Découvre notre pays","Conoce nuestro país"]],
+ ["🔤",["Mestre das palavras","Word Master","Maître des mots","Maestro de palabras"],["Letras e palavras","Letters and words","Lettres et mots","Letras y palabras"]],
+ ["🧠",["Desafio da memória","Memory Challenge","Défi mémoire","Reto de memoria"],["Treina a memória","Train your memory","Entraîne ta mémoire","Entrena tu memoria"]],
+ ["🚩",["Descobre as bandeiras","Discover the Flags","Découvre les drapeaux","Descubre las banderas"],["Bandeiras do mundo","Flags of the world","Drapeaux du monde","Banderas del mundo"]],
+ ["🔬",["Pequeno cientista","Little Scientist","Petit scientifique","Pequeño científico"],["Descobre a ciência","Discover science","Découvre la science","Descubre la ciencia"]],
+ ["🕵️",["Adivinha quem sou","Guess Who I Am","Devine qui je suis","Adivina quién soy"],["Resolve os enigmas","Solve the riddles","Résous les énigmes","Resuelve los acertijos"]],
+ ["🔢",["Mundo dos números","Number World","Monde des nombres","Mundo de los números"],["Desafios numéricos","Number challenges","Défis numériques","Retos numéricos"]],
+ ["🧩",["Puzzle divertido","Fun Puzzle","Puzzle amusant","Rompecabezas"],["Monta as peças","Put the pieces together","Assemble les pièces","Une las piezas"]],
+ ["🌍",["Conhece África","Discover Africa","Découvre l'Afrique","Conoce África"],["Explora o continente","Explore the continent","Explore le continent","Explora el continente"]],
+ ["✅",["Verdadeiro ou falso","True or False","Vrai ou faux","Verdadero o falso"],["Escolhe a resposta","Choose the answer","Choisis la réponse","Elige la respuesta"]],
+ ["🗺️",["Desafio da geografia","Geography Challenge","Défi géographique","Reto de geografía"],["Descobre o mundo","Discover the world","Découvre le monde","Descubre el mundo"]],
+ ["💡",["Mestre da lógica","Logic Master","Maître de la logique","Maestro de la lógica"],["Usa o raciocínio","Use your reasoning","Utilise ton raisonnement","Usa tu razonamiento"]]
+];
+
+const words={
+ pt:["O lugar onde aprender é uma aventura!","Olá, pequeno explorador!","Prepara-te para brincar, aprender e conquistar muitas estrelas!","🚀 VAMOS JOGAR!","🎮 Escolhe a tua aventura!","Temos 15 aventuras à tua espera!","GRÁTIS","PREMIUM","JOGAR","🔒 BLOQUEADO","Queres desbloquear mais aventuras?","Pede aos teus pais ou encarregados para contactar o administrador e conhecer o acesso premium.","🎁 ADQUIRIR ACESSO","Aprender pode ser muito divertido!"],
+ en:["Where learning is an adventure!","Hello, little explorer!","Get ready to play, learn and earn stars!","🚀 LET'S PLAY!","🎮 Choose your adventure!","We have 15 adventures waiting for you!","FREE","PREMIUM","PLAY","🔒 LOCKED","Want to unlock more adventures?","Ask your parents or guardians to contact the administrator about premium access.","🎁 GET ACCESS","Learning can be fun!"],
+ fr:["L'endroit où apprendre est une aventure !","Bonjour, petit explorateur !","Prépare-toi à jouer, apprendre et gagner des étoiles !","🚀 JOUONS !","🎮 Choisis ton aventure !","15 aventures t'attendent !","GRATUIT","PREMIUM","JOUER","🔒 VERROUILLÉ","Tu veux débloquer plus d'aventures ?","Demande à tes parents de contacter l'administrateur pour l'accès premium.","🎁 OBTENIR L'ACCÈS","Apprendre peut être amusant !"],
+ es:["¡El lugar donde aprender es una aventura!","¡Hola, pequeño explorador!","¡Prepárate para jugar, aprender y ganar estrellas!","🚀 ¡A JUGAR!","🎮 ¡Elige tu aventura!","¡Tenemos 15 aventuras esperándote!","GRATIS","PREMIUM","JUGAR","🔒 BLOQUEADO","¿Quieres desbloquear más aventuras?","Pide a tus padres que contacten con el administrador para obtener acceso premium.","🎁 OBTENER ACCESO","¡Aprender puede ser divertido!"]
+};
+
+let lang="pt";
+
+function renderGames(){
+ const w=words[lang];
+ document.getElementById("gameList").innerHTML=games.map((g,i)=>{
+  const free=i<2;
+  return `<article class="game">
+   <div class="emoji">${g[0]}</div>
+   <h3>${g[1][["pt","en","fr","es"].indexOf(lang)]}</h3>
+   <p>${g[2][["pt","en","fr","es"].indexOf(lang)]}</p>
+   <span class="tag ${free?"free":"premium"}">${free?w[6]:w[7]}</span>
+   <button class="${free?"":"lock"}" onclick="gameAction(${i})">${free?"🎮 "+w[8]:w[9]}</button>
+  </article>`;
+ }).join("");
+}
+
+function changeLanguage(){
+ lang=document.getElementById("language").value;
+ document.documentElement.lang=lang;
+ const w=words[lang];
+ const ids=["subtitle","welcome","description","start","gamesTitle","gamesIntro"];
+ ids.forEach((id,i)=>document.getElementById(id).textContent=w[i]);
+ document.getElementById("premiumTitle").textContent=w[10];
+ document.getElementById("premiumText").textContent=w[11];
+ document.getElementById("contact").textContent=w[12];
+ document.getElementById("footerText").textContent=w[13];
+ renderGames();
+}
+
+function gameAction(i){
+ if(i<2){
+  alert(lang==="pt"?"Este jogo será desenvolvido na próxima etapa!":"This game will be available in a later development step!");
+ }else{
+  contactAdmin();
+ }
+}
+
+function contactAdmin(){
+ alert(words[lang][11]+"\n\nContacto do administrador: número a configurar.");
+}
+
+renderGames();
+</script>
+</body>
+  </html>
+  
