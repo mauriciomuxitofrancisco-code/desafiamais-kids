@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -10,7 +11,7 @@
 :root{font-family:Arial,sans-serif;color:#20213a;background:#f4f3ff}
 *{box-sizing:border-box}
 body{margin:0;padding:18px}
-main{max-width:900px;margin:24px auto}
+main{max-width:1000px;margin:24px auto}
 header,.panel{background:white;border-radius:18px;padding:22px;box-shadow:0 6px 24px #29205b12;margin-bottom:16px}
 h1{margin:0 0 8px;color:#5142c8;font-size:25px}
 h2{font-size:19px;margin:0 0 15px}
@@ -25,11 +26,16 @@ button:disabled{opacity:.55;cursor:not-allowed}
 .hidden{display:none}
 .status{padding:12px;border-radius:10px;background:#f0efff;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
 table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:10px;border-bottom:1px solid #eee}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #eee;vertical-align:top}
 .tablewrap{overflow-x:auto}
 .small{font-size:12px;color:#777}
 .code{font-weight:800;font-size:20px;letter-spacing:1px;overflow-wrap:anywhere}
-@media(max-width:600px){.row{grid-template-columns:1fr}body{padding:10px}header,.panel{padding:16px}}
+section.subsection{margin-top:28px}
+@media(max-width:600px){
+ .row{grid-template-columns:1fr}
+ body{padding:10px}
+ header,.panel{padding:16px}
+}
 </style>
 </head>
 <body>
@@ -65,7 +71,7 @@ th,td{text-align:left;padding:10px;border-bottom:1px solid #eee}
 <div id="newCode" class="status hidden" aria-live="polite"></div>
 </section>
 
-<section style="margin-top:28px">
+<section class="subsection">
 <div class="row" style="align-items:center">
 <h2>Códigos emitidos</h2>
 <button class="secondary" id="refreshBtn">Atualizar lista</button>
@@ -77,9 +83,38 @@ th,td{text-align:left;padding:10px;border-bottom:1px solid #eee}
 </table>
 </div>
 </section>
+
+<section class="subsection">
+<div class="row" style="align-items:center">
+<h2>Dispositivos Premium</h2>
+<button class="secondary" id="refreshDevicesBtn">Atualizar dispositivos</button>
+</div>
+<p class="small">Consulta os dispositivos associados às contas Premium e liberta um dispositivo quando o encarregado precisar de utilizar outro.</p>
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Encarregado</th>
+<th>E-mail</th>
+<th>Dispositivo autorizado</th>
+<th>Primeira associação</th>
+<th>Última atividade</th>
+<th>Tentativas bloqueadas</th>
+<th>Último bloqueio</th>
+<th>Controlo</th>
+</tr>
+</thead>
+<tbody id="devicesBody">
+<tr><td colspan="8">Ainda não carregado.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
 <div id="appMsg" class="status" aria-live="polite">Sessão iniciada.</div>
 </section>
 </main>
+
 <script>
 const SUPABASE_URL = "https://ounjndogaogngxchuijj.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
@@ -88,115 +123,246 @@ const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_K
 const $ = id => document.getElementById(id);
 const msg = (id, text) => { $(id).textContent = text; };
 const dateText = value => value ? new Date(value).toLocaleString() : "Sem data";
-function escapeHtml(s){return String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+function escapeHtml(s){
+ return String(s ?? "").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
 
 async function showApp(user){
-  $("loginPanel").classList.add("hidden");
-  $("appPanel").classList.remove("hidden");
-  msg("who", "Sessão: " + user.email);
-  await loadCodes();
+ $("loginPanel").classList.add("hidden");
+ $("appPanel").classList.remove("hidden");
+ msg("who", "Sessão: " + user.email);
+ await loadCodes();
+ await loadDevices();
 }
+
 async function checkSession(){
-  const {data:{session}} = await client.auth.getSession();
-  if(session) await showApp(session.user);
+ const {data:{session}} = await client.auth.getSession();
+ if(session) await showApp(session.user);
 }
+
 $("loginBtn").onclick = async () => {
-  msg("loginMsg","A iniciar sessão…");
-  const {data,error} = await client.auth.signInWithPassword({
-    email:$("email").value.trim(), password:$("password").value
-  });
-  if(error){msg("loginMsg","Não foi possível entrar: "+error.message);return;}
-  $("password").value="";
-  await showApp(data.user);
+ msg("loginMsg","A iniciar sessão…");
+ const {data,error} = await client.auth.signInWithPassword({
+  email:$("email").value.trim(),
+  password:$("password").value
+ });
+ if(error){msg("loginMsg","Não foi possível entrar: "+error.message);return;}
+ $("password").value="";
+ await showApp(data.user);
 };
+
 $("logoutBtn").onclick = async () => {
-  await client.auth.signOut();
+ await client.auth.signOut();
+ $("appPanel").classList.add("hidden");
+ $("loginPanel").classList.remove("hidden");
+ msg("loginMsg","Sessão terminada.");
+};
+
+$("createBtn").onclick = async () => {
+ const days = Number($("days").value);
+ if(!Number.isInteger(days)||days<1||days>3650){
+  msg("appMsg","Indique uma validade entre 1 e 3650 dias.");
+  return;
+ }
+ $("createBtn").disabled=true;
+ msg("appMsg","A gerar código…");
+ const {data,error}=await client.rpc("create_premium_code",{p_days:days});
+ $("createBtn").disabled=false;
+ if(error){msg("appMsg","Erro ao gerar código: "+error.message);return;}
+
+ $("newCode").classList.remove("hidden");
+ $("newCode").innerHTML='<div><strong>Novo código Premium</strong></div><div class="code" id="codeValue"></div><button class="secondary" id="copyCodeBtn">Copiar código</button><p class="small">Guarde-o agora. Por segurança, a base de dados não guarda o código em texto legível.</p>';
+ $("codeValue").textContent=data;
+
+ $("copyCodeBtn").onclick=async()=>{
+  try{
+   await navigator.clipboard.writeText(data);
+   msg("appMsg","Código copiado.");
+  }catch(e){
+   msg("appMsg","Não foi possível copiar automaticamente. Selecione e copie o código apresentado.");
+  }
+ };
+ msg("appMsg","Código criado. A atualizar a lista.");
+ await loadCodes();
+};
+
+async function setStatus(id,status){
+ if(status==="active" && !confirm("Confirma reativar este código?"))return;
+ if(status==="suspended" && !confirm("Confirma suspender este acesso Premium?"))return;
+ if(status==="revoked" && !confirm("Confirma revogar definitivamente este código? Esta ação não pode ser desfeita."))return;
+
+ const {error}=await client.rpc("admin_set_code_status",{
+  p_code_id:id,
+  p_status:status
+ });
+ if(error){msg("appMsg","Erro: "+error.message);return;}
+ msg("appMsg","Estado atualizado.");
+ await loadCodes();
+}
+
+async function renewPremium(userId, name, days){
+ if(![30,90,180,365].includes(days))return;
+ if(!confirm("Confirma renovar o Premium de "+(name||"este cliente")+" por mais "+days+" dias?"))return;
+
+ const {data,error}=await client.rpc("admin_renew_premium",{
+  p_user_id:userId,
+  p_days:days
+ });
+ if(error){msg("appMsg","Não foi possível renovar: "+error.message);return;}
+ msg("appMsg","Premium renovado. Nova validade: "+dateText(data));
+ await loadCodes();
+}
+
+async function loadCodes(){
+ msg("appMsg","A carregar clientes e códigos…");
+ const {data,error}=await client.rpc("admin_list_premium_codes");
+ if(error){
+  msg("appMsg","Não foi possível carregar os códigos: "+error.message);
+  return;
+ }
+
+ const body=$("codesBody");
+ body.innerHTML="";
+
+ if(!data || !data.length){
+  body.innerHTML='<tr><td colspan="6">Ainda não existem códigos.</td></tr>';
+  msg("appMsg","Lista de códigos atualizada.");
+  return;
+ }
+
+ for(const c of data){
+  const tr=document.createElement("tr");
+  const clientName=c.guardian_name || (c.redeemed_by ? "Nome não informado" : "Ainda não utilizado");
+  const email=c.email || "—";
+  const ref=c.client_ref || "—";
+  const controls=document.createElement("td");
+
+  if(c.status==="revoked"){
+   controls.textContent="Revogado";
+  }else{
+   const statusBtn=document.createElement("button");
+   statusBtn.className="secondary";
+   statusBtn.textContent=c.status==="active"?"Suspender":"Reativar";
+   statusBtn.onclick=()=>setStatus(c.id,c.status==="active"?"suspended":"active");
+   controls.appendChild(statusBtn);
+
+   const revokeBtn=document.createElement("button");
+   revokeBtn.className="danger";
+   revokeBtn.textContent="Revogar";
+   revokeBtn.onclick=()=>setStatus(c.id,"revoked");
+   controls.appendChild(revokeBtn);
+
+   if(c.redeemed_by){
+    const days=document.createElement("select");
+    days.style.marginTop="8px";
+    days.innerHTML='<option value="30">Renovar 30 dias</option><option value="90">Renovar 90 dias</option><option value="180">Renovar 180 dias</option><option value="365" selected>Renovar 365 dias</option>';
+
+    const renew=document.createElement("button");
+    renew.textContent="Renovar Premium";
+    renew.onclick=()=>renewPremium(c.redeemed_by,clientName,Number(days.value));
+    controls.append(days,renew);
+   }
+  }
+
+  tr.innerHTML=`<td>${escapeHtml(clientName)}</td><td>${escapeHtml(email)}</td><td>${escapeHtml(ref)}</td><td>${escapeHtml(c.status)}</td><td>${escapeHtml(dateText(c.expires_at))}</td>`;
+  tr.appendChild(controls);
+  body.appendChild(tr);
+ }
+ msg("appMsg","Lista de códigos atualizada. Registos: "+data.length+".");
+}
+
+async function releaseDevice(userId,email){
+ if(!confirm("Queres libertar o dispositivo associado a "+email+"? O próximo dispositivo utilizado poderá ficar associado à conta."))return;
+
+ msg("appMsg","A libertar dispositivo…");
+ const {data,error}=await client.rpc("admin_release_premium_device",{
+  p_user_id:userId
+ });
+
+ if(error){
+  msg("appMsg","Não foi possível libertar o dispositivo: "+error.message);
+  return;
+ }
+
+ if(data===false){
+  msg("appMsg","Esta conta não tem um dispositivo associado.");
+  return;
+ }
+
+ msg("appMsg","Dispositivo libertado. A atualizar a lista…");
+ await loadDevices();
+}
+
+async function loadDevices(){
+ msg("appMsg","A carregar dispositivos Premium…");
+ const {data,error}=await client.rpc("admin_list_premium_devices");
+
+ if(error){
+  $("devicesBody").innerHTML='<tr><td colspan="8">Erro ao carregar dispositivos.</td></tr>';
+  msg("appMsg","Não foi possível carregar dispositivos: "+error.message);
+  return;
+ }
+
+ const body=$("devicesBody");
+ body.innerHTML="";
+
+ if(!data || !data.length){
+  body.innerHTML='<tr><td colspan="8">Ainda não existem contas Premium com dispositivos registados.</td></tr>';
+  msg("appMsg","Lista de dispositivos atualizada.");
+  return;
+ }
+
+ for(const d of data){
+  const tr=document.createElement("tr");
+  const name=d.guardian_name || "Nome não informado";
+  const email=d.customer_email || "—";
+  const device=d.active_device_label || "Sem dispositivo associado";
+  const blocked=Number(d.blocked_attempts || 0);
+  const lastBlocked=d.last_blocked_device
+   ? escapeHtml(d.last_blocked_device)+"<br><span class=\"small\">"+escapeHtml(dateText(d.last_blocked_at))+"</span>"
+   : "Nenhum";
+
+  tr.innerHTML=`
+   <td>${escapeHtml(name)}</td>
+   <td>${escapeHtml(email)}</td>
+   <td>${escapeHtml(device)}</td>
+   <td>${escapeHtml(dateText(d.first_seen_at))}</td>
+   <td>${escapeHtml(dateText(d.last_seen_at))}</td>
+   <td>${blocked}</td>
+   <td>${lastBlocked}</td>
+   <td></td>
+  `;
+
+  const control=tr.lastElementChild;
+  if(d.active_device_label){
+   const release=document.createElement("button");
+   release.className="danger";
+   release.textContent="Libertar dispositivo";
+   release.onclick=()=>releaseDevice(d.user_id,email);
+   control.appendChild(release);
+  }else{
+   control.textContent="Sem dispositivo";
+  }
+
+  body.appendChild(tr);
+ }
+
+ msg("appMsg","Lista de dispositivos atualizada. Contas: "+data.length+".");
+}
+
+$("refreshBtn").onclick=loadCodes;
+$("refreshDevicesBtn").onclick=loadDevices;
+
+client.auth.onAuthStateChange((_event,session)=>{
+ if(!session){
   $("appPanel").classList.add("hidden");
   $("loginPanel").classList.remove("hidden");
-  msg("loginMsg","Sessão terminada.");
-};
-$("createBtn").onclick = async () => {
-  const days = Number($("days").value);
-  if(!Number.isInteger(days)||days<1||days>3650){msg("appMsg","Indique uma validade entre 1 e 3650 dias.");return;}
-  $("createBtn").disabled=true;
-  msg("appMsg","A gerar código…");
-  const {data,error}=await client.rpc("create_premium_code",{p_days:days});
-  $("createBtn").disabled=false;
-  if(error){msg("appMsg","Erro ao gerar código: "+error.message);return;}
-  $("newCode").classList.remove("hidden");
-  $("newCode").innerHTML='<div><strong>Novo código Premium</strong></div><div class="code" id="codeValue"></div><button class="secondary" id="copyCodeBtn">Copiar código</button><p class="small">Guarde-o agora. Por segurança, a base de dados não guarda o código em texto legível.</p>';
-  $("codeValue").textContent=data;
-  $("copyCodeBtn").onclick=async()=>{
-    try{await navigator.clipboard.writeText(data);msg("appMsg","Código copiado.");}
-    catch(e){msg("appMsg","Não foi possível copiar automaticamente. Selecione e copie o código apresentado.");}
-  };
-  msg("appMsg","Código criado. Atualize a lista para confirmar o registo.");
-  await loadCodes();
-};
-async function setStatus(id,status){
-  if(status==="active" && !confirm("Confirma reativar este código?"))return;
-  if(status==="suspended" && !confirm("Confirma suspender este acesso Premium?"))return;
-  if(status==="revoked" && !confirm("Confirma revogar definitivamente este código? Esta ação não pode ser desfeita."))return;
-  const {error}=await client.rpc("admin_set_code_status",{p_code_id:id,p_status:status});
-  if(error){msg("appMsg","Erro: "+error.message);return;}
-  msg("appMsg","Estado atualizado.");
-  await loadCodes();
-}
-async function renewPremium(userId, name, days){
-  if(![30,90,180,365].includes(days))return;
-  if(!confirm("Confirma renovar o Premium de "+(name||"este cliente")+" por mais "+days+" dias?"))return;
-  const {data,error}=await client.rpc("admin_renew_premium",{p_user_id:userId,p_days:days});
-  if(error){msg("appMsg","Não foi possível renovar: "+error.message);return;}
-  msg("appMsg","Premium renovado. Nova validade: "+dateText(data));
-  await loadCodes();
-}
-async function loadCodes(){
-  msg("appMsg","A carregar clientes e códigos…");
-  const {data,error}=await client.rpc("admin_list_premium_codes");
-  if(error){msg("appMsg","Não foi possível carregar: "+error.message);return;}
-  const body=$("codesBody"); body.innerHTML="";
-  if(!data || !data.length){body.innerHTML='<tr><td colspan="6">Ainda não existem códigos.</td></tr>';msg("appMsg","Lista atualizada.");return;}
-  for(const c of data){
-    const tr=document.createElement("tr");
-    const clientName=c.guardian_name || (c.redeemed_by ? "Nome não informado" : "Ainda não utilizado");
-    const email=c.email || "—";
-    const ref=c.client_ref || "—";
-    const controls=document.createElement("td");
-    if(c.status==="revoked"){
-      controls.textContent="Revogado";
-    } else {
-      const statusBtn=document.createElement("button");
-      statusBtn.className="secondary";
-      statusBtn.textContent=c.status==="active"?"Suspender":"Reativar";
-      statusBtn.onclick=()=>setStatus(c.id,c.status==="active"?"suspended":"active");
-      controls.appendChild(statusBtn);
-      const revokeBtn=document.createElement("button");
-      revokeBtn.className="danger"; revokeBtn.textContent="Revogar";
-      revokeBtn.onclick=()=>setStatus(c.id,"revoked");
-      controls.appendChild(revokeBtn);
-      if(c.redeemed_by){
-        const days=document.createElement("select");
-        days.style.marginTop="8px";
-        days.innerHTML='<option value="30">Renovar 30 dias</option><option value="90">Renovar 90 dias</option><option value="180">Renovar 180 dias</option><option value="365" selected>Renovar 365 dias</option>';
-        const renew=document.createElement("button");
-        renew.textContent="Renovar Premium";
-        renew.onclick=()=>renewPremium(c.redeemed_by,clientName,Number(days.value));
-        controls.append(days,renew);
-      }
-    }
-    tr.innerHTML=`<td>${escapeHtml(clientName)}</td><td>${escapeHtml(email)}</td><td>${escapeHtml(ref)}</td><td>${escapeHtml(c.status)}</td><td>${escapeHtml(dateText(c.expires_at))}</td>`;
-    tr.appendChild(controls);
-    body.appendChild(tr);
-  }
-  msg("appMsg","Lista atualizada. Registos: "+data.length+".");
-}
-$("refreshBtn").onclick=loadCodes;
-client.auth.onAuthStateChange((_event,session)=>{
-  if(!session){
-    $("appPanel").classList.add("hidden");
-    $("loginPanel").classList.remove("hidden");
-  }
+ }
 });
+
 checkSession();
 </script>
 </body>
