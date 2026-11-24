@@ -1,1 +1,69 @@
-
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desafio da Memória | DESAFIA+ KIDS</title>
+<style>
+:root{--navy:#173d67;--blue:#2865d8;--gold:#ffc94a;--paper:#f1f6ff;--green:#16845b}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(145deg,#e8f1ff,#fff6df);font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#17324b}
+header{background:var(--navy);color:#fff;text-align:center;padding:17px 12px}h1{font-size:clamp(23px,5vw,34px);margin:0}header p{margin:5px 0 0}
+main{max-width:850px;margin:auto;padding:14px 13px 105px}.friends{display:flex;justify-content:center;gap:16px;font-size:clamp(35px,8vw,54px);margin:8px}.buddy{display:inline-block;animation:bob 1.8s infinite ease-in-out}.buddy:nth-child(2){animation-delay:.25s}.buddy:nth-child(3){animation-delay:.5s}@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-9px) rotate(4deg)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#fff;border:1px solid #dbe6f5;border-radius:15px;padding:10px;text-align:center;font-size:13px}.stat b{display:block;font-size:22px;color:var(--blue)}
+.panel{background:#fff;border:1px solid #dbe6f5;border-radius:19px;padding:15px;margin-top:12px;box-shadow:0 7px 22px #173d6710;text-align:center}.progress{height:9px;background:#e3eaf5;border-radius:20px;overflow:hidden;margin:12px 0}.progress span{height:100%;display:block;background:linear-gradient(90deg,#2865d8,#22b486);width:0}
+#message{font-weight:800;font-size:clamp(17px,4vw,22px);margin:9px 0}.sub{font-size:13px;color:#64788d}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;max-width:590px;margin:15px auto 5px}.tile{aspect-ratio:1;border:0;border-radius:15px;background:linear-gradient(145deg,#367be7,#174b9e);color:white;box-shadow:0 4px 0 #123c7c;font-size:clamp(25px,7vw,44px);cursor:pointer;transition:transform .18s,background .18s;display:grid;place-items:center;user-select:none}.tile:active{transform:scale(.95)}.tile.open,.tile.matched{background:#fff0c6;color:#17324b;box-shadow:0 3px 0 #e2bd64;border:2px solid #f1cf7a}.tile.matched{background:#d9f8e9;border-color:#8ed5b2;cursor:default;animation:pop .25s}@keyframes pop{50%{transform:scale(1.08)}}.tile:disabled{opacity:1}
+button.action{border:0;border-radius:12px;padding:12px 15px;font-weight:800;font-size:15px;cursor:pointer}.primary{background:var(--blue);color:white}.soft{background:#e9eff8;color:#173d67}.gold{background:var(--gold);color:#553900}.actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.feedback{min-height:26px;font-weight:800;margin-top:8px}.mascotline{font-size:14px;color:#5b7188;margin-top:7px}
+footer{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #dbe6f5;padding:9px;display:flex;justify-content:center;gap:9px;flex-wrap:wrap}footer a{padding:10px 13px;border-radius:12px;text-decoration:none;font-weight:800;font-size:13px}.home{background:#173d67;color:white}.wa{background:#16a34a;color:white}
+@media(max-width:430px){.grid{gap:7px}.tile{border-radius:11px}.stat{padding:8px 3px}}
+</style></head>
+<body>
+<header><h1>🧠 Desafio da Memória 🎈</h1><p>DESAFIA+ KIDS · Treina a memória a brincar!</p></header>
+<main>
+<div class="friends"><span class="buddy">🦊</span><span class="buddy">🤖</span><span class="buddy">🐵</span></div>
+<div class="stats">
+ <div class="stat">Desafio<b id="round">1/1000</b></div>
+ <div class="stat">Pontos<b id="score">0</b></div>
+ <div class="stat">Movimentos<b id="moves">0</b></div>
+</div>
+<div class="progress"><span id="bar"></span></div>
+<section class="panel">
+ <div id="message">Encontra todos os pares iguais!</div>
+ <div class="sub" id="hint">Toca em duas cartas para descobrir os desenhos.</div>
+ <div class="grid" id="grid"></div>
+ <div class="feedback" id="feedback" aria-live="polite"></div>
+ <div class="mascotline" id="mascot">🦊 A raposa acredita em ti!</div>
+ <div class="actions">
+  <button class="action primary" id="start" onclick="startRound()">Começar desafio</button>
+  <button class="action soft" onclick="toggleSound()" id="sound">🔊 Sons ligados</button>
+  <button class="action gold" onclick="toggleMusic()" id="music">🎵 Ligar música</button>
+ </div>
+ <p class="sub">Os desafios concluídos não se repetem. O teu progresso fica guardado neste dispositivo e navegador.</p>
+</section>
+</main>
+<footer><a class="home" href="index.html">⌂ Menu principal</a><a class="wa" id="wa" target="_blank" rel="noopener">WhatsApp Premium</a></footer>
+<script>
+const ART=["🐶", "🐱", "🐼", "🦊", "🐸", "🐵", "🦁", "🐯", "🐨", "🐰", "🐻", "🐷", "🐮", "🐔", "🦄", "🐙", "🦋", "🐢", "🐬", "🦖", "🐘", "🦒", "🦓", "🦜", "🐝", "🐞", "🦉", "🦩", "🐳", "🦀", "🍎", "🍌", "🍉", "🍓", "🍍", "🥑", "🥕", "🌽", "🍇", "🍒", "⚽", "🏀", "🎾", "🚗", "🚀", "🚲", "✈️", "🚂", "🎸", "🎹", "⭐", "🌙", "☀️", "🌈", "☁️", "🌻", "🌵", "🌴", "🏰", "🎈", "🎁", "🧸", "🎨", "📚", "🔔", "💎", "👑", "❤️", "💙", "💚", "💛", "🧡", "💜"];
+const TOTAL=1000,KEY='desafiamais_memoria_1000_v1';
+const $=id=>document.getElementById(id);
+let state={};try{state=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+let completed=new Set(state.completed||[]),score=Number(state.score)||0,moves=0,first=null,second=null,lock=false,matched=0,soundOn=true,musicOn=false,ctx=null,musicTimer=null,roundId=0;
+function save(){localStorage.setItem(KEY,JSON.stringify({completed:[...completed],score}))}
+function stats(){$('round').textContent=Math.min(completed.size+1,TOTAL)+'/'+TOTAL;$('score').textContent=score;$('moves').textContent=moves;$('bar').style.width=(completed.size/TOTAL*100)+'%'}
+function audioTone(freq=520,duration=.11,type='sine',vol=.055){if(!soundOn)return;try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();let o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+duration);o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+duration)}catch(e){}}
+function fx(kind){if(kind==='flip')audioTone(520,.07);if(kind==='match'){audioTone(660,.1);setTimeout(()=>audioTone(880,.13),90)}if(kind==='miss')audioTone(190,.18,'triangle');if(kind==='win'){[523,659,784,1046].forEach((n,i)=>setTimeout(()=>audioTone(n,.22),i*130))}}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function pairsFor(id){let pairs=3+((id*7+Math.floor(id/9))%6);let offset=(id*11)%ART.length;let chosen=[];for(let i=0;i<pairs;i++)chosen.push(ART[(offset+i*5)%ART.length]);return shuffle([...chosen,...chosen])}
+function startRound(){
+ if(completed.size>=TOTAL){$('message').textContent='🏆 Campeão! Terminaste os 1000 desafios!';$('hint').textContent='Pontuação final: '+score+' pontos.';$('grid').innerHTML='';$('feedback').textContent='Parabéns!';$('start').textContent='Jogar novamente';$('start').onclick=()=>{completed.clear();score=0;save();location.reload()};stats();fx('win');return}
+ roundId=completed.size+1;moves=0;first=null;second=null;lock=false;matched=0;
+ $('message').textContent='Desafio '+roundId+': encontra os pares!';$('hint').textContent='Memoriza os desenhos e combina os iguais.';$('feedback').textContent='';$('mascot').textContent=['🦊 Concentra-te!','🤖 Tu consegues!','🐵 Boa memória!'][roundId%3];
+ let cards=pairsFor(roundId);let grid=$('grid');grid.innerHTML='';grid.style.gridTemplateColumns=cards.length<=8?'repeat(4,minmax(0,1fr))':cards.length<=12?'repeat(4,minmax(0,1fr))':'repeat(4,minmax(0,1fr))';
+ cards.forEach((symbol,index)=>{let b=document.createElement('button');b.className='tile';b.type='button';b.textContent='?';b.setAttribute('aria-label','Carta escondida');b.dataset.symbol=symbol;b.dataset.index=index;b.onclick=()=>flip(b);grid.appendChild(b)});
+ $('start').textContent='Reiniciar este desafio';$('start').onclick=()=>startRound();stats();
+}
+function flip(card){if(lock||card.classList.contains('open')||card.classList.contains('matched'))return;card.classList.add('open');card.textContent=card.dataset.symbol;card.setAttribute('aria-label','Desenho '+card.dataset.symbol);fx('flip');if(!first){first=card;return}second=card;moves++;$('moves').textContent=moves;if(first.dataset.symbol===second.dataset.symbol){first.classList.add('matched');second.classList.add('matched');first.disabled=true;second.disabled=true;matched++;first=null;second=null;score+=10; $('score').textContent=score;fx('match');$('feedback').textContent='✨ Par encontrado! +10 pontos';if(matched===document.querySelectorAll('.tile').length/2){completed.add(roundId);score+=20;save();stats();$('message').textContent='🎉 Desafio concluído!';$('feedback').textContent='Excelente! Bónus de 20 pontos!';$('mascot').textContent='🦊🐵🤖 Estamos orgulhosos de ti!';fx('win');$('start').textContent='Próximo desafio';$('start').onclick=startRound}}else{lock=true;$('feedback').textContent='Ainda não combinam. Tenta outra vez!';fx('miss');let a=first,b=second;setTimeout(()=>{a.classList.remove('open');b.classList.remove('open');a.textContent='?';b.textContent='?';a.setAttribute('aria-label','Carta escondida');b.setAttribute('aria-label','Carta escondida');first=null;second=null;lock=false},750)}save()}
+function toggleSound(){soundOn=!soundOn;$('sound').textContent=soundOn?'🔊 Sons ligados':'🔇 Sons desligados';if(soundOn)fx('match')}
+function toggleMusic(){if(musicOn){clearInterval(musicTimer);musicOn=false;$('music').textContent='🎵 Ligar música';return}try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();musicOn=true;$('music').textContent='🔇 Desligar música';let notes=[392,440,523,659,523,440];let i=0;musicTimer=setInterval(()=>{if(!soundOn)return;audioTone(notes[i++%notes.length],.2,'sine',.018)},380)}catch(e){$('music').textContent='Som indisponível'}}
+$('wa').href='https://wa.me/244938403923?text='+encodeURIComponent('Olá! Gostaria de adquirir um código Premium do DESAFIA+ KIDS para desbloquear os 13 jogos educativos. Pode informar-me sobre o preço e as condições?');
+stats();$('message').textContent='Pronto para testar a tua memória?';$('hint').textContent='Carrega em “Começar desafio” para jogar.';$('grid').innerHTML='';
+</script></body></html>
