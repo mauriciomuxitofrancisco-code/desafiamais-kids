@@ -1,1 +1,540 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#7856e8">
+<title>Matemática Divertida | DESAFIA+ KIDS</title>
 
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  background: linear-gradient(135deg,#fff4c7,#f4eaff,#dff7ff);
+  color: #30245c;
+  min-height: 100vh;
+}
+
+header {
+  background: linear-gradient(120deg,#7048e8,#a34be8);
+  color: white;
+  text-align: center;
+  padding: 22px 12px;
+  border-radius: 0 0 30px 30px;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 900;
+}
+
+header p {
+  margin: 7px 0 0;
+}
+
+.container {
+  width: 92%;
+  max-width: 520px;
+  margin: 22px auto;
+}
+
+.panel {
+  background: white;
+  padding: 22px;
+  border-radius: 25px;
+  box-shadow: 0 7px 20px #39236b18;
+  text-align: center;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+select, .small-btn {
+  padding: 10px;
+  border-radius: 12px;
+  border: 2px solid #e6dcff;
+  background: white;
+  font-weight: bold;
+  color: #5535a7;
+}
+
+.score {
+  background: #fff1a8;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 25px;
+  margin: 20px 0 8px;
+}
+
+.question {
+  background: #f1eaff;
+  border-radius: 22px;
+  padding: 25px 10px;
+  margin: 20px 0;
+}
+
+.question small {
+  color: #7959c5;
+  font-weight: bold;
+}
+
+.math {
+  font-size: 48px;
+  font-weight: 900;
+  color: #673bd1;
+  margin: 12px 0;
+}
+
+.answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.answer {
+  border: none;
+  border-radius: 18px;
+  padding: 19px 8px;
+  font-size: 25px;
+  font-weight: 900;
+  color: #38245f;
+  background: #e8f5ff;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #c5e3f7;
+}
+
+.answer:nth-child(2) {
+  background: #ffe9ed;
+  box-shadow: 0 4px 0 #f7c8d1;
+}
+
+.answer:nth-child(3) {
+  background: #e8ffe9;
+  box-shadow: 0 4px 0 #bce8c0;
+}
+
+.answer:nth-child(4) {
+  background: #fff4d8;
+  box-shadow: 0 4px 0 #f2dfaa;
+}
+
+.answer:disabled {
+  opacity: .8;
+  cursor: default;
+}
+
+.feedback {
+  min-height: 42px;
+  font-weight: bold;
+  font-size: 19px;
+  margin: 15px 0 5px;
+}
+
+.stars {
+  font-size: 28px;
+  letter-spacing: 4px;
+  margin: 12px 0;
+}
+
+.progress {
+  height: 12px;
+  background: #eee8fa;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.progress div {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg,#ffbd35,#ff7a59);
+  transition: width .3s;
+}
+
+button.main {
+  border: none;
+  background: linear-gradient(120deg,#7048e8,#a34be8);
+  color: white;
+  font-weight: bold;
+  padding: 15px 24px;
+  border-radius: 16px;
+  font-size: 17px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+button:focus-visible, select:focus-visible {
+  outline: 3px solid #ffae30;
+  outline-offset: 3px;
+}
+
+.hidden {
+  display: none;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #796c9d;
+  font-size: 13px;
+}
+
+@media(max-width:360px) {
+  .math { font-size: 39px; }
+  .answer { font-size: 21px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🌈 DESAFIA+ KIDS</div>
+  <p id="headerText">Aprender também pode ser uma aventura!</p>
+</header>
+
+<div class="container">
+<div class="panel">
+
+  <div class="topbar">
+    <select id="language" onchange="changeLanguage()">
+      <option value="pt">🇦🇴 Português</option>
+      <option value="en">🇬🇧 English</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="es">🇪🇸 Español</option>
+    </select>
+
+    <button class="small-btn" id="soundBtn" onclick="toggleSound()">🔊 Som</button>
+  </div>
+
+  <h1 id="title">🧮 Matemática divertida</h1>
+  <p id="intro">Vamos descobrir quantas respostas consegues acertar!</p>
+
+  <div class="score">
+    ⭐ <span id="points">0</span>
+    <span id="pointsLabel"> estrelas</span>
+  </div>
+
+  <div class="question">
+    <small id="questionLabel">PERGUNTA 1 DE 10</small>
+    <div class="math" id="math">2 + 3 = ?</div>
+    <button class="small-btn" onclick="speakQuestion()">🔈 <span id="listenText">Ouvir pergunta</span></button>
+  </div>
+
+  <div class="answers" id="answers">
+    <button class="answer" onclick="checkAnswer(0)">5</button>
+    <button class="answer" onclick="checkAnswer(1)">4</button>
+    <button class="answer" onclick="checkAnswer(2)">6</button>
+    <button class="answer" onclick="checkAnswer(3)">7</button>
+  </div>
+
+  <div class="feedback" id="feedback" aria-live="polite"></div>
+
+  <div class="stars" id="stars">☆☆☆☆☆☆☆☆☆☆</div>
+
+  <div class="progress">
+    <div id="progress"></div>
+  </div>
+
+  <button class="main hidden" id="nextBtn" onclick="nextQuestion()">Próxima pergunta ➜</button>
+
+  <div id="result" class="hidden">
+    <h1 id="resultTitle">🏆 Parabéns!</h1>
+    <p id="resultText"></p>
+    <button class="main" onclick="startGame()" id="restartBtn">🔄 Jogar novamente</button>
+  </div>
+
+</div>
+</div>
+
+<footer>DESAFIA+ KIDS • Aprender brincando 🌟</footer>
+
+<script>
+const translations = {
+pt: {
+ header:"Aprender também pode ser uma aventura!",
+ title:"🧮 Matemática divertida",
+ intro:"Vamos descobrir quantas respostas consegues acertar!",
+ points:" estrelas", question:"PERGUNTA",
+ of:"DE", listen:"Ouvir pergunta",
+ sound:"Som", on:"🔊 Som", off:"🔇 Som desligado",
+ correct:"🎉 Muito bem! Acertaste!",
+ wrong:"😊 Não faz mal! Vamos tentar a próxima!",
+ next:"Próxima pergunta ➜",
+ result:"🏆 Parabéns!",
+ restart:"🔄 Jogar novamente",
+ final:(n)=>"Conseguiste "+n+" de 10 estrelas! Continua a aprender!",
+ speak:"Quanto é ",
+ plus:"mais",
+ minus:"menos",
+ end:"Fim do jogo!"
+},
+en: {
+ header:"Learning can also be an adventure!",
+ title:"🧮 Fun Mathematics",
+ intro:"Let's see how many answers you can get right!",
+ points:" stars", question:"QUESTION",
+ of:"OF", listen:"Listen to question",
+ on:"🔊 Sound", off:"🔇 Sound off",
+ correct:"🎉 Well done! Correct!",
+ wrong:"😊 That's okay! Let's try the next one!",
+ next:"Next question ➜",
+ result:"🏆 Congratulations!",
+ restart:"🔄 Play again",
+ final:(n)=>"You earned "+n+" out of 10 stars! Keep learning!",
+ speak:"How much is ",
+ plus:"plus",
+ minus:"minus",
+ end:"Game over!"
+},
+fr: {
+ header:"Apprendre peut aussi être une aventure !",
+ title:"🧮 Mathématiques amusantes",
+ intro:"Voyons combien de réponses tu peux trouver !",
+ points:" étoiles", question:"QUESTION",
+ of:"SUR", listen:"Écouter la question",
+ on:"🔊 Son", off:"🔇 Son coupé",
+ correct:"🎉 Bravo ! Bonne réponse !",
+ wrong:"😊 Ce n'est pas grave ! Passons à la suivante !",
+ next:"Question suivante ➜",
+ result:"🏆 Félicitations !",
+ restart:"🔄 Rejouer",
+ final:(n)=>"Tu as gagné "+n+" étoiles sur 10 ! Continue !",
+ speak:"Combien font ",
+ plus:"plus",
+ minus:"moins",
+ end:"Fin du jeu !"
+},
+es: {
+ header:"¡Aprender también puede ser una aventura!",
+ title:"🧮 Matemáticas divertidas",
+ intro:"¡Vamos a ver cuántas respuestas puedes acertar!",
+ points:" estrellas", question:"PREGUNTA",
+ of:"DE", listen:"Escuchar pregunta",
+ on:"🔊 Sonido", off:"🔇 Sonido apagado",
+ correct:"🎉 ¡Muy bien! ¡Correcto!",
+ wrong:"😊 ¡No pasa nada! ¡Vamos con la siguiente!",
+ next:"Siguiente pregunta ➜",
+ result:"🏆 ¡Felicidades!",
+ restart:"🔄 Jugar otra vez",
+ final:(n)=>"¡Conseguiste "+n+" de 10 estrellas! ¡Sigue aprendiendo!",
+ speak:"¿Cuánto es ",
+ plus:"más",
+ minus:"menos",
+ end:"¡Fin del juego!"
+}
+};
+
+let lang = "pt";
+let sound = true;
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = false;
+
+function makeQuestions() {
+  let list = [];
+
+  for (let i=0; i<10; i++) {
+    let a = Math.floor(Math.random()*10)+1;
+    let b = Math.floor(Math.random()*10)+1;
+    let operation = Math.random() < 0.5 ? "+" : "-";
+
+    if (operation === "-" && b > a) {
+      [a,b] = [b,a];
+    }
+
+    let answer = operation === "+" ? a+b : a-b;
+    let choices = new Set([answer]);
+
+    while (choices.size < 4) {
+      let option = answer + Math.floor(Math.random()*9)-4;
+      if (option >= 0 && option !== answer) choices.add(option);
+    }
+
+    let options = [...choices].sort(()=>Math.random()-.5);
+
+    list.push({a,b,operation,answer,options});
+  }
+
+  return list;
+}
+
+function playTone(frequency, duration=.15) {
+  if (!sound) return;
+
+  try {
+    const audio = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audio.createOscillator();
+    const gain = audio.createGain();
+
+    oscillator.frequency.value = frequency;
+    oscillator.connect(gain);
+    gain.connect(audio.destination);
+
+    gain.gain.setValueAtTime(.12,audio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);
+
+    oscillator.start();
+    oscillator.stop(audio.currentTime+duration);
+    oscillator.onended = () => audio.close();
+  } catch(e) {}
+}
+
+function toggleSound() {
+  sound = !sound;
+  document.getElementById("soundBtn").textContent =
+    sound ? translations[lang].on : translations[lang].off;
+}
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) {
+    document.getElementById("feedback").textContent =
+      "A voz não está disponível neste navegador.";
+    return;
+  }
+
+  speechSynthesis.cancel();
+  const voice = new SpeechSynthesisUtterance(text);
+  voice.lang = {pt:"pt-PT",en:"en-US",fr:"fr-FR",es:"es-ES"}[lang];
+  voice.rate = 0.85;
+  speechSynthesis.speak(voice);
+}
+
+function speakQuestion() {
+  let q = questions[current];
+  let t = translations[lang];
+  let operation = q.operation === "+" ? t.plus : t.minus;
+  speak(t.speak + q.a + " " + operation + " " + q.b + "?");
+}
+
+function changeLanguage() {
+  lang = document.getElementById("language").value;
+  let t = translations[lang];
+
+  document.documentElement.lang = lang;
+  document.getElementById("headerText").textContent = t.header;
+  document.getElementById("title").textContent = t.title;
+  document.getElementById("intro").textContent = t.intro;
+  document.getElementById("pointsLabel").textContent = t.points;
+  document.getElementById("listenText").textContent = t.listen;
+  document.getElementById("soundBtn").textContent = sound ? t.on : t.off;
+  document.getElementById("nextBtn").textContent = t.next;
+  document.getElementById("resultTitle").textContent = t.result;
+  document.getElementById("restartBtn").textContent = t.restart;
+
+  if (questions.length && current < 10) showQuestion();
+}
+
+function checkAnswer(index) {
+  if (answered) return;
+  answered = true;
+
+  let q = questions[current];
+  let buttons = document.querySelectorAll(".answer");
+  let t = translations[lang];
+
+  buttons.forEach(b => b.disabled = true);
+
+  if (q.options[index] === q.answer) {
+    score++;
+    playTone(660,.15);
+    setTimeout(()=>playTone(880,.2),130);
+    document.getElementById("feedback").textContent = t.correct;
+  } else {
+    playTone(220,.2);
+    document.getElementById("feedback").textContent = t.wrong;
+  }
+
+  document.getElementById("points").textContent = score;
+  document.getElementById("stars").textContent =
+    "★".repeat(score) + "☆".repeat(10-score);
+
+  document.getElementById("progress").style.width =
+    ((current+1)*10)+"%";
+
+  document.getElementById("nextBtn").classList.remove("hidden");
+}
+
+function showQuestion() {
+  answered = false;
+  let q = questions[current];
+
+  document.getElementById("math").textContent =
+    q.a + " " + q.operation + " " + q.b + " = ?";
+
+  document.getElementById("questionLabel").textContent =
+    translations[lang].question + " " + (current+1) + " " +
+    translations[lang].of + " 10";
+
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("nextBtn").classList.add("hidden");
+
+  let buttons = document.querySelectorAll(".answer");
+
+  buttons.forEach((button,index)=>{
+    button.disabled = false;
+    button.textContent = q.options[index];
+  });
+}
+
+function nextQuestion() {
+  current++;
+
+  if (current >= 10) {
+    finishGame();
+    return;
+  }
+
+  showQuestion();
+}
+
+function finishGame() {
+  document.getElementById("answers").classList.add("hidden");
+  document.querySelector(".question").classList.add("hidden");
+  document.getElementById("nextBtn").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("resultText").textContent =
+    translations[lang].final(score);
+
+  if (score >= 7) {
+    playTone(660,.2);
+    setTimeout(()=>playTone(880,.2),200);
+    setTimeout(()=>playTone(1040,.3),400);
+  }
+}
+
+function startGame() {
+  questions = makeQuestions();
+  current = 0;
+  score = 0;
+
+  document.getElementById("points").textContent = "0";
+  document.getElementById("stars").textContent = "☆☆☆☆☆☆☆☆☆☆";
+  document.getElementById("progress").style.width = "0%";
+
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("answers").classList.remove("hidden");
+  document.querySelector(".question").classList.remove("hidden");
+
+  showQuestion();
+}
+
+startGame();
+</script>
+</body>
+      </html>
+      
