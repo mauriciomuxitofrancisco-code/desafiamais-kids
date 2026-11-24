@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#7655e8">
+<title>Quiz de Cultura Geral | DESAFIA+ KIDS</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Trebuchet MS,Arial,sans-serif;background:linear-gradient(135deg,#f2edff,#e6f7ff);color:#26304a;min-height:100vh}
+.wrap{max-width:760px;margin:auto;padding:18px}
+header{text-align:center;padding:14px 8px}
+.logo{font-weight:900;color:#7655e8;font-size:14px;letter-spacing:2px}
+h1{font-size:clamp(27px,7vw,42px);margin:8px 0;color:#33245f}
+.sub{color:#65708a;margin:0}
+.panel{background:#fff;border-radius:25px;padding:22px;box-shadow:0 12px 35px #51418a18;margin:16px 0}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+select,button{font:inherit}
+select{padding:10px 13px;border:1px solid #ded8f4;border-radius:12px;background:white;color:#33245f}
+button{border:0;border-radius:15px;padding:14px 18px;font-weight:800;cursor:pointer}
+.primary{background:#7655e8;color:#fff;width:100%;font-size:17px;box-shadow:0 5px 0 #5739bd}
+.secondary{background:#eee9ff;color:#563bb4}
+.option{width:100%;text-align:left;background:#f5f3ff;color:#35285e;border:2px solid transparent;margin:7px 0}
+.option:disabled{cursor:default;opacity:1}
+.option.correct{background:#e2f8eb;border-color:#32b66b;color:#176b3b}
+.option.wrong{background:#fff0ed;border-color:#ef806d;color:#963d32}
+.stats{display:flex;justify-content:space-between;gap:8px;color:#5d6380;font-weight:800;margin:12px 0}
+.bar{height:10px;background:#eeeaf8;border-radius:20px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#7c5ce9,#42c6cf);transition:width .25s}
+.question{font-size:22px;line-height:1.35;font-weight:900;text-align:center;margin:18px 0}
+.emoji{text-align:center;font-size:58px;margin:10px}
+.center{text-align:center}
+.hidden{display:none}
+.note{font-size:12px;color:#788098;line-height:1.5}
+.mascot-wrap{display:flex;align-items:center;justify-content:center;gap:12px;margin:12px auto 8px;min-height:94px}
+.mascot{font-size:66px;display:inline-block;transform-origin:50% 80%;animation:mascotFloat 2.2s ease-in-out infinite;filter:drop-shadow(0 7px 5px #33245f20)}
+.mascot-bubble{background:#fff5c9;color:#59451a;border:2px solid #ffe28a;border-radius:18px;padding:10px 14px;font-weight:800;max-width:210px;box-shadow:0 5px 14px #51418a12}
+.mascot.cheer{animation:mascotJump .55s ease-in-out 2}
+.mascot.think{animation:mascotWiggle .45s ease-in-out 2}
+.mascot.party{animation:mascotSpin .8s ease-in-out 2}
+@keyframes mascotFloat{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-9px) rotate(3deg)}}
+@keyframes mascotJump{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-18px) scale(1.12)}}
+@keyframes mascotWiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+@keyframes mascotSpin{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(18deg) scale(1.18)}}
+@media(prefers-reduced-motion:reduce){.mascot,.mascot.cheer,.mascot.think,.mascot.party{animation:none!important}}
+#feedback{font-weight:800;text-align:center;min-height:26px;margin:10px}
+footer{text-align:center;color:#858ba0;font-size:12px;padding:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="logo">DESAFIA+ KIDS</div>
+<h1>🌍 Quiz de Cultura Geral</h1>
+<p class="sub" id="subtitle">Aprende, pensa e conquista estrelas!</p>
+</header>
+
+<section class="panel" id="home">
+<div class="row">
+<strong id="languageLabel">Idioma</strong>
+<select id="language" onchange="changeLanguage()">
+<option value="pt">Português</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option>
+</select>
+</div>
+<div class="mascot-wrap" aria-label="Mascote animado">
+<span class="mascot" id="homeMascot">🦉</span>
+<span class="mascot-bubble" id="homeBubble">Olá! Vamos descobrir coisas incríveis?</span>
+</div>
+<div class="emoji">🧠🌟🌎</div>
+<h2 class="center" id="welcome">Estás pronto para o desafio?</h2>
+<p class="center" id="intro">10 perguntas, 4 opções e muitas descobertas!</p>
+<button class="primary" id="startBtn" onclick="startGame()">COMEÇAR A JOGAR</button>
+<div class="row" style="margin-top:14px">
+<button class="secondary" id="musicBtn" onclick="toggleMusic()">🔊 Música: ligada</button>
+<button class="secondary" id="voiceBtn" onclick="toggleVoice()">🗣️ Voz: ligada</button>
+</div>
+<p class="note" id="bankStatus" aria-live="polite">Banco inicial: 20 perguntas. Cada pergunta só será usada uma vez neste navegador.</p>
+<p class="note" id="privacy">O histórico desta versão fica guardado apenas neste navegador. A sincronização entre dispositivos exige uma base de dados.</p>
+</section>
+
+<section class="panel hidden" id="game">
+<div class="stats"><span id="progressText">Pergunta 1/10</span><span id="scoreText">⭐ 0</span></div>
+<div class="bar"><div class="fill" id="progress"></div></div>
+<div class="mascot-wrap" aria-live="polite">
+<span class="mascot" id="mascot">🦉</span>
+<span class="mascot-bubble" id="mascotBubble">Estou pronto! Vamos lá!</span>
+</div>
+<div class="emoji" id="emoji">🌍</div>
+<div class="question" id="question"></div>
+<div id="answers"></div>
+<div id="feedback"></div>
+<button class="primary hidden" id="nextBtn" onclick="nextQuestion()">PRÓXIMA</button>
+</section>
+
+<section class="panel hidden center" id="result">
+<div class="mascot-wrap">
+<span class="mascot party" id="resultMascot">🦉</span>
+<span class="mascot-bubble" id="resultBubble">Conseguiste! Parabéns!</span>
+</div>
+<div class="emoji">🏆🎉</div>
+<h2 id="resultTitle">Desafio concluído!</h2>
+<p id="resultScore"></p>
+<p id="resultMessage"></p>
+<button class="primary" onclick="startGame()" id="againBtn">JOGAR NOVAMENTE</button>
+<button class="secondary" style="margin-top:10px;width:100%" onclick="goHome()" id="homeBtn">VOLTAR AO INÍCIO</button>
+</section>
+<footer>DESAFIA+ KIDS • Aprende a brincar!</footer>
+</div>
+<script>
+const translations={
+pt:{bankReady:"Banco inicial: 20 perguntas. Cada pergunta só será usada uma vez neste navegador.",bankLow:"Ainda não há 10 perguntas novas disponíveis. Estamos a preparar mais desafios!",subtitle:"Aprende, pensa e conquista estrelas!",language:"Idioma",welcome:"Estás pronto para o desafio?",intro:"10 perguntas, 4 opções e muitas descobertas!",start:"COMEÇAR A JOGAR",musicOn:"🔊 Música: ligada",musicOff:"🔇 Música: desligada",voiceOn:"🗣️ Voz: ligada",voiceOff:"🗣️ Voz: desligada",privacy:"O histórico desta versão fica guardado apenas neste navegador. A sincronização entre dispositivos exige uma base de dados.",progress:"Pergunta",next:"PRÓXIMA",correct:"Muito bem! Resposta certa! ⭐",wrong:"Quase! Vamos aprender com a próxima.",done:"Desafio concluído!",score:"Acertaste",message:"Continua a aprender e a descobrir!",again:"JOGAR NOVAMENTE",home:"VOLTAR AO INÍCIO",question:"Pergunta",points:"pontos",mascotReady:"Estou pronto! Vamos lá!",mascotGood:"Muito bem! És incrível!",mascotTry:"Não faz mal! Continua a tentar!",mascotWin:"Conseguiste! Parabéns!"},
+en:{bankReady:"Starter bank: 20 questions. Each question is used only once in this browser.",bankLow:"There are not 10 new questions available yet. More challenges are being prepared!",subtitle:"Learn, think and earn stars!",language:"Language",welcome:"Are you ready for the challenge?",intro:"10 questions, 4 choices and lots to discover!",start:"START PLAYING",musicOn:"🔊 Music: on",musicOff:"🔇 Music: off",voiceOn:"🗣️ Voice: on",voiceOff:"🗣️ Voice: off",privacy:"This version saves history only in this browser. A database is required to sync across devices.",progress:"Question",next:"NEXT",correct:"Well done! Correct answer! ⭐",wrong:"Almost! Let's learn with the next one.",done:"Challenge completed!",score:"You got",message:"Keep learning and discovering!",again:"PLAY AGAIN",home:"BACK TO HOME",question:"Question",points:"points",mascotReady:"I am ready! Let’s go!",mascotGood:"Well done! You are amazing!",mascotTry:"That’s okay! Keep trying!",mascotWin:"You did it! Congratulations!"},
+fr:{bankReady:"Banque initiale : 20 questions. Chaque question ne sera utilisée qu’une fois dans ce navigateur.",bankLow:"Il n’y a pas encore 10 nouvelles questions disponibles. De nouveaux défis arrivent !",subtitle:"Apprends, réfléchis et gagne des étoiles !",language:"Langue",welcome:"Prêt pour le défi ?",intro:"10 questions, 4 choix et plein de découvertes !",start:"COMMENCER",musicOn:"🔊 Musique : activée",musicOff:"🔇 Musique : désactivée",voiceOn:"🗣️ Voix : activée",voiceOff:"🗣️ Voix : désactivée",privacy:"Cette version garde l’historique dans ce navigateur uniquement. Une base de données est nécessaire pour synchroniser entre appareils.",progress:"Question",next:"SUIVANTE",correct:"Bravo ! Bonne réponse ! ⭐",wrong:"Presque ! Apprenons avec la suivante.",done:"Défi terminé !",score:"Tu as trouvé",message:"Continue à apprendre et à découvrir !",again:"REJOUER",home:"RETOUR",question:"Question",points:"points",mascotReady:"Je suis prêt ! Allons-y !",mascotGood:"Bravo ! Tu es incroyable !",mascotTry:"Ce n’est pas grave ! Continue !",mascotWin:"Tu as réussi ! Félicitations !"},
+es:{bankReady:"Banco inicial: 20 preguntas. Cada pregunta se usa una sola vez en este navegador.",bankLow:"Todavía no hay 10 preguntas nuevas disponibles. ¡Estamos preparando más retos!",subtitle:"¡Aprende, piensa y consigue estrellas!",language:"Idioma",welcome:"¿Estás listo para el desafío?",intro:"¡10 preguntas, 4 opciones y muchos descubrimientos!",start:"EMPEZAR A JUGAR",musicOn:"🔊 Música: activada",musicOff:"🔇 Música: desactivada",voiceOn:"🗣️ Voz: activada",voiceOff:"🗣️ Voz: desactivada",privacy:"Esta versión guarda el historial solo en este navegador. Se necesita una base de datos para sincronizar entre dispositivos.",progress:"Pregunta",next:"SIGUIENTE",correct:"¡Muy bien! ¡Respuesta correcta! ⭐",wrong:"¡Casi! Aprendamos con la siguiente.",done:"¡Desafío terminado!",score:"Has acertado",message:"¡Sigue aprendiendo y descubriendo!",again:"JUGAR OTRA VEZ",home:"VOLVER AL INICIO",question:"Pregunta",points:"puntos",mascotReady:"¡Estoy listo! ¡Vamos!",mascotGood:"¡Muy bien! ¡Eres increíble!",mascotTry:"¡No pasa nada! ¡Sigue intentándolo!",mascotWin:"¡Lo lograste! ¡Felicidades!"}
+};
+const bank=[
+{e:"🌍",q:["Qual é o maior oceano da Terra?","What is Earth's largest ocean?","Quel est le plus grand océan de la Terre ?","¿Cuál es el océano más grande de la Tierra?"],a:["Oceano Pacífico","Oceano Atlântico","Oceano Índico","Oceano Ártico"],correct:0,opts:[["Oceano Pacífico","Oceano Atlântico","Oceano Índico","Oceano Ártico"],["Pacific Ocean","Atlantic Ocean","Indian Ocean","Arctic Ocean"],["Océan Pacifique","Océan Atlantique","Océan Indien","Océan Arctique"],["Océano Pacífico","Océano Atlántico","Océano Índico","Océano Ártico"]]},
+{e:"🪐",q:["Qual é o planeta conhecido como Planeta Vermelho?","Which planet is known as the Red Planet?","Quelle planète est appelée la planète rouge ?","¿Qué planeta es conocido como el planeta rojo?"],opts:[["Marte","Vénus","Júpiter","Saturno"],["Mars","Venus","Jupiter","Saturn"],["Mars","Vénus","Jupiter","Saturne"],["Marte","Venus","Júpiter","Saturno"]],correct:0},
+{e:"🐝",q:["Que animal produz mel?","Which animal produces honey?","Quel animal produit le miel ?","¿Qué animal produce miel?"],opts:[["Abelha","Borboleta","Formiga","Mosca"],["Bee","Butterfly","Ant","Fly"],["Abeille","Papillon","Fourmi","Mouche"],["Abeja","Mariposa","Hormiga","Mosca"]],correct:0},
+{e:"🇦🇴",q:["Qual é a capital de Angola?","What is the capital of Angola?","Quelle est la capitale de l’Angola ?","¿Cuál es la capital de Angola?"],opts:[["Luanda","Benguela","Huambo","Lubango"],["Luanda","Benguela","Huambo","Lubango"],["Luanda","Benguela","Huambo","Lubango"],["Luanda","Benguela","Huambo","Lubango"]],correct:0},
+{e:"🌱",q:["Que parte da planta absorve água do solo?","Which part of a plant absorbs water from the soil?","Quelle partie de la plante absorbe l’eau du sol ?","¿Qué parte de la planta absorbe agua del suelo?"],opts:[["Raiz","Flor","Folha","Fruto"],["Root","Flower","Leaf","Fruit"],["Racine","Fleur","Feuille","Fruit"],["Raíz","Flor","Hoja","Fruto"]],correct:0},
+{e:"🦒",q:["Qual é o animal terrestre mais alto?","What is the tallest land animal?","Quel est l’animal terrestre le plus grand ?","¿Cuál es el animal terrestre más alto?"],opts:[["Girafa","Elefante","Cavalo","Leão"],["Giraffe","Elephant","Horse","Lion"],["Girafe","Éléphant","Cheval","Lion"],["Jirafa","Elefante","Caballo","León"]],correct:0},
+{e:"📚",q:["Quantos dias tem uma semana?","How many days are in a week?","Combien de jours y a-t-il dans une semaine ?","¿Cuántos días tiene una semana?"],opts:[["7","5","6","8"],["7","5","6","8"],["7","5","6","8"],["7","5","6","8"]],correct:0},
+{e:"🌙",q:["O que ilumina a Terra durante a noite, refletindo a luz do Sol?","What lights up Earth at night by reflecting sunlight?","Qu’est-ce qui éclaire la Terre la nuit en réfléchissant la lumière du Soleil ?","¿Qué ilumina la Tierra por la noche al reflejar la luz del Sol?"],opts:[["Lua","Marte","Vénus","Uma estrela próxima"],["Moon","Mars","Venus","A nearby star"],["Lune","Mars","Vénus","Une étoile proche"],["Luna","Marte","Venus","Una estrella cercana"]],correct:0},
+{e:"🐘",q:["Em que continente vivem naturalmente os elefantes africanos?","On which continent do African elephants naturally live?","Sur quel continent vivent naturellement les éléphants d’Afrique ?","¿En qué continente viven naturalmente los elefantes africanos?"],opts:[["África","Europa","Antártida","América do Sul"],["Africa","Europe","Antarctica","South America"],["Afrique","Europe","Antarctique","Amérique du Sud"],["África","Europa","Antártida","América del Sur"]],correct:0},
+{e:"💧",q:["Qual é a fórmula química da água?","What is the chemical formula for water?","Quelle est la formule chimique de l’eau ?","¿Cuál es la fórmula química del agua?"],opts:[["H₂O","CO₂","O₂","NaCl"],["H₂O","CO₂","O₂","NaCl"],["H₂O","CO₂","O₂","NaCl"],["H₂O","CO₂","O₂","NaCl"]],correct:0},
+{e:"🏔️",q:["Qual é a montanha mais alta do mundo acima do nível do mar?","What is the world's highest mountain above sea level?","Quelle est la plus haute montagne du monde au-dessus du niveau de la mer ?","¿Cuál es la montaña más alta del mundo sobre el nivel del mar?"],opts:[["Everest","Kilimanjaro","Aconcágua","Monte Fuji"],["Everest","Kilimanjaro","Aconcagua","Mount Fuji"],["Everest","Kilimandjaro","Aconcagua","Mont Fuji"],["Everest","Kilimanjaro","Aconcagua","Monte Fuji"]],correct:0},
+{e:"🫀",q:["Que órgão bombeia o sangue pelo corpo?","Which organ pumps blood around the body?","Quel organe pompe le sang dans le corps ?","¿Qué órgano bombea la sangre por el cuerpo?"],opts:[["Coração","Pulmão","Estômago","Rim"],["Heart","Lung","Stomach","Kidney"],["Cœur","Poumon","Estomac","Rein"],["Corazón","Pulmón","Estómago","Riñón"]],correct:0},
+{e:"🎨",q:["Que cores se misturam para formar o verde na pintura tradicional?","Which colors mix to make green in traditional painting?","Quelles couleurs mélangées donnent du vert en peinture traditionnelle ?","¿Qué colores se mezclan para formar verde en pintura tradicional?"],opts:[["Azul e amarelo","Vermelho e azul","Preto e branco","Vermelho e amarelo"],["Blue and yellow","Red and blue","Black and white","Red and yellow"],["Bleu et jaune","Rouge et bleu","Noir et blanc","Rouge et jaune"],["Azul y amarillo","Rojo y azul","Negro y blanco","Rojo y amarillo"]],correct:0},
+{e:"🦁",q:["Como é conhecido o leão?","What is the lion commonly known as?","Comment appelle-t-on souvent le lion ?","¿Cómo se conoce comúnmente al león?"],opts:[["Rei dos animais","Rei dos mares","Gigante gentil","Ave de rapina"],["King of the animals","King of the seas","Gentle giant","Bird of prey"],["Roi des animaux","Roi des mers","Gentil géant","Oiseau de proie"],["Rey de los animales","Rey de los mares","Gigante amable","Ave rapaz"]],correct:0},
+{e:"🧭",q:["Em que direção nasce o Sol?","In which direction does the Sun rise?","Dans quelle direction le Soleil se lève-t-il ?","¿En qué dirección sale el Sol?"],opts:[["Este","Oeste","Norte","Sul"],["East","West","North","South"],["Est","Ouest","Nord","Sud"],["Este","Oeste","Norte","Sur"]],correct:0},
+{e:"🧊",q:["A que temperatura a água pura congela, ao nível do mar?","At what temperature does pure water freeze at sea level?","À quelle température l’eau pure gèle-t-elle au niveau de la mer ?","¿A qué temperatura se congela el agua pura al nivel del mar?"],opts:[["0 °C","10 °C","50 °C","100 °C"],["0 °C","10 °C","50 °C","100 °C"],["0 °C","10 °C","50 °C","100 °C"],["0 °C","10 °C","50 °C","100 °C"]],correct:0},
+{e:"🐧",q:["Que ave é conhecida por não voar e viver em regiões frias?","Which bird is known for not flying and living in cold regions?","Quel oiseau ne vole pas et vit dans les régions froides ?","¿Qué ave no vuela y vive en regiones frías?"],opts:[["Pinguim","Águia","Andorinha","Papagaio"],["Penguin","Eagle","Swallow","Parrot"],["Pingouin","Aigle","Hirondelle","Perroquet"],["Pingüino","Águila","Golondrina","Loro"]],correct:0},
+{e:"🧮",q:["Quanto é 9 × 6?","What is 9 × 6?","Combien font 9 × 6 ?","¿Cuánto es 9 × 6?"],opts:[["54","45","56","64"],["54","45","56","64"],["54","45","56","64"],["54","45","56","64"]],correct:0},
+{e:"🌳",q:["Como se chama o processo pelo qual as plantas produzem alimento usando luz?","What is the process plants use to make food with light?","Comment s’appelle le processus par lequel les plantes fabriquent leur nourriture grâce à la lumière ?","¿Cómo se llama el proceso por el que las plantas producen alimento usando luz?"],opts:[["Fotossíntese","Respiração","Digestão","Evaporação"],["Photosynthesis","Respiration","Digestion","Evaporation"],["Photosynthèse","Respiration","Digestion","Évaporation"],["Fotosíntesis","Respiración","Digestión","Evaporación"]],correct:0},
+{e:"🎼",q:["Quantas notas existem na escala musical básica?","How many notes are in the basic musical scale?","Combien de notes compte la gamme musicale de base ?","¿Cuántas notas hay en la escala musical básica?"],opts:[["7","5","8","10"],["7","5","8","10"],["7","5","8","10"],["7","5","8","10"]],correct:0},
+{e:"🌐",q:["Qual destes é um continente?","Which of these is a continent?","Lequel de ces éléments est un continent ?","¿Cuál de estos es un continente?"],opts:[["Ásia","Saara","Amazonas","Mediterrâneo"],["Asia","Sahara","Amazon","Mediterranean"],["Asie","Sahara","Amazonie","Méditerranée"],["Asia","Sáhara","Amazonas","Mediterráneo"]],correct:0}
+];
+let lang=0,questions=[],index=0,score=0,locked=false,musicOn=true,voiceOn=true,audioCtx=null,musicTimer=null;
+const $=id=>document.getElementById(id);
+function changeLanguage(){const code=$("language").value;lang=["pt","en","fr","es"].indexOf(code);const t=translations[code];document.documentElement.lang=code;$("subtitle").textContent=t.subtitle;$("languageLabel").textContent=t.language;$("welcome").textContent=t.welcome;$("intro").textContent=t.intro;$("startBtn").textContent=t.start;$("privacy").textContent=t.privacy;$("bankStatus").textContent=t.bankReady+" ("+(bank.length-Object.keys(historyRead()).length)+" disponíveis)";$("musicBtn").textContent=musicOn?t.musicOn:t.musicOff;$("voiceBtn").textContent=voiceOn?t.voiceOn:t.voiceOff;$("nextBtn").textContent=t.next;$("againBtn").textContent=t.again;$("homeBtn").textContent=t.home;}
+function historyRead(){try{return JSON.parse(localStorage.getItem("desafiamais_quiz_seen_v1")||"{}")}catch(e){return {}}}
+function historyWrite(h){try{localStorage.setItem("desafiamais_quiz_seen_v1",JSON.stringify(h))}catch(e){}}
+function selectQuestions(){let h=historyRead(),available=bank.map((q,i)=>i).filter(i=>!h[i]);if(available.length<10){$("bankStatus").textContent=translations[$("language").value].bankLow+" ("+available.length+" restantes)";return null}available.sort(()=>Math.random()-.5);return available.slice(0,10).map(i=>({id:i,data:bank[i]}))}
+function startGame(){stopVoice();let selected=selectQuestions();if(!selected){$("home").classList.remove("hidden");$("game").classList.add("hidden");$("result").classList.add("hidden");return}questions=selected;index=0;score=0;$("bankStatus").textContent=translations[$("language").value].bankReady+" ("+(bank.length-Object.keys(historyRead()).length)+" disponíveis)";$("home").classList.add("hidden");$("result").classList.add("hidden");$("game").classList.remove("hidden");showQuestion();if(musicOn)startMusic()}
+function showQuestion(){locked=false;let item=questions[index],q=item.data,t=translations[$("language").value];let h=historyRead();h[item.id]=Date.now();historyWrite(h);$("mascot").textContent="🦉";$("mascot").className="mascot";$("mascotBubble").textContent=t.mascotReady;$("progressText").textContent=t.progress+" "+(index+1)+"/10";$("scoreText").textContent="⭐ "+score;$("progress").style.width=((index)/10*100)+"%";$("emoji").textContent=q.e;$("question").textContent=q.q[lang];$("answers").innerHTML="";$("feedback").textContent="";$("nextBtn").classList.add("hidden");let opts=q.opts[lang].map((v,i)=>({v,correct:i===q.correct})).sort(()=>Math.random()-.5);opts.forEach(o=>{let b=document.createElement("button");b.className="option";b.textContent=o.v;b.onclick=()=>answer(b,o.correct);$("answers").appendChild(b)});if(voiceOn)speak(q.q[lang])}
+function answer(btn,correct){if(locked)return;locked=true;let t=translations[$("language").value];document.querySelectorAll(".option").forEach(b=>{b.disabled=true;if((b===btn)&&correct)b.classList.add("correct")});if(correct){score++;btn.classList.add("correct");$("feedback").textContent=t.correct;$("mascot").textContent="🤩";$("mascot").className="mascot cheer";$("mascotBubble").textContent=t.mascotGood;beep(740,.16)}else{$("feedback").textContent=t.wrong;btn.classList.add("wrong");$("mascot").textContent="🤔";$("mascot").className="mascot think";$("mascotBubble").textContent=t.mascotTry;beep(210,.22);let q=questions[index].data;document.querySelectorAll(".option").forEach(b=>{if(b.textContent===q.opts[lang][q.correct])b.classList.add("correct")})}$("scoreText").textContent="⭐ "+score;$("nextBtn").classList.remove("hidden");}
+function nextQuestion(){stopVoice();index++;if(index>=10){finishGame();return}showQuestion()}
+function finishGame(){let t=translations[$("language").value];$("resultMascot").textContent="🦉🎉";$("resultBubble").textContent=t.mascotWin;$("game").classList.add("hidden");$("result").classList.remove("hidden");$("progress").style.width="100%";$("resultTitle").textContent=t.done;$("resultScore").textContent=t.score+" "+score+"/10 "+t.points+" ⭐";$("resultMessage").textContent=t.message;stopMusic()}
+function goHome(){stopVoice();stopMusic();$("result").classList.add("hidden");$("game").classList.add("hidden");$("home").classList.remove("hidden")}
+function toggleVoice(){voiceOn=!voiceOn;changeLanguage();if(!voiceOn)stopVoice();else if(!$("game").classList.contains("hidden"))speak(questions[index].q[lang])}
+function speak(s){if(!voiceOn||!("speechSynthesis"in window))return;stopVoice();let u=new SpeechSynthesisUtterance(s);u.lang=["pt-PT","en-US","fr-FR","es-ES"][lang];u.rate=.9;speechSynthesis.speak(u)}
+function stopVoice(){if("speechSynthesis"in window)speechSynthesis.cancel()}
+function toggleMusic(){musicOn=!musicOn;changeLanguage();if(musicOn)startMusic();else stopMusic()}
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}
+function beep(freq,duration){try{let c=getAudio(),o=c.createOscillator(),g=c.createGain();o.frequency.value=freq;o.type="sine";g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.07,c.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+duration);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+duration)}catch(e){}}
+function startMusic(){if(!musicOn||musicTimer)return;try{let notes=[392,494,587,494,440,523,659,523],i=0;musicTimer=setInterval(()=>{if(musicOn&& !$("game").classList.contains("hidden"))beep(notes[i++%notes.length],.22)},650)}catch(e){}}
+function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
+changeLanguage();
+</script>
+</body>
+</html>
