@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#5b4be7">
+<title>Acesso Premium | DESAFIA+ KIDS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{font-family:Arial,sans-serif;color:#24213d;background:#f4f3ff}*{box-sizing:border-box}body{margin:0;padding:18px;min-height:100vh;display:grid;place-items:center}.wrap{width:100%;max-width:540px}.head,.card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 8px 28px #29205b12;margin-bottom:15px}.head{text-align:center}.logo{font-size:42px}h1{color:#5142c8;font-size:25px;margin:8px 0}h2{font-size:19px;margin:0 0 10px}p{color:#65627a;line-height:1.5}label{display:block;font-weight:700;margin:13px 0 6px}input{width:100%;padding:13px;border:1px solid #d9d7eb;border-radius:10px;font:inherit}button,.linkbtn{display:block;width:100%;padding:13px;border:0;border-radius:11px;background:#5b4be7;color:#fff;font-weight:700;font-size:15px;margin-top:12px;text-align:center;text-decoration:none;cursor:pointer}button.secondary,.linkbtn.secondary{background:#e9e7ff;color:#4034a8}button:disabled{opacity:.55}.status{background:#f0efff;border-radius:10px;padding:12px;margin-top:14px;white-space:pre-wrap;overflow-wrap:anywhere;color:#39345f}.small{font-size:12px}.hidden{display:none}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}.tabs button{margin:0}.tabs button.active{background:#3930a7}.notice{border-left:4px solid #f0c34e;padding-left:12px}.back{color:#5142c8;text-decoration:none;font-weight:700}@media(max-width:480px){body{padding:10px}.head,.card{padding:17px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="head"><div class="logo">🎮⭐</div><h1>DESAFIA+ KIDS</h1><p>Conta do encarregado de educação e ativação do acesso Premium aos 13 jogos.</p></header>
+<section class="card">
+<div class="notice"><p class="small"><strong>Importante:</strong> um código só pode ser ativado uma vez e fica associado a uma única conta. O encarregado de educação deve gerir o e-mail e a palavra-passe.</p></div>
+<div class="tabs"><button id="tabCreate" class="active" type="button">Criar conta</button><button id="tabLogin" class="secondary" type="button">Já tenho conta</button></div>
+<div id="createPane">
+<h2>Criar conta do encarregado</h2>
+<label for="newEmail">E-mail do encarregado de educação</label><input id="newEmail" type="email" autocomplete="email" placeholder="E-mail do responsável">
+<label for="newPassword">Criar palavra-passe</label><input id="newPassword" type="password" autocomplete="new-password" minlength="10" placeholder="Pelo menos 10 caracteres">
+<label for="newCode">Código Premium</label><input id="newCode" type="text" autocomplete="off" placeholder="Ex.: DK-XXXXXXXX" autocapitalize="characters">
+<button id="createAccount">Criar conta e ativar código</button>
+</div>
+<div id="loginPane" class="hidden">
+<h2>Entrar na conta</h2>
+<label for="email">E-mail do encarregado de educação</label><input id="email" type="email" autocomplete="username" placeholder="E-mail do responsável">
+<label for="password">Palavra-passe</label><input id="password" type="password" autocomplete="current-password" placeholder="Palavra-passe">
+<button id="login">Entrar</button>
+<label for="loginCode">Código Premium (se ainda não foi ativado)</label><input id="loginCode" type="text" autocomplete="off" placeholder="Ex.: DK-XXXXXXXX" autocapitalize="characters">
+<button id="redeem" class="secondary">Ativar código nesta conta</button>
+</div>
+<div id="status" class="status" aria-live="polite">Escolha criar uma conta ou entrar numa conta existente.</div>
+<div id="signedIn" class="hidden"><p id="accountInfo"></p><button id="checkAccess" class="secondary">Verificar acesso Premium</button><button id="logout" class="secondary">Terminar sessão</button></div>
+</section>
+<p class="small" style="text-align:center"><a class="back" href="./index.html">← Voltar aos jogos</a></p>
+</main>
+<script>
+const SUPABASE_URL="https://ounjndogaogngxchuijj.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+const $=id=>document.getElementById(id);
+const say=t=>{$("status").textContent=t;};
+function showTab(which){const create=which==="create";$ ("createPane").classList.toggle("hidden",!create);$("loginPane").classList.toggle("hidden",create);$("tabCreate").classList.toggle("active",create);$("tabLogin").classList.toggle("active",!create);$("tabCreate").classList.toggle("secondary",!create);$("tabLogin").classList.toggle("secondary",create);}
+function showUser(user){$("signedIn").classList.remove("hidden");$("accountInfo").textContent="Sessão iniciada: "+(user.email||"conta autenticada")+". Esta conta é a titular do acesso.";}
+async function currentUser(){const {data:{user}}=await db.auth.getUser();if(user)showUser(user);else $("signedIn").classList.add("hidden");return user;}
+async function redeem(code){const clean=(code||"").trim().toUpperCase();if(!clean){say("Introduza o código Premium.");return;}say("A validar o código…");const {data,error}=await db.rpc("redeem_premium_code",{p_code:clean});if(error){say("Não foi possível ativar: "+error.message);return;}say(typeof data==="string"?data:JSON.stringify(data));await checkAccess();}
+async function checkAccess(){say("A verificar o acesso…");const {data,error}=await db.rpc("check_premium_access");if(error){say("Não foi possível verificar: "+error.message);return;}if(data===true){say("Acesso Premium ativo! Esta conta tem acesso aos 13 jogos Premium.");}else{say("Esta conta ainda não tem acesso Premium ativo. Ative um código válido ou contacte o administrador.");}}
+$("tabCreate").onclick=()=>showTab("create");$("tabLogin").onclick=()=>showTab("login");
+$("createAccount").onclick=async()=>{const email=$("newEmail").value.trim();const password=$("newPassword").value;const code=$("newCode").value;if(!email||!password||password.length<10){say("Preencha o e-mail do encarregado e uma palavra-passe com pelo menos 10 caracteres.");return;}$("createAccount").disabled=true;say("A criar a conta…");const {data,error}=await db.auth.signUp({email,password});$("createAccount").disabled=false;if(error){say("Não foi possível criar a conta: "+error.message);return;}if(data.session){showUser(data.user);await redeem(code);}else{say("Conta criada. Verifique o e-mail do encarregado e confirme o endereço. Depois volte aqui, entre na conta e ative o código. O código ainda não foi utilizado.");showTab("login");$("email").value=email;$("loginCode").value=code;}};
+$("login").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;if(!email||!password){say("Introduza o e-mail e a palavra-passe.");return;}say("A iniciar sessão…");const {data,error}=await db.auth.signInWithPassword({email,password});if(error){say("Não foi possível entrar: "+error.message);return;}$("password").value="";showUser(data.user);say("Sessão iniciada. Pode ativar o código ou verificar o acesso.");};
+$("redeem").onclick=async()=>{const user=await currentUser();if(!user){say("Entre primeiro na conta do encarregado de educação.");return;}await redeem($("loginCode").value);};
+$("checkAccess").onclick=checkAccess;
+$("logout").onclick=async()=>{await db.auth.signOut();$("signedIn").classList.add("hidden");say("Sessão terminada.");};
+db.auth.onAuthStateChange((_event,session)=>{if(session)showUser(session.user);else $("signedIn").classList.add("hidden");});
+currentUser();
+</script>
+</body>
+</html>
