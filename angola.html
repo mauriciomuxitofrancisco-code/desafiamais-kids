@@ -1,1 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explorador de Angola | DESAFIA+ KIDS</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f6ff;color:#17243b;font-family:system-ui,Arial,sans-serif}
+header{background:linear-gradient(120deg,#092e70,#1769d2);color:white;padding:20px 14px 25px;text-align:center;border-radius:0 0 28px 28px}
+.brand{font-size:13px;letter-spacing:2px;color:#ffda75;font-weight:900}
+h1{font-size:clamp(25px,6vw,36px);margin:8px 0}
+header p{margin:5px}
+.wrap{max-width:760px;margin:auto;padding:13px}
+.panel{background:white;border-radius:20px;padding:17px;margin:13px 0;box-shadow:0 7px 25px #163b7010}
+.mascots{display:flex;justify-content:center;gap:22px;font-size:43px;margin:8px}
+.mascot{display:inline-block;animation:bob 2s infinite ease-in-out}
+.mascot:nth-child(2){animation-delay:.3s}.mascot:nth-child(3){animation-delay:.6s}
+@keyframes bob{50%{transform:translateY(-9px) rotate(4deg)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:#edf4ff;border-radius:14px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px;color:#155eef}
+.stat small{font-size:12px;color:#53647e}
+button,select{font:inherit}
+button{border:0;border-radius:13px;padding:13px 15px;font-weight:800;cursor:pointer}
+.primary{background:#155eef;color:white;width:100%;margin-top:10px}
+.secondary{background:#eaf1ff;color:#174caa}
+button:disabled{opacity:.5}
+select{padding:10px;border:1px solid #d6dfef;border-radius:11px;background:white}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.progress{height:10px;background:#e8eef8;border-radius:20px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:linear-gradient(90deg,#1769d2,#29c28a);width:0;transition:width .3s}
+.question{font-size:21px;font-weight:850;line-height:1.4;margin:18px 0}
+.options{display:grid;gap:10px}
+.option{width:100%;text-align:left;background:#f0f5ff;color:#20324e;border:2px solid transparent}
+.option.correct{background:#e0f8eb;border-color:#1ba96b;color:#08653d}
+.option.wrong{background:#fff0ed;border-color:#e36b5c;color:#9c3024}
+.feedback{padding:13px;border-radius:13px;margin-top:12px;font-weight:700;display:none}
+.feedback.good{display:block;background:#e4f8ed;color:#12663d}
+.feedback.bad{display:block;background:#fff0ed;color:#a33b30}
+.hidden{display:none!important}
+.tag{display:inline-block;background:#fff2cf;color:#805400;border-radius:30px;padding:5px 10px;font-size:12px;font-weight:900}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.actions button{width:100%}
+.note{font-size:13px;color:#63728a;line-height:1.5}
+.soundbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.soundbar button{flex:1;min-width:125px}
+#whatsapp{position:fixed;right:12px;bottom:13px;background:#16a765;color:white;text-decoration:none;padding:13px 16px;border-radius:40px;font-weight:900;box-shadow:0 5px 18px #0002;z-index:20}
+#toast{position:fixed;left:50%;bottom:75px;transform:translateX(-50%);background:#172943;color:white;padding:11px 16px;border-radius:12px;display:none;z-index:30;text-align:center;max-width:90%}
+footer{text-align:center;padding:22px;color:#71809a;font-size:12px}
+@media(max-width:420px){.panel{padding:14px}.question{font-size:19px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">DESAFIA+ KIDS</div>
+ <h1>🧭 Explorador de Angola</h1>
+ <p id="subtitle">Descobre a história, a natureza e as províncias do nosso país!</p>
+</header>
 
+<main class="wrap">
+ <section class="panel">
+  <div class="mascots"><span class="mascot">🦁</span><span class="mascot">🧭</span><span class="mascot">🐘</span></div>
+  <div class="topline">
+   <b id="languageLabel">Idioma</b>
+   <select id="language">
+    <option value="pt">Português</option>
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+    <option value="es">Español</option>
+   </select>
+  </div>
+  <p id="welcome">Prepara-te para uma aventura pelo território angolano!</p>
+  <div class="stats">
+   <div class="stat"><b id="score">0</b><small id="scoreLabel">Pontos</small></div>
+   <div class="stat"><b id="level">1</b><small id="levelLabel">Nível</small></div>
+   <div class="stat"><b id="done">0</b><small id="doneLabel">Respondidas</small></div>
+  </div>
+  <div class="soundbar">
+   <button class="secondary" id="soundBtn">🔇 Ligar música</button>
+   <button class="secondary" id="voiceBtn">🗣️ Testar voz</button>
+  </div>
+  <p class="note" id="soundNote">Toca em Ligar música para ativar o som. A voz anuncia as perguntas automaticamente.</p>
+ </section>
+
+ <section class="panel" id="home">
+  <h2 id="homeTitle">🌍 A tua aventura começa aqui!</h2>
+  <p id="homeText">Responde aos desafios, ganha pontos e torna-te um explorador de Angola.</p>
+  <button class="primary" id="startBtn">COMEÇAR A JOGAR</button>
+  <div class="actions">
+   <button class="secondary" id="continueBtn">Continuar aventura</button>
+   <button class="secondary" id="resetBtn">Recomeçar pontos</button>
+  </div>
+  <p class="note" id="bankInfo"></p>
+ </section>
+
+ <section class="panel hidden" id="game">
+  <div class="topline">
+   <span class="tag" id="category">DESCOBRE ANGOLA</span>
+   <b id="counter">Desafio 1</b>
+  </div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <div class="question" id="question"></div>
+  <div class="options" id="options"></div>
+  <div id="feedback" class="feedback"></div>
+  <button class="primary hidden" id="nextBtn">PRÓXIMO DESAFIO ➜</button>
+  <button class="secondary primary" id="repeatBtn">🔊 Repetir pergunta</button>
+  <p class="note" id="tip">Cada resposta correcta vale 10 pontos.</p>
+ </section>
+
+ <section class="panel hidden" id="end">
+  <div class="mascots"><span>🏆</span><span>🦁</span><span>⭐</span></div>
+  <h2 id="endTitle">Excelente trabalho!</h2>
+  <p id="endText"></p>
+  <button class="primary" id="againBtn">JOGAR MAIS</button>
+  <button class="secondary primary" id="homeBtn">VOLTAR AO MENU</button>
+ </section>
+</main>
+<footer>DESAFIA+ KIDS · Aprende, brinca e descobre Angola 🇦🇴</footer>
+<a id="whatsapp" target="_blank" rel="noopener">🟢 WhatsApp</a>
+<div id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const WA="https://wa.me/244938403923?text="+encodeURIComponent("Olá! Gostaria de adquirir um código Premium do DESAFIA+ KIDS para desbloquear os 13 jogos educativos. Pode informar-me sobre o preço e as condições?");
+$("whatsapp").href=WA;
+
+const T={
+pt:{subtitle:"Descobre a história, a natureza e as províncias do nosso país!",language:"Idioma",welcome:"Prepara-te para uma aventura pelo território angolano!",points:"Pontos",level:"Nível",answered:"Respondidas",homeTitle:"🌍 A tua aventura começa aqui!",homeText:"Responde aos desafios, ganha pontos e torna-te um explorador de Angola.",start:"COMEÇAR A JOGAR",continue:"Continuar aventura",reset:"Recomeçar pontos",next:"PRÓXIMO DESAFIO ➜",repeat:"🔊 Repetir pergunta",tip:"Cada resposta correcta vale 10 pontos.",endTitle:"Excelente trabalho!",again:"JOGAR MAIS",home:"VOLTAR AO MENU",correct:"Muito bem! Resposta correcta! +10 pontos.",wrong:"Não foi desta vez. A resposta certa é:",category:"DESCOBRE ANGOLA",finished:"Terminaste todas as perguntas deste ciclo! Começa um novo ciclo.",resetMsg:"Pontuação reiniciada.",musicOn:"🔊 Desligar música",musicOff:"🔇 Ligar música",voiceTest:"Olá! Bem-vindo ao Explorador de Angola!",soundNote:"A música e a voz são ativadas depois de tocares num botão.",scoreText:"Pontuação final:",answeredText:"Desafios respondidos:",levelText:"Nível alcançado:",question:"Desafio"},
+en:{subtitle:"Discover the history, nature and provinces of our country!",language:"Language",welcome:"Get ready for an adventure across Angola!",points:"Points",level:"Level",answered:"Answered",homeTitle:"🌍 Your adventure starts here!",homeText:"Answer challenges, earn points and become an Angola explorer.",start:"START PLAYING",continue:"Continue adventure",reset:"Reset points",next:"NEXT CHALLENGE ➜",repeat:"🔊 Repeat question",tip:"Each correct answer is worth 10 points.",endTitle:"Excellent work!",again:"PLAY MORE",home:"BACK TO MENU",correct:"Well done! Correct answer! +10 points.",wrong:"Not this time. The correct answer is:",category:"DISCOVER ANGOLA",finished:"You completed this cycle! A new cycle begins.",resetMsg:"Score reset.",musicOn:"🔊 Turn music off",musicOff:"🔇 Turn music on",voiceTest:"Hello! Welcome to the Angola Explorer!",soundNote:"Music and voice start after you tap a button.",scoreText:"Final score:",answeredText:"Challenges answered:",levelText:"Level reached:",question:"Challenge"},
+fr:{subtitle:"Découvre l'histoire, la nature et les provinces de notre pays !",language:"Langue",welcome:"Prépare-toi pour une aventure à travers l'Angola !",points:"Points",level:"Niveau",answered:"Réponses",homeTitle:"🌍 Ton aventure commence ici !",homeText:"Réponds aux défis et deviens un explorateur de l'Angola.",start:"COMMENCER",continue:"Continuer l'aventure",reset:"Réinitialiser les points",next:"DÉFI SUIVANT ➜",repeat:"🔊 Répéter la question",tip:"Chaque bonne réponse vaut 10 points.",endTitle:"Excellent travail !",again:"JOUER ENCORE",home:"RETOUR AU MENU",correct:"Bravo ! Bonne réponse ! +10 points.",wrong:"Pas cette fois. La bonne réponse est :",category:"DÉCOUVRIR L'ANGOLA",finished:"Tu as terminé ce cycle ! Un nouveau cycle commence.",resetMsg:"Score réinitialisé.",musicOn:"🔊 Couper la musique",musicOff:"🔇 Activer la musique",voiceTest:"Bonjour ! Bienvenue dans l'Explorateur de l'Angola !",soundNote:"La musique et la voix démarrent après avoir touché un bouton.",scoreText:"Score final :",answeredText:"Défis répondus :",levelText:"Niveau atteint :",question:"Défi"},
+es:{subtitle:"¡Descubre la historia, la naturaleza y las provincias de nuestro país!",language:"Idioma",welcome:"¡Prepárate para una aventura por Angola!",points:"Puntos",level:"Nivel",answered:"Respondidas",homeTitle:"🌍 ¡Tu aventura comienza aquí!",homeText:"Responde desafíos y conviértete en explorador de Angola.",start:"EMPEZAR A JUGAR",continue:"Continuar aventura",reset:"Reiniciar puntos",next:"SIGUIENTE DESAFÍO ➜",repeat:"🔊 Repetir pregunta",tip:"Cada respuesta correcta vale 10 puntos.",endTitle:"¡Excelente trabajo!",again:"JUGAR MÁS",home:"VOLVER AL MENÚ",correct:"¡Muy bien! ¡Respuesta correcta! +10 puntos.",wrong:"Esta vez no. La respuesta correcta es:",category:"DESCUBRE ANGOLA",finished:"¡Has terminado este ciclo! Comienza un nuevo ciclo.",resetMsg:"Puntuación reiniciada.",musicOn:"🔊 Apagar música",musicOff:"🔇 Encender música",voiceTest:"¡Hola! ¡Bienvenido al Explorador de Angola!",soundNote:"La música y la voz comienzan después de tocar un botón.",scoreText:"Puntuación final:",answeredText:"Desafíos respondidos:",levelText:"Nivel alcanzado:",question:"Desafío"}
+};
+
+let lang="pt",score=0,answered=0,used=[],current=null,locked=false;
+const STORE="desafiamais_angola_explorer_v3";
+
+const CORE=[
+{c:"História",q:["Em que ano Angola alcançou a independência?","In what year did Angola gain independence?","En quelle année l'Angola a-t-il obtenu son indépendance ?","¿En qué año Angola obtuvo la independencia?"],a:"1975",o:["1961","1975","1992","2002"]},
+{c:"História",q:["Em que dia se celebra a Independência de Angola?","On which date is Angola's Independence celebrated?","À quelle date célèbre-t-on l'indépendance de l'Angola ?","¿En qué fecha se celebra la independencia de Angola?"],a:"11 de Novembro",o:["4 de Fevereiro","11 de Novembro","17 de Setembro","1 de Janeiro"]},
+{c:"Símbolos",q:["Qual é a moeda oficial de Angola?","What is Angola's official currency?","Quelle est la monnaie officielle de l'Angola ?","¿Cuál es la moneda oficial de Angola?"],a:"Kwanza",o:["Euro","Kwanza","Dólar","Rand"]},
+{c:"Geografia",q:["Qual é o oceano que banha a costa de Angola?","Which ocean borders Angola?","Quel océan borde l'Angola ?","¿Qué océano baña la costa de Angola?"],a:"Oceano Atlântico",o:["Índico","Pacífico","Atlântico","Ártico"]},
+{c:"Geografia",q:["Quantas províncias tem Angola na divisão actual?","How many provinces does Angola currently have?","Combien de provinces l'Angola compte-t-il actuellement ?","¿Cuántas provincias tiene Angola actualmente?"],a:"21",o:["18","20","21","24"]},
+{c:"Geografia",q:["Qual é a capital de Angola?","What is the capital of Angola?","Quelle est la capitale de l'Angola ?","¿Cuál es la capital de Angola?"],a:"Luanda",o:["Benguela","Luanda","Huambo","Lubango"]},
+{c:"Geografia",q:["Qual é o país que faz fronteira com Angola a sul?","Which country borders Angola to the south?","Quel pays partage une frontière avec l'Angola au sud ?","¿Qué país limita con Angola al sur?"],a:"Namíbia",o:["Zâmbia","Congo","Namíbia","Gabão"]},
+{c:"Cultura",q:["Qual é uma das línguas nacionais mais faladas em Angola?","Which is one of Angola's widely spoken national languages?","Quelle est l'une des langues nationales les plus parlées en Angola ?","¿Cuál es una de las lenguas nacionales más habladas en Angola?"],a:"Umbundu",o:["Umbundu","Alemão","Japonês","Italiano"]},
+{c:"Natureza",q:["Qual é a famosa palanca que simboliza a fauna angolana?","Which famous antelope is a symbol of Angolan wildlife?","Quelle antilope célèbre symbolise la faune angolaise ?","¿Qué antílope famoso simboliza la fauna angoleña?"],a:"Palanca-negra-gigante",o:["Girafa","Palanca-negra-gigante","Canguru","Urso-polar"]},
+{c:"Natureza",q:["Que grande queda de água se encontra em Malanje?","Which great waterfall is located in Malanje?","Quelle grande chute d'eau se trouve à Malanje ?","¿Qué gran cascada se encuentra en Malanje?"],a:"Quedas de Kalandula",o:["Kalandula","Vitória","Niágara","Nilo"]},
+{c:"Cultura",q:["Como se chama um estilo musical e dança urbana popular em Angola?","What is a popular urban music and dance style from Angola?","Comment s'appelle un style de musique et de danse urbaine populaire en Angola ?","¿Cómo se llama un estilo musical y baile urbano popular de Angola?"],a:"Kuduro",o:["Samba","Kuduro","Flamenco","Tango"]},
+{c:"Cultura",q:["Qual é um prato tradicional feito com farinha de mandioca ou milho?","Which traditional dish is made with cassava or maize flour?","Quel plat traditionnel est préparé avec de la farine de manioc ou de maïs ?","¿Qué plato tradicional se prepara con harina de yuca o maíz?"],a:"Funje",o:["Sushi","Funje","Pizza","Paella"]},
+{c:"Natureza",q:["Qual é o deserto situado no sudoeste de Angola?","Which desert is located in southwestern Angola?","Quel désert se trouve dans le sud-ouest de l'Angola ?","¿Qué desierto está en el suroeste de Angola?"],a:"Deserto do Namibe",o:["Saara","Kalahari","Namibe","Gobi"]},
+{c:"Geografia",q:["Qual é o nome de um dos principais rios de Angola?","What is the name of one of Angola's major rivers?","Quel est le nom de l'un des principaux fleuves d'Angola ?","¿Cómo se llama uno de los principales ríos de Angola?"],a:"Rio Kwanza",o:["Kwanza","Sena","Tamisa","Danúbio"]},
+{c:"História",q:["Que reino histórico tinha a sua capital em Mbanza Kongo?","Which historic kingdom had its capital in Mbanza Kongo?","Quel royaume historique avait sa capitale à Mbanza Kongo ?","¿Qué reino histórico tenía su capital en Mbanza Kongo?"],a:"Reino do Kongo",o:["Egipto","Reino do Kongo","Império Romano","Reino do Mali"]},
+{c:"Geografia",q:["Angola situa-se em que continente?","On which continent is Angola located?","Sur quel continent se trouve l'Angola ?","¿En qué continente está Angola?"],a:"África",o:["Ásia","Europa","África","América"]},
+{c:"Símbolos",q:["Quais são as cores da bandeira de Angola?","What are the colours of Angola's flag?","Quelles sont les couleurs du drapeau angolais ?","¿Cuáles son los colores de la bandera de Angola?"],a:"Vermelho, preto e amarelo",o:["Azul e branco","Verde e amarelo","Vermelho, preto e amarelo","Verde e vermelho"]},
+{c:"Natureza",q:["Qual parque nacional fica no sudoeste de Angola?","Which national park is in southwestern Angola?","Quel parc national se trouve dans le sud-ouest de l'Angola ?","¿Qué parque nacional está en el suroeste de Angola?"],a:"Parque Nacional do Iona",o:["Iona","Kruger","Serengeti","Etosha"]},
+{c:"Cultura",q:["Qual destes instrumentos musicais existe em tradições angolanas?","Which of these musical instruments is found in Angolan traditions?","Lequel de ces instruments existe dans les traditions angolaises ?","¿Cuál de estos instrumentos aparece en las tradiciones angoleñas?"],a:"Marimba",o:["Gaita escocesa","Marimba","Violino eléctrico","Acordeão alpino"]},
+{c:"História",q:["Que data está ligada ao início da luta armada de libertação nacional?","Which date is linked to the beginning of the armed struggle for national liberation?","Quelle date est liée au début de la lutte armée de libération nationale ?","¿Qué fecha está vinculada al inicio de la lucha armada de liberación nacional?"],a:"4 de Fevereiro de 1961",o:["4 de Fevereiro de 1961","11 de Novembro de 1975","1 de Maio de 1990","17 de Setembro de 2002"]},
+{c:"Geografia",q:["Qual destas províncias é um enclave separado do território principal?","Which province is an exclave separated from the main territory?","Quelle province est une enclave séparée du territoire principal ?","¿Qué provincia es un enclave separado del territorio principal?"],a:"Cabinda",o:["Huambo","Cabinda","Bié","Cunene"]},
+{c:"Cultura",q:["Qual é a língua oficial de Angola?","What is the official language of Angola?","Quelle est la langue officielle de l'Angola ?","¿Cuál es el idioma oficial de Angola?"],a:"Português",o:["Francês","Inglês","Português","Espanhol"]},
+{c:"Natureza",q:["Qual destes animais é um grande mamífero que vive em Angola?","Which of these animals is a large mammal living in Angola?","Lequel de ces animaux est un grand mammifère vivant en Angola ?","¿Cuál de estos animales es un gran mamífero que vive en Angola?"],a:"Elefante",o:["Pinguim","Elefante","Urso-polar","Lhama"]},
+{c:"Geografia",q:["Qual é a sede da província de Benguela?","What is the provincial seat of Benguela?","Quel est le chef-lieu de Benguela ?","¿Cuál es la sede provincial de Benguela?"],a:"Benguela",o:["Benguela","Luena","Dundo","Menongue"]},
+{c:"Geografia",q:["Qual é a sede da província da Huíla?","What is the provincial seat of Huíla?","Quel est le chef-lieu de Huíla ?","¿Cuál es la sede provincial de Huíla?"],a:"Lubango",o:["Sumbe","Lubango","Cuito","Saurimo"]},
+{c:"Geografia",q:["Qual é a sede da província do Huambo?","What is the provincial seat of Huambo?","Quel est le chef-lieu de Huambo ?","¿Cuál es la sede provincial de Huambo?"],a:"Huambo",o:["Huambo","Dundo","Mbanza Kongo","Moçâmedes"]},
+{c:"Geografia",q:["Qual é a sede da província do Namibe?","What is the provincial seat of Namibe?","Quel est le chef-lieu du Namibe ?","¿Cuál es la sede provincial de Namibe?"],a:"Moçâmedes",o:["Moçâmedes","Uíge","Cazombo","Catete"]},
+{c:"Geografia",q:["Qual é a sede da província do Bié?","What is the provincial seat of Bié?","Quel est le chef-lieu du Bié ?","¿Cuál es la sede provincial de Bié?"],a:"Cuito",o:["Cuito","Dande","Soyo","Mavinga"]},
+{c:"Geografia",q:["Qual é a sede da província de Malanje?","What is the provincial seat of Malanje?","Quel est le chef-lieu de Malanje ?","¿Cuál es la sede provincial de Malanje?"],a:"Malanje",o:["Malanje","Luanda","Lubango","Ondjiva"]},
+{c:"Geografia",q:["Qual é a sede da província do Uíge?","What is the provincial seat of Uíge?","Quel est le chef-lieu de l'Uíge ?","¿Cuál es la sede provincial de Uíge?"],a:"Uíge",o:["Uíge","Benguela","Saurimo","Menongue"]}
+];
+
+const PROVINCES=[
+["Cabinda","Cabinda"],["Zaire","Mbanza Kongo"],["Uíge","Uíge"],["Bengo","Dande"],["Luanda","Luanda"],["Icolo e Bengo","Catete"],["Cuanza-Norte","Ndalatando"],["Cuanza-Sul","Sumbe"],["Malanje","Malanje"],["Lunda-Norte","Dundo"],["Lunda-Sul","Saurimo"],["Moxico","Luena"],["Moxico Leste","Cazombo"],["Bié","Cuito"],["Huambo","Huambo"],["Benguela","Benguela"],["Namibe","Moçâmedes"],["Huí
