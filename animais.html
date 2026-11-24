@@ -602,3 +602,252 @@ function setLanguage(){
 function updateMusicButton(){
   const w = words[language];
   $("musicButton").textContent = musicEnabled ? w.musicOn : w.musicOff
+;
+
+}
+
+function updateMusicButton(){
+  const w = words[language];
+  $("musicButton").textContent = musicEnabled ? w.musicOn : w.musicOff;
+}
+
+function startGame(){
+  stopSpeech();
+  gameQuestions = makeGameQuestions();
+  currentIndex = 0;
+  score = 0;
+  answered = false;
+
+  $("welcome").classList.add("hidden");
+  $("resultPanel").classList.add("hidden");
+  $("gamePanel").classList.remove("hidden");
+
+  startMusic();
+  showQuestion();
+}
+
+function showQuestion(){
+  if(currentIndex >= gameQuestions.length){
+    finishGame();
+    return;
+  }
+
+  answered = false;
+  currentQuestion = gameQuestions[currentIndex];
+  saveSeen(currentQuestion.id);
+  renderQuestion();
+}
+
+function renderQuestion(){
+  if(!currentQuestion) return;
+
+  const w = words[language];
+  const animal = currentQuestion.animal;
+  const langIndex = ["pt","en","fr","es"].indexOf(language);
+
+  $("score").textContent = score;
+  $("starCount").textContent = "⭐ "+score;
+  $("questionCount").textContent = (currentIndex+1)+"/"+GAME_SIZE;
+  $("progressBar").style.width = (currentIndex/GAME_SIZE*100)+"%";
+  $("animalEmoji").textContent = animal.emoji;
+  $("questionText").textContent =
+    templates[language][currentQuestion.template] + animal.c[langIndex];
+
+  $("feedback").textContent = "";
+  $("nextButton").classList.add("hidden");
+
+  const wrongAnswers = shuffle(
+    animals.filter(a=>a.id!==animal.id)
+  ).slice(0,3);
+
+  const options = shuffle([animal,...wrongAnswers]);
+  const answersBox = $("answers");
+  answersBox.innerHTML = "";
+
+  options.forEach(option=>{
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "answer";
+    button.textContent = option.emoji+"  "+option.n[langIndex];
+    button.addEventListener("click",()=>{
+      checkAnswer(button,option.id);
+    });
+    answersBox.appendChild(button);
+  });
+
+  speak($("questionText").textContent);
+}
+
+function checkAnswer(button,selectedId){
+  if(answered) return;
+  answered = true;
+
+  const animal = currentQuestion.animal;
+  const langIndex = ["pt","en","fr","es"].indexOf(language);
+  const correct = selectedId === animal.id;
+  const buttons = [...$("answers").querySelectorAll("button")];
+
+  buttons.forEach(btn=>{
+    btn.disabled = true;
+    if(btn.textContent.includes(animal.n[langIndex])){
+      btn.classList.add("correct");
+    }
+  });
+
+  if(correct){
+    score++;
+    button.classList.add("correct");
+    $("feedback").textContent = words[language].good;
+    playTone(660,0.15);
+    setTimeout(()=>playTone(880,0.18),130);
+  }else{
+    button.classList.add("wrong");
+    $("feedback").textContent =
+      words[language].bad + animal.n[langIndex];
+    playTone(190,0.25);
+  }
+
+  $("score").textContent = score;
+  $("starCount").textContent = "⭐ "+score;
+  $("progressBar").style.width =
+    ((currentIndex+1)/GAME_SIZE*100)+"%";
+
+  $("nextButton").classList.remove("hidden");
+  stopSpeech();
+}
+
+function nextQuestion(){
+  if(!answered) return;
+  currentIndex++;
+  showQuestion();
+}
+
+function finishGame(){
+  stopSpeech();
+  $("gamePanel").classList.add("hidden");
+  $("resultPanel").classList.remove("hidden");
+
+  const w = words[language];
+  $("finalStars").textContent = "⭐".repeat(Math.max(1,score));
+  $("resultText").textContent =
+    w.result.replace("{score}",score).replace("{stars}",score);
+}
+
+function getAudio(){
+  if(!audioContext){
+    const AudioClass = window.AudioContext || window.webkitAudioContext;
+    if(!AudioClass) return null;
+    audioContext = new AudioClass();
+  }
+
+  if(audioContext.state === "suspended"){
+    audioContext.resume().catch(()=>{});
+  }
+
+  return audioContext;
+}
+
+function playTone(frequency,duration){
+  if(!musicEnabled) return;
+  const ctx = getAudio();
+  if(!ctx) return;
+
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  oscillator.type = "sine";
+  oscillator.frequency.value = frequency;
+  gain.gain.setValueAtTime(0.0001,ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.12,ctx.currentTime+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+duration);
+
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.start();
+  oscillator.stop(ctx.currentTime+duration+0.03);
+}
+
+function startMusic(){
+  if(!musicEnabled || musicTimer) return;
+  getAudio();
+
+  const melody = [392,440,523,440,392,330,392,523];
+
+  musicTimer = setInterval(()=>{
+    if(!musicEnabled || !audioContext) return;
+    playBackgroundNote(melody[noteIndex % melody.length]);
+    noteIndex++;
+  },420);
+}
+
+function playBackgroundNote(frequency){
+  if(!audioContext || !musicEnabled) return;
+
+  const ctx = audioContext;
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  oscillator.type = "sine";
+  oscillator.frequency.value = frequency;
+  gain.gain.setValueAtTime(0.0001,ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.025,ctx.currentTime+0.04);
+  gain.gain.linearRampToValueAtTime(0.0001,ctx.currentTime+0.32);
+
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.start();
+  oscillator.stop(ctx.currentTime+0.34);
+}
+
+function toggleMusic(){
+  musicEnabled = !musicEnabled;
+
+  if(musicEnabled){
+    startMusic();
+  }else{
+    if(musicTimer){
+      clearInterval(musicTimer);
+      musicTimer = null;
+    }
+    stopSpeech();
+  }
+
+  updateMusicButton();
+}
+
+function speak(message){
+  if(!musicEnabled || !("speechSynthesis" in window)) return;
+
+  stopSpeech();
+
+  const utterance = new SpeechSynthesisUtterance(message);
+  utterance.lang = {
+    pt:"pt-PT",
+    en:"en-US",
+    fr:"fr-FR",
+    es:"es-ES"
+  }[language];
+
+  utterance.rate = 0.9;
+  utterance.pitch = 1.05;
+  window.speechSynthesis.speak(utterance);
+}
+
+function stopSpeech(){
+  if("speechSynthesis" in window){
+    window.speechSynthesis.cancel();
+  }
+}
+
+$("startButton").addEventListener("click",startGame);
+$("againButton").addEventListener("click",startGame);
+$("nextButton").addEventListener("click",nextQuestion);
+$("musicButton").addEventListener("click",toggleMusic);
+$("language").addEventListener("change",setLanguage);
+
+makeBank();
+setLanguage();
+
+</script>
+</body>
+</html>
