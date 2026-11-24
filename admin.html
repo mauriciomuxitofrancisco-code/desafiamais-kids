@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#5b4be7">
+<title>Painel Administrativo | DESAFIA+ KIDS</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{font-family:Arial,sans-serif;color:#20213a;background:#f4f3ff}
+*{box-sizing:border-box}
+body{margin:0;padding:18px}
+main{max-width:900px;margin:24px auto}
+header,.panel{background:white;border-radius:18px;padding:22px;box-shadow:0 6px 24px #29205b12;margin-bottom:16px}
+h1{margin:0 0 8px;color:#5142c8;font-size:25px}
+h2{font-size:19px;margin:0 0 15px}
+p{line-height:1.5;color:#5d5c72}
+label{display:block;font-weight:700;margin:12px 0 6px}
+input,select,button{font:inherit;width:100%;padding:13px;border-radius:10px;border:1px solid #d9d7eb}
+button{border:0;background:#5b4be7;color:white;font-weight:700;cursor:pointer;margin-top:12px}
+button.secondary{background:#e9e7ff;color:#4034a8}
+button.danger{background:#b83250}
+button:disabled{opacity:.55;cursor:not-allowed}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hidden{display:none}
+.status{padding:12px;border-radius:10px;background:#f0efff;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #eee}
+.tablewrap{overflow-x:auto}
+.small{font-size:12px;color:#777}
+.code{font-weight:800;font-size:20px;letter-spacing:1px;overflow-wrap:anywhere}
+@media(max-width:600px){.row{grid-template-columns:1fr}body{padding:10px}header,.panel{padding:16px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>🎮 DESAFIA+ KIDS</h1>
+<p>Painel privado do administrador — gestão do acesso Premium aos 13 jogos.</p>
+<p class="small">Não partilhe a palavra-passe. Utilize apenas a sua conta administrativa autorizada.</p>
+</header>
+
+<section class="panel" id="loginPanel">
+<h2>Entrar no painel</h2>
+<label for="email">E-mail do administrador</label>
+<input id="email" type="email" autocomplete="username" placeholder="O e-mail da conta autorizada">
+<label for="password">Palavra-passe</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="Palavra-passe">
+<button id="loginBtn">Entrar</button>
+<div id="loginMsg" class="status" aria-live="polite">Introduza os dados da conta administrativa.</div>
+</section>
+
+<section class="panel hidden" id="appPanel">
+<div class="row" style="align-items:center">
+<div><h2>Gestão Premium</h2><p id="who"></p></div>
+<button class="secondary" id="logoutBtn">Terminar sessão</button>
+</div>
+
+<section>
+<h2>Gerar código Premium</h2>
+<p>Um código desbloqueia os 13 jogos Premium. O código é apresentado apenas nesta criação; copie-o e entregue-o ao encarregado de educação após confirmação do pagamento.</p>
+<label for="days">Validade (dias)</label>
+<input id="days" type="number" min="1" max="3650" value="365">
+<button id="createBtn">Gerar código</button>
+<div id="newCode" class="status hidden" aria-live="polite"></div>
+</section>
+
+<section style="margin-top:28px">
+<div class="row" style="align-items:center">
+<h2>Códigos emitidos</h2>
+<button class="secondary" id="refreshBtn">Atualizar lista</button>
+</div>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Estado</th><th>Criado</th><th>Validade</th><th>Utilizado por</th><th>Controlo</th></tr></thead>
+<tbody id="codesBody"><tr><td colspan="5">Ainda não carregado.</td></tr></tbody>
+</table>
+</div>
+</section>
+<div id="appMsg" class="status" aria-live="polite">Sessão iniciada.</div>
+</section>
+</main>
+<script>
+const SUPABASE_URL = "https://ounjndogaogngxchuijj.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+const $ = id => document.getElementById(id);
+const msg = (id, text) => { $(id).textContent = text; };
+const dateText = value => value ? new Date(value).toLocaleString() : "Sem data";
+function escapeHtml(s){return String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+async function showApp(user){
+  $("loginPanel").classList.add("hidden");
+  $("appPanel").classList.remove("hidden");
+  msg("who", "Sessão: " + user.email);
+  await loadCodes();
+}
+async function checkSession(){
+  const {data:{session}} = await client.auth.getSession();
+  if(session) await showApp(session.user);
+}
+$("loginBtn").onclick = async () => {
+  msg("loginMsg","A iniciar sessão…");
+  const {data,error} = await client.auth.signInWithPassword({
+    email:$("email").value.trim(), password:$("password").value
+  });
+  if(error){msg("loginMsg","Não foi possível entrar: "+error.message);return;}
+  $("password").value="";
+  await showApp(data.user);
+};
+$("logoutBtn").onclick = async () => {
+  await client.auth.signOut();
+  $("appPanel").classList.add("hidden");
+  $("loginPanel").classList.remove("hidden");
+  msg("loginMsg","Sessão terminada.");
+};
+$("createBtn").onclick = async () => {
+  const days = Number($("days").value);
+  if(!Number.isInteger(days)||days<1||days>3650){msg("appMsg","Indique uma validade entre 1 e 3650 dias.");return;}
+  $("createBtn").disabled=true;
+  msg("appMsg","A gerar código…");
+  const {data,error}=await client.rpc("create_premium_code",{p_days:days});
+  $("createBtn").disabled=false;
+  if(error){msg("appMsg","Erro ao gerar código: "+error.message);return;}
+  $("newCode").classList.remove("hidden");
+  $("newCode").innerHTML='<div><strong>Novo código Premium</strong></div><div class="code" id="codeValue"></div><button class="secondary" id="copyCodeBtn">Copiar código</button><p class="small">Guarde-o agora. Por segurança, a base de dados não guarda o código em texto legível.</p>';
+  $("codeValue").textContent=data;
+  $("copyCodeBtn").onclick=async()=>{
+    try{await navigator.clipboard.writeText(data);msg("appMsg","Código copiado.");}
+    catch(e){msg("appMsg","Não foi possível copiar automaticamente. Selecione e copie o código apresentado.");}
+  };
+  msg("appMsg","Código criado. Atualize a lista para confirmar o registo.");
+  await loadCodes();
+};
+async function setStatus(id,status){
+  if(!confirm("Confirma alterar o estado deste código para "+status+"?"))return;
+  const {data,error}=await client.rpc("admin_set_code_status",{p_code_id:id,p_status:status});
+  if(error){msg("appMsg","Erro: "+error.message);return;}
+  msg("appMsg","Estado atualizado.");
+  await loadCodes();
+}
+async function loadCodes(){
+  msg("appMsg","A carregar códigos…");
+  const {data,error}=await client.rpc("admin_list_premium_codes");
+  if(error){msg("appMsg","Não foi possível carregar: "+error.message);return;}
+  const body=$("codesBody"); body.innerHTML="";
+  if(!data || !data.length){body.innerHTML='<tr><td colspan="5">Ainda não existem códigos.</td></tr>';msg("appMsg","Lista atualizada.");return;}
+  for(const c of data){
+    const tr=document.createElement("tr");
+    const action = c.status==="active" ? "suspended" : "active";
+    const actionLabel = c.status==="active" ? "Suspender" : "Reativar";
+    tr.innerHTML=`<td>${escapeHtml(c.status)}</td><td>${escapeHtml(dateText(c.created_at))}</td><td>${escapeHtml(dateText(c.expires_at))}</td><td>${escapeHtml(c.redeemed_by || "Não utilizado")}</td><td><button class="secondary statusBtn">${actionLabel}</button><button class="danger revokeBtn">Revogar</button></td>`;
+    tr.querySelector(".statusBtn").onclick=()=>setStatus(c.id,action);
+    tr.querySelector(".revokeBtn").onclick=()=>setStatus(c.id,"revoked");
+    body.appendChild(tr);
+  }
+  msg("appMsg","Lista atualizada. Códigos: "+data.length+".");
+}
+$("refreshBtn").onclick=loadCodes;
+client.auth.onAuthStateChange((_event,session)=>{
+  if(!session){
+    $("appPanel").classList.add("hidden");
+    $("loginPanel").classList.remove("hidden");
+  }
+});
+checkSession();
+</script>
+</body>
+</html>
