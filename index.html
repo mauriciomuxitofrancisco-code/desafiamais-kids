@@ -199,8 +199,10 @@ function changeLanguage(){
 }
 
 function gameAction(i){
- if(i<2){
-  alert(lang==="pt"?"Este jogo será desenvolvido na próxima etapa!":"This game will be available in a later development step!");
+ if(i===0){
+  window.location.href="matematica.html";
+ }else if(i===1){
+  alert("O jogo Mundo dos animais será desenvolvido na próxima etapa!");
  }else{
   contactAdmin();
  }
@@ -213,5 +215,4 @@ function contactAdmin(){
 renderGames();
 </script>
 </body>
-  </html>
-  
+</html>
