@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Descobre as Bandeiras | DESAFIA+ KIDS</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#eaf2ff,#fff5dc);font-family:system-ui,Arial,sans-serif;color:#17324b;min-height:100vh}
+header{background:#173d67;color:#fff;text-align:center;padding:17px 12px}h1{margin:0;font-size:clamp(23px,5vw,34px)}header p{margin:5px 0 0}
+main{max-width:780px;margin:auto;padding:14px 13px 105px}.mascots{display:flex;justify-content:center;gap:18px;font-size:45px;margin:10px}.mascot{display:inline-block;animation:bob 1.7s ease-in-out infinite}.mascot:nth-child(2){animation-delay:.25s}.mascot:nth-child(3){animation-delay:.5s}@keyframes bob{50%{transform:translateY(-9px) rotate(5deg)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:white;border:1px solid #dbe6f5;border-radius:14px;text-align:center;padding:10px;font-size:13px}.stat b{display:block;font-size:22px;color:#2865d8}
+.progress{height:9px;background:#dfe8f4;border-radius:20px;overflow:hidden;margin:12px 0}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#2865d8,#20ad7b)}
+.panel{background:#fff;border:1px solid #dbe6f5;border-radius:19px;padding:clamp(16px,4vw,25px);text-align:center;box-shadow:0 7px 22px #173d6710}.tag{display:inline-block;padding:6px 12px;border-radius:20px;background:#eaf1ff;color:#2454a0;font-size:13px;font-weight:800}
+#question{font-size:clamp(19px,4vw,25px);font-weight:850;margin:16px 0}.flag{font-size:clamp(65px,17vw,105px);line-height:1.3;margin:12px auto;filter:drop-shadow(0 4px 3px #0002)}.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.answers button{border:2px solid #d8e5f7;background:#edf4ff;color:#173d67;border-radius:13px;padding:14px 9px;font-size:clamp(15px,3.6vw,18px);font-weight:800;min-height:57px;cursor:pointer}.answers button.correct{background:#d9f8e9;border-color:#16845b}.answers button.wrong{background:#ffe2e2;border-color:#d33}.answers button:disabled{opacity:1}
+.feedback{min-height:28px;margin:13px 0;font-weight:850}.actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.action{border:0;border-radius:12px;padding:12px 15px;font-weight:800;font-size:15px;cursor:pointer}.primary{background:#2865d8;color:white}.soft{background:#e9eff8;color:#173d67}.gold{background:#ffc94a;color:#553900}.small{font-size:13px;color:#667b91;margin-top:12px}
+footer{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #dbe6f5;padding:9px;display:flex;justify-content:center;gap:9px;flex-wrap:wrap}footer a{padding:10px 13px;border-radius:12px;text-decoration:none;font-weight:800;font-size:13px}.home{background:#173d67;color:white}.wa{background:#16a34a;color:white}
+@media(max-width:430px){.answers{grid-template-columns:1fr}.stat{padding:8px 3px}}
+</style></head><body>
+<header><h1>🌍 Descobre as Bandeiras 🚩</h1><p>DESAFIA+ KIDS · Viaja pelo mundo a aprender!</p></header>
+<main>
+<div class="mascots"><span class="mascot">🦁</span><span class="mascot">🤖</span><span class="mascot">🐵</span></div>
+<div class="stats"><div class="stat">Desafio<b id="count">0/1000</b></div><div class="stat">Pontos<b id="score">0</b></div><div class="stat">Nível<b id="level">1</b></div></div>
+<div class="progress"><span id="bar"></span></div>
+<section class="panel">
+<span class="tag" id="tag">DESAFIO DE BANDEIRAS</span>
+<div id="question">Estás pronto para dar a volta ao mundo?</div><div class="flag" id="flag">🌎</div>
+<div class="answers" id="answers"></div><div class="feedback" id="feedback" aria-live="polite"></div>
+<div class="actions"><button class="action primary" id="next" onclick="nextChallenge()">Começar desafio</button><button class="action soft" onclick="speak()">🔊 Ouvir pergunta</button><button class="action gold" id="music" onclick="toggleMusic()">🎵 Ligar música</button></div>
+<p class="small">100 países · 10 tipos de perguntas por país · sem repetir desafios concluídos nesta sessão. Progresso guardado neste dispositivo.</p>
+</section></main>
+<footer><a class="home" href="index.html">⌂ Menu principal</a><a class="wa" id="wa" target="_blank" rel="noopener">WhatsApp Premium</a></footer>
+<script>
+const COUNTRIES=[["🇦🇴", "Angola", "África"], ["🇿🇦", "África do Sul", "África"], ["🇩🇿", "Argélia", "África"], ["🇪🇬", "Egito", "África"], ["🇲🇿", "Moçambique", "África"], ["🇳🇦", "Namíbia", "África"], ["🇧🇼", "Botsuana", "África"], ["🇿🇼", "Zimbabué", "África"], ["🇿🇲", "Zâmbia", "África"], ["🇲🇼", "Maláui", "África"], ["🇹🇿", "Tanzânia", "África"], ["🇰🇪", "Quénia", "África"], ["🇺🇬", "Uganda", "África"], ["🇷🇼", "Ruanda", "África"], ["🇧🇮", "Burundi", "África"], ["🇨🇩", "República Democrática do Congo", "África"], ["🇨🇬", "República do Congo", "África"], ["🇬🇦", "Gabão", "África"], ["🇨🇲", "Camarões", "África"], ["🇳🇬", "Nigéria", "África"], ["🇬🇭", "Gana", "África"], ["🇨🇮", "Costa do Marfim", "África"], ["🇸🇳", "Senegal", "África"], ["🇲🇱", "Mali", "África"], ["🇧🇫", "Burquina Faso", "África"], ["🇳🇪", "Níger", "África"], ["🇹🇩", "Chade", "África"], ["🇸🇩", "Sudão", "África"], ["🇸🇸", "Sudão do Sul", "África"], ["🇪🇹", "Etiópia", "África"], ["🇸🇴", "Somália", "África"], ["🇪🇷", "Eritreia", "África"], ["🇩🇯", "Djibuti", "África"], ["🇲🇬", "Madagáscar", "África"], ["🇲🇺", "Maurícia", "África"], ["🇸🇨", "Seicheles", "África"], ["🇲🇦", "Marrocos", "África"], ["🇹🇳", "Tunísia", "África"], ["🇱🇾", "Líbia", "África"], ["🇵🇹", "Portugal", "Europa"], ["🇪🇸", "Espanha", "Europa"], ["🇫🇷", "França", "Europa"], ["🇩🇪", "Alemanha", "Europa"], ["🇮🇹", "Itália", "Europa"], ["🇬🇧", "Reino Unido", "Europa"], ["🇮🇪", "Irlanda", "Europa"], ["🇧🇪", "Bélgica", "Europa"], ["🇳🇱", "Países Baixos", "Europa"], ["🇨🇭", "Suíça", "Europa"], ["🇦🇹", "Áustria", "Europa"], ["🇵🇱", "Polónia", "Europa"], ["🇺🇦", "Ucrânia", "Europa"], ["🇬🇷", "Grécia", "Europa"], ["🇳🇴", "Noruega", "Europa"], ["🇸🇪", "Suécia", "Europa"], ["🇫🇮", "Finlândia", "Europa"], ["🇩🇰", "Dinamarca", "Europa"], ["🇮🇸", "Islândia", "Europa"], ["🇷🇺", "Rússia", "Europa/Ásia"], ["🇺🇸", "Estados Unidos", "América"], ["🇨🇦", "Canadá", "América"], ["🇲🇽", "México", "América"], ["🇧🇷", "Brasil", "América"], ["🇦🇷", "Argentina", "América"], ["🇨🇱", "Chile", "América"], ["🇵🇪", "Peru", "América"], ["🇨🇴", "Colômbia", "América"], ["🇻🇪", "Venezuela", "América"], ["🇺🇾", "Uruguai", "América"], ["🇵🇾", "Paraguai", "América"], ["🇧🇴", "Bolívia", "América"], ["🇪🇨", "Equador", "América"], ["🇨🇺", "Cuba", "América"], ["🇯🇲", "Jamaica", "América"], ["🇨🇷", "Costa Rica", "América"], ["🇵🇦", "Panamá", "América"], ["🇬🇹", "Guatemala", "América"], ["🇩🇴", "República Dominicana", "América"], ["🇭🇹", "Haiti", "América"], ["🇨🇳", "China", "Ásia"], ["🇯🇵", "Japão", "Ásia"], ["🇰🇷", "Coreia do Sul", "Ásia"], ["🇮🇳", "Índia", "Ásia"], ["🇵🇰", "Paquistão", "Ásia"], ["🇧🇩", "Bangladesh", "Ásia"], ["🇳🇵", "Nepal", "Ásia"], ["🇹🇭", "Tailândia", "Ásia"], ["🇻🇳", "Vietname", "Ásia"], ["🇰🇭", "Camboja", "Ásia"], ["🇱🇦", "Laos", "Ásia"], ["🇲🇾", "Malásia", "Ásia"], ["🇸🇬", "Singapura", "Ásia"], ["🇮🇩", "Indonésia", "Ásia"], ["🇵🇭", "Filipinas", "Ásia"], ["🇸🇦", "Arábia Saudita", "Ásia"], ["🇦🇪", "Emirados Árabes Unidos", "Ásia"], ["🇹🇷", "Turquia", "Europa/Ásia"], ["🇮🇱", "Israel", "Ásia"], ["🇶🇦", "Catar", "Ásia"], ["🇦🇺", "Austrália", "Oceânia"]];
+const TOTAL=1000,KEY='desafiamais_bandeiras_progress_v1';
+const $=id=>document.getElementById(id);
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+let used=new Set(saved.used||[]),score=Number(saved.score)||0,current=null,locked=false,ctx=null,musicOn=false,musicTimer=null;
+const vowels=s=>(s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').match(/[aeiou]/gi)||[]).length;
+const letters=s=>s.replace(/[^A-Za-zÀ-ÿ]/g,'').length;
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function pickWrong(correct,field,n=3){let pool=COUNTRIES.map(c=>c[field]).filter(x=>x!==correct);return shuffle([...new Set(pool)]).slice(0,n)}
+function update(){ $('count').textContent=used.size+'/'+TOTAL;$('score').textContent=score;$('level').textContent=Math.floor(score/100)+1;$('bar').style.width=(used.size/TOTAL*100)+'%'}
+function save(){localStorage.setItem(KEY,JSON.stringify({used:[...used],score}))}
+function buildQuestion(id){
+ let ci=Math.floor(id/10),type=id%10,c=COUNTRIES[ci],q='',visual='',correct='',opts=[],field='name';
+ const flagTypes=[0,2,5,8];
+ if(type===0){q='A que país pertence esta bandeira?';visual=c[0];correct=c[1];opts=[correct,...pickWrong(correct,1)]}
+ if(type===1){q='Escolhe a bandeira de '+c[1]+'.';visual='';correct=c[0];opts=[correct,...pickWrong(correct,0)]}
+ if(type===2){q='Em que continente fica o país desta bandeira?';visual=c[0];correct=c[2];opts=[correct,...pickWrong(correct,2)]}
+ if(type===3){q='A que continente pertence '+c[1]+'?';visual='🗺️';correct=c[2];opts=[correct,...pickWrong(correct,2)]}
+ if(type===4){q='Qual é a primeira letra do nome '+c[1]+'?';visual=c[0];correct=[...c[1]][0].toLocaleUpperCase('pt');opts=[correct,...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(x=>x!==correct).sort(()=>Math.random()-.5).slice(0,3)]}
+ if(type===5){q='Qual é a última letra do nome '+c[1]+'?';visual=c[0];correct=[...c[1]][-1].toLocaleUpperCase('pt');opts=[correct,...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(x=>x!==correct).sort(()=>Math.random()-.5).slice(0,3)]}
+ if(type===6){q='Quantas letras tem o nome '+c[1]+'?';visual=c[0];correct=String(letters(c[1]));opts=[correct,...[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].filter(x=>String(x)!==correct).sort(()=>Math.random()-.5).slice(0,3).map(String)]}
+ if(type===7){q='Quantas vogais tem o nome '+c[1]+'?';visual=c[0];correct=String(vowels(c[1]));opts=[correct,...[1,2,3,4,5,6,7,8].filter(x=>String(x)!==correct).sort(()=>Math.random()-.5).slice(0,3).map(String)]}
+ if(type===8){q='Qual destas opções escreve corretamente o nome do país da bandeira?';visual=c[0];correct=c[1];opts=[correct,...pickWrong(correct,1)]}
+ if(type===9){q='Identifica a bandeira correspondente a '+c[1]+'.';visual='🏳️';correct=c[0];opts=[correct,...pickWrong(correct,0)]}
+ return {id,c,q,visual,correct,opts:shuffle(opts)}
+}
+function nextChallenge(){
+ if(used.size>=TOTAL){$('question').textContent='🏆 Concluíste os 1.000 desafios!';$('flag').textContent='🌍';$('answers').innerHTML='';$('feedback').textContent='Pontuação final: '+score+' pontos. Parabéns!';$('next').textContent='Recomeçar';$('next').onclick=()=>{localStorage.removeItem(KEY);location.reload()};return}
+ let id;do{id=Math.floor(Math.random()*TOTAL)}while(used.has(id));
+ used.add(id);current=buildQuestion(id);locked=false;
+ $('tag').textContent='DESAFIO '+(used.size)+' · '+['Bandeira','País','Continente','Geografia','Letras'][id%5];
+ $('question').textContent=current.q;$('flag').textContent=current.visual;$('feedback').textContent='';$('answers').innerHTML='';
+ current.opts.forEach(opt=>{let b=document.createElement('button');b.textContent=opt;b.onclick=()=>answer(b,opt);$('answers').appendChild(b)});
+ $('next').textContent='Próximo desafio';$('next').onclick=nextChallenge;update();save();speak()
+}
+function answer(btn,opt){if(locked)return;locked=true;[...$('answers').children].forEach(b=>{b.disabled=true;if(b.textContent===current.correct)b.classList.add('correct')});if(opt===current.correct){score+=10;$('feedback').textContent='⭐ Muito bem! Resposta certa! +10 pontos';tone(760)}else{$('feedback').textContent='Quase! A resposta correta é '+current.correct+'.';btn.classList.add('wrong');tone(220)}update();save()}
+function speak(){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance($('question').textContent+' '+$('flag').textContent);u.lang='pt-AO';u.rate=1.1;speechSynthesis.speak(u)}
+function tone(freq){try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();let o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.06,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.18);o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.2)}catch(e){}}
+function toggleMusic(){if(musicOn){clearInterval(musicTimer);musicOn=false;$('music').textContent='🎵 Ligar música';return}try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();musicOn=true;$('music').textContent='🔇 Desligar música';let ns=[523,659,784,659,587,698];let i=0;musicTimer=setInterval(()=>tone(ns[i++%ns.length]),380)}catch(e){$('music').textContent='Som indisponível'}}
+$('wa').href='https://wa.me/244938403923?text='+encodeURIComponent('Olá! Gostaria de adquirir um código Premium do DESAFIA+ KIDS para desbloquear os 13 jogos educativos. Pode informar-me sobre o preço e as condições?');
+update();$('count').textContent='0/'+TOTAL;
+</script></body></html>
