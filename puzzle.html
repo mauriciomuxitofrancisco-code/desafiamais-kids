@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Puzzle Divertido | DESAFIA+ KIDS</title>
+<style>
+:root{--blue:#2563eb;--dark:#172554;--yellow:#facc15;--pink:#fb7185;--green:#22c55e}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,#dbeafe,#fce7f3 55%,#fef3c7);color:#172554;min-height:100vh}
+header{padding:14px 18px;background:#ffffffd9;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 3px 14px #1e3a8a18}
+.brand{font-weight:1000;font-size:1.15rem;color:#1d4ed8}.brand span{color:#f97316}
+button,select{border:0;border-radius:14px;padding:11px 14px;font-weight:800;cursor:pointer;font-size:.95rem}
+button:disabled{opacity:.45;cursor:not-allowed}.btn{background:#2563eb;color:white;box-shadow:0 4px 0 #1e40af}.soft{background:white;color:#1e40af;box-shadow:0 3px 0 #bfdbfe}.orange{background:#f97316;color:white;box-shadow:0 4px 0 #c2410c}.green{background:#16a34a;color:white;box-shadow:0 4px 0 #15803d}
+main{max-width:960px;margin:20px auto;padding:0 14px}.hero{text-align:center;padding:16px}.hero h1{font-size:clamp(1.8rem,5vw,2.8rem);margin:4px}.hero p{margin:8px;color:#475569}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.stat{background:#ffffffd9;border-radius:18px;padding:12px;text-align:center;box-shadow:0 4px 14px #1e3a8a12}.stat b{display:block;font-size:1.35rem;color:#1d4ed8}
+.game{background:#ffffffed;border-radius:24px;padding:16px;box-shadow:0 12px 35px #1e3a8a18}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.mascots{font-size:2.1rem;letter-spacing:5px;animation:bob 1.8s infinite ease-in-out}@keyframes bob{50%{transform:translateY(-7px) rotate(2deg)}}
+.prompt{text-align:center;font-weight:900;font-size:1.15rem;margin:8px}
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-width:520px;margin:16px auto}
+.tile{aspect-ratio:1;border:3px solid #bfdbfe;border-radius:16px;background:linear-gradient(145deg,#eff6ff,#fdf2f8);display:flex;align-items:center;justify-content:center;font-size:clamp(2.1rem,9vw,4.5rem);box-shadow:0 3px 0 #dbeafe;user-select:none;transition:transform .12s}
+.tile.selected{border-color:#f97316;background:#ffedd5;transform:scale(.96)}.tile.blank{background:repeating-linear-gradient(45deg,#e2e8f0,#e2e8f0 8px,#f8fafc 8px,#f8fafc 16px);border:2px dashed #94a3b8}
+.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}.hint{text-align:center;color:#64748b;font-size:.9rem;min-height:24px}
+.progress{height:10px;background:#dbeafe;border-radius:20px;overflow:hidden;margin:10px 0}.progress>div{height:100%;background:linear-gradient(90deg,#22c55e,#3b82f6);width:0;transition:width .3s}
+footer{text-align:center;padding:20px;color:#475569;font-size:.9rem}.whatsapp{display:inline-block;background:#16a34a;color:white;text-decoration:none;padding:12px 18px;border-radius:15px;font-weight:900;margin-top:8px}
+#toast{font-weight:900;text-align:center;min-height:26px;color:#15803d}
+@media(max-width:520px){.game{padding:11px}.tile{border-radius:11px}.stats{gap:6px}.stat{padding:8px}.stat b{font-size:1.1rem}}
+</style>
+</head>
+<body>
+<header><div class="brand">DESAFIA<span>+</span> KIDS</div><div style="display:flex;gap:7px;flex-wrap:wrap">
+<select id="lang" aria-label="Idioma"><option value="pt">Português</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option></select>
+<button class="soft" id="soundBtn">🔊 Sons: ON</button><button class="soft" id="musicBtn">🎵 Música: OFF</button></div></header>
+<main>
+<section class="hero"><div class="mascots">🦁 🤖 🐵 🐸</div><h1 id="title">🧩 Puzzle Divertido</h1><p id="subtitle">Organiza as peças e descobre a imagem!</p></section>
+<div class="stats"><div class="stat"><span id="labLevel">Nível</span><b id="level">1 / 1000</b></div><div class="stat"><span id="labPoints">Pontos</span><b id="points">0</b></div><div class="stat"><span id="labDone">Concluídos</span><b id="done">0</b></div></div>
+<div class="progress"><div id="bar"></div></div>
+<section class="game">
+<div class="topline"><strong id="category">🌳 Natureza</strong><span id="mascotTalk">O leão diz: tu consegues! 🦁</span></div>
+<div class="prompt" id="prompt">Toca em duas peças para trocar a posição até formar a imagem.</div>
+<div class="board" id="board" aria-label="Tabuleiro de puzzle"></div>
+<div class="hint" id="hint">Dica: a peça vazia mostra onde falta uma peça.</div>
+<div id="toast" aria-live="polite"></div>
+<div class="controls"><button class="soft" id="readBtn">🗣️ Ouvir instrução</button><button class="orange" id="hintBtn">💡 Dica</button><button class="soft" id="shuffleBtn">🔄 Baralhar</button><button class="btn" id="checkBtn">✓ Verificar</button><button class="green" id="nextBtn" disabled>Próximo ➜</button></div>
+</section>
+<div class="controls"><button class="soft" id="homeBtn">🏠 Voltar ao menu</button><button class="soft" id="resetBtn">↻ Reiniciar progresso</button></div>
+<div style="text-align:center"><a class="whatsapp" href="https://wa.me/244938403923?text=Ol%C3%A1%21%20Gostaria%20de%20adquirir%20um%20c%C3%B3digo%20Premium%20do%20DESAFIA%2B%20KIDS%20para%20desbloquear%20os%2013%20jogos%20educativos.%20Pode%20informar-me%20sobre%20o%20pre%C3%A7o%20e%20as%20condi%C3%A7%C3%B5es%3F" target="_blank" rel="noopener">💬 WhatsApp — DESAFIA+ KIDS</a></div>
+</main>
+<footer>Aprender é uma aventura! ⭐ DESAFIA+ KIDS</footer>
+<script>
+const $=id=>document.getElementById(id);
+const scenes=[
+{e:['🌞','☁️','🌈','🌳','🌷','🦋','🌼','🐝','🍃'],c:'🌳 Natureza'},
+{e:['🦁','🐘','🦒','🦓','🐒','🦜','🐊','🦛','🦋'],c:'🦁 Animais'},
+{e:['🚗','🚌','🚲','🚕','🚓','🚑','🚒','🚜','✈️'],c:'🚗 Transportes'},
+{e:['🍎','🍌','🍇','🍉','🍓','🍍','🥝','🍊','🍒'],c:'🍉 Frutas'},
+{e:['⚽','🏀','🏐','🎾','🏈','🥎','🏓','🏸','🥅'],c:'⚽ Desporto'},
+{e:['🏠','🏫','🏥','🏰','🏢','⛪','🏟️','🏛️','🛖'],c:'🏠 Edifícios'},
+{e:['🚀','🌍','🌙','⭐','🪐','☄️','👽','🛰️','🌌'],c:'🚀 Espaço'},
+{e:['🎸','🎹','🥁','🎺','🎻','🎷','🎤','🪇','🎼'],c:'🎵 Música'},
+{e:['✏️','📚','📏','🖍️','🎒','📐','🖊️','📒','🧮'],c:'📚 Escola'},
+{e:['🐠','🐬','🦀','🐙','🦈','🐢','🪸','🐚','🦭'],c:'🌊 Mar'}
+];
+const texts={
+pt:{sub:'Organiza as peças e descobre a imagem!',prompt:'Toca em duas peças para trocar a posição até formar a imagem.',hint:'A peça vazia mostra onde falta uma peça.',level:'Nível',points:'Pontos',done:'Concluídos',check:'✓ Verificar',next:'Próximo ➜',read:'🗣️ Ouvir instrução',tip:'💡 Dica',shuffle:'🔄 Baralhar',good:'Muito bem! Puzzle completo! 🎉',bad:'Ainda não está completo. Continua! 💪',welcome:'O leão diz: tu consegues! 🦁',home:'🏠 Voltar ao menu',reset:'↻ Reiniciar progresso',sound:'🔊 Sons',music:'🎵 Música'},
+en:{sub:'Arrange the pieces and reveal the picture!',prompt:'Tap two tiles to swap them until the picture is complete.',hint:'The empty tile shows where a piece is missing.',level:'Level',points:'Points',done:'Completed',check:'✓ Check',next:'Next ➜',read:'🗣️ Hear instructions',tip:'💡 Hint',shuffle:'🔄 Shuffle',good:'Great job! Puzzle complete! 🎉',bad:'Not quite. Keep trying! 💪',welcome:'The lion says: you can do it! 🦁',home:'🏠 Back to menu',reset:'↻ Reset progress',sound:'🔊 Sounds',music:'🎵 Music'},
+fr:{sub:'Replace les pièces et découvre l’image !',prompt:'Touche deux pièces pour les échanger et compléter l’image.',hint:'La case vide indique la pièce manquante.',level:'Niveau',points:'Points',done:'Terminés',check:'✓ Vérifier',next:'Suivant ➜',read:'🗣️ Écouter',tip:'💡 Indice',shuffle:'🔄 Mélanger',good:'Bravo ! Puzzle terminé ! 🎉',bad:'Pas encore. Continue ! 💪',welcome:'Le lion dit : tu peux le faire ! 🦁',home:'🏠 Retour au menu',reset:'↻ Réinitialiser',sound:'🔊 Sons',music:'🎵 Musique'},
+es:{sub:'¡Ordena las piezas y descubre la imagen!',prompt:'Toca dos piezas para intercambiarlas hasta completar la imagen.',hint:'La casilla vacía muestra dónde falta una pieza.',level:'Nivel',points:'Puntos',done:'Completados',check:'✓ Comprobar',next:'Siguiente ➜',read:'🗣️ Escuchar',tip:'💡 Pista',shuffle:'🔄 Mezclar',good:'¡Muy bien! ¡Puzzle completo! 🎉',bad:'Todavía no. ¡Sigue intentando! 💪',welcome:'El león dice: ¡tú puedes! 🦁',home:'🏠 Volver al menú',reset:'↻ Reiniciar progreso',sound:'🔊 Sonidos',music:'🎵 Música'}
+};
+let lang='pt',level=1,points=0,done=0,tiles=[],selected=-1,sound=true,music=false,audio=null,musicTimer=null;
+const TOTAL=1000,KEY='desafiamais_puzzle_progress_v1';
+function load(){try{let x=JSON.parse(localStorage.getItem(KEY));if(x){level=Math.min(TOTAL,x.level||1);points=x.points||0;done=x.done||0}}catch(e){}}
+function save(){localStorage.setItem(KEY,JSON.stringify({level,points,done}))}
+function sceneFor(n){return scenes[(n-1)%scenes.length]}
+function targetFor(n){let base=sceneFor(n).e.slice();let shift=Math.floor((n-1)/10)%9;return base.map((_,i)=>base[(i+shift)%9])}
+function shuffleArray(a){let b=a.slice();for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function makePuzzle(){let target=targetFor(level);tiles=shuffleArray(target.map((v,i)=>({v,correct:i})));if(tiles.every((t,i)=>t.correct===i))tiles=tiles.reverse();selected=-1;$('nextBtn').disabled=true;$('toast').textContent='';render()}
+function render(){let board=$('board');board.innerHTML='';tiles.forEach((t,i)=>{let b=document.createElement('button');b.className='tile'+(selected===i?' selected':'');b.textContent=t.v;b.setAttribute('aria-label','Peça '+(i+1));b.onclick=()=>choose(i);board.appendChild(b)});$('level').textContent=level+' / '+TOTAL;$('points').textContent=points;$('done').textContent=done;$('bar').style.width=(done/TOTAL*100)+'%';$('category').textContent=sceneFor(level).c}
+function choose(i){if(selected<0){selected=i;render();return}if(selected===i){selected=-1;render();return}[tiles[selected],tiles[i]]=[tiles[i],tiles[selected]];selected=-1;render();tone(520,.06)}
+function tone(freq,dur=.12){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();let o=audio.createOscillator(),g=audio.createGain();o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(.08,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+dur);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+dur)}catch(e){}}
+function successSound(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.16),i*110))}
+function check(){let ok=tiles.every((t,i)=>t.correct===i);if(ok){points+=10;done=Math.max(done,level);$('toast').textContent=texts[lang].good;$('nextBtn').disabled=false;successSound();save();render();$('nextBtn').disabled=false}else{$('toast').textContent=texts[lang].bad;tone(180,.2)}}
+function hint(){let i=tiles.findIndex((t,j)=>t.correct!==j);if(i<0)return;let j=tiles.findIndex(t=>t.correct===i);$('hint').textContent='💡 '+tiles[j].v+' deve ficar na posição '+(i+1)+'.';tone(740,.1)}
+function next(){if(level<TOTAL){level++;makePuzzle();$('hint').textContent=texts[lang].hint;save()}else{$('toast').textContent='🏆 Parabéns! Completaste os 1.000 desafios!'}}
+function shuffle(){tiles=shuffleArray(tiles);selected=-1;$('nextBtn').disabled=true;$('toast').textContent='';render()}
+function speak(){if(!('speechSynthesis'in window))return;let msg=texts[lang].prompt+' '+sceneFor(level).c; speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(msg);u.lang={pt:'pt-PT',en:'en-US',fr:'fr-FR',es:'es-ES'}[lang];u.rate=.9;speechSynthesis.speak(u)}
+function setLang(){lang=$('lang').value;let t=texts[lang];$('subtitle').textContent=t.sub;$('prompt').textContent=t.prompt;$('hint').textContent=t.hint;$('labLevel').textContent=t.level;$('labPoints').textContent=t.points;$('labDone').textContent=t.done;$('checkBtn').textContent=t.check;$('nextBtn').textContent=t.next;$('readBtn').textContent=t.read;$('hintBtn').textContent=t.tip;$('shuffleBtn').textContent=t.shuffle;$('homeBtn').textContent=t.home;$('resetBtn').textContent=t.reset;$('mascotTalk').textContent=t.welcome;$('soundBtn').textContent=t.sound+': '+(sound?'ON':'OFF');$('musicBtn').textContent=t.music+': '+(music?'ON':'OFF')}
+function toggleMusic(){music=!music;if(music){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();let seq=[261.6,329.6,392,329.6],i=0;musicTimer=setInterval(()=>{if(!music)return;let o=audio.createOscillator(),g=audio.createGain();o.frequency.value=seq[i++%seq.length];g.gain.value=.018;o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.18)},380)}catch(e){}}else clearInterval(musicTimer);setLang()}
+$('lang').onchange=setLang;$('soundBtn').onclick=()=>{sound=!sound;setLang()};$('musicBtn').onclick=toggleMusic;$('readBtn').onclick=speak;$('hintBtn').onclick=hint;$('shuffleBtn').onclick=shuffle;$('checkBtn').onclick=check;$('nextBtn').onclick=next;$('homeBtn').onclick=()=>location.href='index.html';$('resetBtn').onclick=()=>{if(confirm('Queres apagar o progresso deste jogo?')){level=1;points=0;done=0;save();makePuzzle()}};
+load();setLang();makePuzzle();
+</script>
+</body></html>
