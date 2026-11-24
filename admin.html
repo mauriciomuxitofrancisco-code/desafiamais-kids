@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -49,7 +48,7 @@ section.subsection{margin-top:28px}
 <section class="panel" id="loginPanel">
 <h2>Entrar no painel</h2>
 <label for="email">E-mail do administrador</label>
-<input id="email" type="email" autocomplete="username" placeholder="O e-mail da conta autorizada">
+<input id="email" type="email" autocomplete="username" placeholder="E-mail da conta administrativa">
 <label for="password">Palavra-passe</label>
 <input id="password" type="password" autocomplete="current-password" placeholder="Palavra-passe">
 <button id="loginBtn">Entrar</button>
@@ -78,8 +77,18 @@ section.subsection{margin-top:28px}
 </div>
 <div class="tablewrap">
 <table>
-<thead><tr><th>Cliente</th><th>E-mail</th><th>Referência</th><th>Estado</th><th>Validade</th><th>Controlo</th></tr></thead>
-<tbody id="codesBody"><tr><td colspan="6">Ainda não carregado.</td></tr></tbody>
+<thead>
+<tr>
+<th>Cliente</th>
+<th>Referência</th>
+<th>Estado</th>
+<th>Validade</th>
+<th>Controlo</th>
+</tr>
+</thead>
+<tbody id="codesBody">
+<tr><td colspan="5">Ainda não carregado.</td></tr>
+</tbody>
 </table>
 </div>
 </section>
@@ -95,7 +104,6 @@ section.subsection{margin-top:28px}
 <thead>
 <tr>
 <th>Encarregado</th>
-<th>E-mail</th>
 <th>Dispositivo autorizado</th>
 <th>Primeira associação</th>
 <th>Última atividade</th>
@@ -105,7 +113,7 @@ section.subsection{margin-top:28px}
 </tr>
 </thead>
 <tbody id="devicesBody">
-<tr><td colspan="8">Ainda não carregado.</td></tr>
+<tr><td colspan="7">Ainda não carregado.</td></tr>
 </tbody>
 </table>
 </div>
@@ -118,11 +126,15 @@ section.subsection{margin-top:28px}
 <script>
 const SUPABASE_URL = "https://ounjndogaogngxchuijj.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
-const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+const client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
 
 const $ = id => document.getElementById(id);
 const msg = (id, text) => { $(id).textContent = text; };
-const dateText = value => value ? new Date(value).toLocaleString() : "Sem data";
+const dateText = value => value ? new Date(value).toLocaleString("pt-PT") : "Sem data";
 
 function escapeHtml(s){
  return String(s ?? "").replace(/[&<>"']/g,c=>({
@@ -133,48 +145,85 @@ function escapeHtml(s){
 async function showApp(user){
  $("loginPanel").classList.add("hidden");
  $("appPanel").classList.remove("hidden");
- msg("who", "Sessão: " + user.email);
+ msg("who","Sessão administrativa: "+(user.email || "Administrador"));
  await loadCodes();
  await loadDevices();
 }
 
 async function checkSession(){
- const {data:{session}} = await client.auth.getSession();
+ const {data:{session},error} = await client.auth.getSession();
+ if(error){
+  msg("loginMsg","Erro ao verificar sessão: "+error.message);
+  return;
+ }
  if(session) await showApp(session.user);
 }
 
 $("loginBtn").onclick = async () => {
  msg("loginMsg","A iniciar sessão…");
+ $("loginBtn").disabled=true;
+
  const {data,error} = await client.auth.signInWithPassword({
   email:$("email").value.trim(),
   password:$("password").value
  });
- if(error){msg("loginMsg","Não foi possível entrar: "+error.message);return;}
+
+ $("loginBtn").disabled=false;
+
+ if(error){
+  msg("loginMsg","Não foi possível entrar: "+error.message);
+  return;
+ }
+
  $("password").value="";
  await showApp(data.user);
 };
 
 $("logoutBtn").onclick = async () => {
- await client.auth.signOut();
+ const {error}=await client.auth.signOut();
+ if(error){
+  msg("appMsg","Erro ao terminar sessão: "+error.message);
+  return;
+ }
  $("appPanel").classList.add("hidden");
  $("loginPanel").classList.remove("hidden");
  msg("loginMsg","Sessão terminada.");
 };
 
 $("createBtn").onclick = async () => {
- const days = Number($("days").value);
+ const days=Number($("days").value);
+
  if(!Number.isInteger(days)||days<1||days>3650){
   msg("appMsg","Indique uma validade entre 1 e 3650 dias.");
   return;
  }
+
  $("createBtn").disabled=true;
  msg("appMsg","A gerar código…");
- const {data,error}=await client.rpc("create_premium_code",{p_days:days});
+
+ const {data,error}=await client.rpc("create_premium_code",{
+  p_days:days
+ });
+
  $("createBtn").disabled=false;
- if(error){msg("appMsg","Erro ao gerar código: "+error.message);return;}
+
+ if(error){
+  msg("appMsg","Erro ao gerar código: "+error.message);
+  return;
+ }
+
+ if(typeof data!=="string" || !data){
+  msg("appMsg","O código foi solicitado, mas o formato da resposta não foi reconhecido. Verifique a lista antes de tentar novamente.");
+  return;
+ }
 
  $("newCode").classList.remove("hidden");
- $("newCode").innerHTML='<div><strong>Novo código Premium</strong></div><div class="code" id="codeValue"></div><button class="secondary" id="copyCodeBtn">Copiar código</button><p class="small">Guarde-o agora. Por segurança, a base de dados não guarda o código em texto legível.</p>';
+ $("newCode").innerHTML=
+  '<div><strong>Novo código Premium</strong></div>'+
+  '<div class="code" id="codeValue"></div>'+
+  '<button class="secondary" id="copyCodeBtn">Copiar código</button>'+
+  '<p class="small">Guarde-o agora. Por segurança, a base de dados não guarda o código em texto legível.</p>';
+
  $("codeValue").textContent=data;
 
  $("copyCodeBtn").onclick=async()=>{
@@ -185,40 +234,61 @@ $("createBtn").onclick = async () => {
    msg("appMsg","Não foi possível copiar automaticamente. Selecione e copie o código apresentado.");
   }
  };
+
  msg("appMsg","Código criado. A atualizar a lista.");
  await loadCodes();
 };
 
 async function setStatus(id,status){
- if(status==="active" && !confirm("Confirma reativar este código?"))return;
- if(status==="suspended" && !confirm("Confirma suspender este acesso Premium?"))return;
- if(status==="revoked" && !confirm("Confirma revogar definitivamente este código? Esta ação não pode ser desfeita."))return;
+ const labels={
+  active:"reativar",
+  suspended:"suspender",
+  revoked:"revogar definitivamente"
+ };
+
+ if(!confirm("Confirma "+labels[status]+" este código?"))return;
 
  const {error}=await client.rpc("admin_set_code_status",{
   p_code_id:id,
   p_status:status
  });
- if(error){msg("appMsg","Erro: "+error.message);return;}
+
+ if(error){
+  msg("appMsg","Erro: "+error.message);
+  return;
+ }
+
  msg("appMsg","Estado atualizado.");
  await loadCodes();
 }
 
-async function renewPremium(userId, name, days){
+async function renewPremium(userId,name,days){
  if(![30,90,180,365].includes(days))return;
- if(!confirm("Confirma renovar o Premium de "+(name||"este cliente")+" por mais "+days+" dias?"))return;
+
+ if(!confirm(
+  "Confirma renovar o Premium de "+
+  (name||"este cliente")+" por mais "+days+" dias?"
+ ))return;
 
  const {data,error}=await client.rpc("admin_renew_premium",{
   p_user_id:userId,
   p_days:days
  });
- if(error){msg("appMsg","Não foi possível renovar: "+error.message);return;}
+
+ if(error){
+  msg("appMsg","Não foi possível renovar: "+error.message);
+  return;
+ }
+
  msg("appMsg","Premium renovado. Nova validade: "+dateText(data));
  await loadCodes();
 }
 
 async function loadCodes(){
  msg("appMsg","A carregar clientes e códigos…");
+
  const {data,error}=await client.rpc("admin_list_premium_codes");
+
  if(error){
   msg("appMsg","Não foi possível carregar os códigos: "+error.message);
   return;
@@ -228,15 +298,16 @@ async function loadCodes(){
  body.innerHTML="";
 
  if(!data || !data.length){
-  body.innerHTML='<tr><td colspan="6">Ainda não existem códigos.</td></tr>';
+  body.innerHTML='<tr><td colspan="5">Ainda não existem códigos.</td></tr>';
   msg("appMsg","Lista de códigos atualizada.");
   return;
  }
 
  for(const c of data){
   const tr=document.createElement("tr");
-  const clientName=c.guardian_name || (c.redeemed_by ? "Nome não informado" : "Ainda não utilizado");
-  const email=c.email || "—";
+  const clientName=c.guardian_name || (
+   c.redeemed_by ? "Nome não informado" : "Ainda não utilizado"
+  );
   const ref=c.client_ref || "—";
   const controls=document.createElement("td");
 
@@ -246,7 +317,10 @@ async function loadCodes(){
    const statusBtn=document.createElement("button");
    statusBtn.className="secondary";
    statusBtn.textContent=c.status==="active"?"Suspender":"Reativar";
-   statusBtn.onclick=()=>setStatus(c.id,c.status==="active"?"suspended":"active");
+   statusBtn.onclick=()=>setStatus(
+    c.id,
+    c.status==="active"?"suspended":"active"
+   );
    controls.appendChild(statusBtn);
 
    const revokeBtn=document.createElement("button");
@@ -258,26 +332,45 @@ async function loadCodes(){
    if(c.redeemed_by){
     const days=document.createElement("select");
     days.style.marginTop="8px";
-    days.innerHTML='<option value="30">Renovar 30 dias</option><option value="90">Renovar 90 dias</option><option value="180">Renovar 180 dias</option><option value="365" selected>Renovar 365 dias</option>';
+    days.innerHTML=
+     '<option value="30">Renovar 30 dias</option>'+
+     '<option value="90">Renovar 90 dias</option>'+
+     '<option value="180">Renovar 180 dias</option>'+
+     '<option value="365" selected>Renovar 365 dias</option>';
 
     const renew=document.createElement("button");
     renew.textContent="Renovar Premium";
-    renew.onclick=()=>renewPremium(c.redeemed_by,clientName,Number(days.value));
+    renew.onclick=()=>renewPremium(
+     c.redeemed_by,
+     clientName,
+     Number(days.value)
+    );
     controls.append(days,renew);
    }
   }
 
-  tr.innerHTML=`<td>${escapeHtml(clientName)}</td><td>${escapeHtml(email)}</td><td>${escapeHtml(ref)}</td><td>${escapeHtml(c.status)}</td><td>${escapeHtml(dateText(c.expires_at))}</td>`;
+  tr.innerHTML=
+   `<td>${escapeHtml(clientName)}</td>`+
+   `<td>${escapeHtml(ref)}</td>`+
+   `<td>${escapeHtml(c.status)}</td>`+
+   `<td>${escapeHtml(dateText(c.expires_at))}</td>`;
+
   tr.appendChild(controls);
   body.appendChild(tr);
  }
+
  msg("appMsg","Lista de códigos atualizada. Registos: "+data.length+".");
 }
 
-async function releaseDevice(userId,email){
- if(!confirm("Queres libertar o dispositivo associado a "+email+"? O próximo dispositivo utilizado poderá ficar associado à conta."))return;
+async function releaseDevice(userId,name){
+ if(!confirm(
+  "Queres libertar o dispositivo associado a "+
+  (name||"este cliente")+
+  "? O próximo dispositivo utilizado poderá ficar associado à conta."
+ ))return;
 
  msg("appMsg","A libertar dispositivo…");
+
  const {data,error}=await client.rpc("admin_release_premium_device",{
   p_user_id:userId
  });
@@ -298,10 +391,12 @@ async function releaseDevice(userId,email){
 
 async function loadDevices(){
  msg("appMsg","A carregar dispositivos Premium…");
+
  const {data,error}=await client.rpc("admin_list_premium_devices");
 
  if(error){
-  $("devicesBody").innerHTML='<tr><td colspan="8">Erro ao carregar dispositivos.</td></tr>';
+  $("devicesBody").innerHTML=
+   '<tr><td colspan="7">Erro ao carregar dispositivos.</td></tr>';
   msg("appMsg","Não foi possível carregar dispositivos: "+error.message);
   return;
  }
@@ -310,7 +405,8 @@ async function loadDevices(){
  body.innerHTML="";
 
  if(!data || !data.length){
-  body.innerHTML='<tr><td colspan="8">Ainda não existem contas Premium com dispositivos registados.</td></tr>';
+  body.innerHTML=
+   '<tr><td colspan="7">Ainda não existem contas Premium com dispositivos registados.</td></tr>';
   msg("appMsg","Lista de dispositivos atualizada.");
   return;
  }
@@ -318,16 +414,17 @@ async function loadDevices(){
  for(const d of data){
   const tr=document.createElement("tr");
   const name=d.guardian_name || "Nome não informado";
-  const email=d.customer_email || "—";
   const device=d.active_device_label || "Sem dispositivo associado";
   const blocked=Number(d.blocked_attempts || 0);
+
   const lastBlocked=d.last_blocked_device
-   ? escapeHtml(d.last_blocked_device)+"<br><span class=\"small\">"+escapeHtml(dateText(d.last_blocked_at))+"</span>"
+   ? escapeHtml(d.last_blocked_device)+
+     "<br><span class=\"small\">"+
+     escapeHtml(dateText(d.last_blocked_at))+"</span>"
    : "Nenhum";
 
   tr.innerHTML=`
    <td>${escapeHtml(name)}</td>
-   <td>${escapeHtml(email)}</td>
    <td>${escapeHtml(device)}</td>
    <td>${escapeHtml(dateText(d.first_seen_at))}</td>
    <td>${escapeHtml(dateText(d.last_seen_at))}</td>
@@ -337,11 +434,12 @@ async function loadDevices(){
   `;
 
   const control=tr.lastElementChild;
+
   if(d.active_device_label){
    const release=document.createElement("button");
    release.className="danger";
    release.textContent="Libertar dispositivo";
-   release.onclick=()=>releaseDevice(d.user_id,email);
+   release.onclick=()=>releaseDevice(d.user_id,name);
    control.appendChild(release);
   }else{
    control.textContent="Sem dispositivo";
