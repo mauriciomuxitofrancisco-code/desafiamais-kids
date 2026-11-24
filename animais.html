@@ -3,851 +3,264 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#5b4be7">
+<meta name="theme-color" content="#7655e8">
 <title>Mundo dos Animais | DESAFIA+ KIDS</title>
-
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:linear-gradient(135deg,#e9f7ff,#f5edff,#fff5df);
-  color:#24304a;
-  min-height:100vh;
-}
-button,select{font:inherit}
-header{
-  text-align:center;
-  padding:22px 14px 12px;
-}
-.logo{
-  display:inline-block;
-  background:#fff;
-  padding:9px 18px;
-  border-radius:30px;
-  color:#5b4be7;
-  font-weight:900;
-  box-shadow:0 5px 15px #25305b18;
-}
-h1{
-  margin:14px 0 5px;
-  font-size:clamp(27px,7vw,40px);
-  color:#5142d8;
-}
-.subtitle{margin:0;color:#65708a}
-.container{
-  width:min(680px,94%);
-  margin:12px auto 35px;
-}
-.card{
-  background:#fff;
-  border-radius:25px;
-  padding:22px;
-  box-shadow:0 12px 35px #29345b18;
-  margin-bottom:16px;
-}
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-select{
-  border:2px solid #e4e5f4;
-  border-radius:12px;
-  padding:10px;
-  background:#fff;
-  color:#34304f;
-}
-.small-btn{
-  border:0;
-  background:#eeeaff;
-  color:#5142d8;
-  border-radius:12px;
-  padding:10px 13px;
-  font-weight:bold;
-  cursor:pointer;
-}
-.welcome{text-align:center;padding:28px 12px}
-.big-animal{font-size:75px;margin:8px}
-.welcome h2{font-size:26px;color:#5142d8}
-.welcome p{line-height:1.6;color:#65708a}
-.main-btn{
-  border:0;
-  background:linear-gradient(135deg,#6555ed,#8a57e8);
-  color:white;
-  padding:15px 25px;
-  border-radius:16px;
-  font-weight:900;
-  font-size:17px;
-  cursor:pointer;
-  box-shadow:0 6px 0 #4436b7;
-  margin-top:12px;
-}
-.main-btn:active{transform:translateY(3px);box-shadow:0 3px 0 #4436b7}
-.hidden{display:none!important}
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:9px;
-  margin-bottom:17px;
-}
-.stat{
-  background:#f4f1ff;
-  padding:12px 5px;
-  border-radius:15px;
-  text-align:center;
-}
-.stat strong{display:block;color:#5949df;font-size:21px}
-.stat span{font-size:12px;color:#6b7188}
-.progress-bg{
-  height:12px;
-  background:#ececf5;
-  border-radius:20px;
-  overflow:hidden;
-  margin:10px 0 20px;
-}
-.progress{
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,#6c5ce7,#35c7a4);
-  transition:width .3s;
-}
-.question-label{
-  color:#7b6ce7;
-  font-weight:bold;
-  text-align:center;
-  font-size:14px;
-}
-.animal-emoji{
-  font-size:76px;
-  text-align:center;
-  margin:14px 0;
-}
-.question{
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
-  line-height:1.5;
-  margin:12px 0 20px;
-}
-.answers{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:11px;
-}
-.answer{
-  border:2px solid #e7e6f4;
-  background:#fafaff;
-  border-radius:15px;
-  padding:15px 8px;
-  color:#30334f;
-  font-weight:bold;
-  cursor:pointer;
-  min-height:58px;
-}
-.answer:disabled{cursor:default;opacity:1}
-.answer.correct{background:#d9f9e9;border-color:#36bd83;color:#147a4d}
-.answer.wrong{background:#ffe3e3;border-color:#ef7777;color:#a52d2d}
-.feedback{
-  min-height:35px;
-  text-align:center;
-  font-weight:bold;
-  margin:15px 0 5px;
-}
-.next-wrap{text-align:center}
-.result{text-align:center;padding:25px 10px}
-.result-emoji{font-size:70px}
-.result h2{color:#5949df}
-.result p{line-height:1.6;color:#626b83}
-.stars{font-size:27px;letter-spacing:4px;color:#f5ad24}
-footer{text-align:center;color:#7c8194;font-size:12px;padding:10px}
-@media(max-width:420px){
-  .card{padding:17px}
-  .answer{font-size:14px}
-  .question{font-size:18px}
-}
+body{margin:0;font-family:Trebuchet MS,Arial,sans-serif;background:linear-gradient(135deg,#f1edff,#e9f9ff);color:#26304a;min-height:100vh}
+header{background:#7655e8;color:white;text-align:center;padding:22px 14px 26px;border-radius:0 0 28px 28px}
+header h1{margin:0;font-size:clamp(25px,6vw,36px)}
+header p{margin:8px 0 0;font-size:15px}
+main{width:min(720px,94%);margin:18px auto 35px}
+.panel{background:white;border-radius:22px;padding:20px;box-shadow:0 8px 25px #40308018;margin-bottom:16px}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+select,button{font:inherit;border:0;border-radius:14px;padding:12px 15px}
+select{background:#f0edff;color:#34256f}
+button{cursor:pointer;font-weight:800}
+.primary{background:#7655e8;color:white;width:100%;font-size:18px;padding:16px}
+.secondary{background:#eeeaff;color:#5137b6}
+#game{display:none;text-align:center}
+#progress{height:10px;background:#eee9ff;border-radius:20px;overflow:hidden;margin:14px 0}
+#bar{height:100%;width:0;background:#7655e8;transition:width .25s}
+#animal{font-size:76px;margin:12px 0}
+#question{font-size:21px;font-weight:800;line-height:1.35;margin:10px 0 18px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.answer{background:#f1efff;color:#392b72;min-height:58px;font-size:17px}
+.answer:disabled{opacity:1;cursor:default}
+.answer.correct{background:#d9f8e5;color:#126438}
+.answer.wrong{background:#ffe0e0;color:#9a2525}
+#feedback{min-height:28px;font-weight:800;margin:14px 0}
+#next{display:none;margin-top:8px;width:100%;background:#ffbd4a;color:#523500;font-size:17px}
+#result{display:none;text-align:center}
+#stars{font-size:34px;color:#ffb800}
+.small{font-size:13px;color:#6c7185}
+@media(max-width:420px){.panel{padding:16px}.answer{font-size:15px;padding:12px 8px}#question{font-size:19px}}
 </style>
 </head>
-
 <body>
-
 <header>
-  <div class="logo">🌟 DESAFIA+ KIDS</div>
   <h1>🐾 Mundo dos Animais</h1>
-  <p class="subtitle" id="subtitle">Aprende, descobre e diverte-te!</p>
+  <p>Aprende, descobre e diverte-te!</p>
 </header>
-
-<main class="container">
-
-  <section class="card">
-    <div class="topbar">
+<main>
+  <section class="panel">
+    <div class="row">
+      <strong id="languageLabel">Idioma</strong>
       <select id="language" aria-label="Idioma">
-        <option value="pt">🇦🇴 Português</option>
-        <option value="en">🇬🇧 English</option>
-        <option value="fr">🇫🇷 Français</option>
-        <option value="es">🇪🇸 Español</option>
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+        <option value="es">Español</option>
       </select>
-      <button class="small-btn" id="musicButton" type="button">🔊 Música: ON</button>
+      <button class="secondary" id="musicButton" type="button">🔊 Som ligado</button>
     </div>
+    <p class="small" id="intro">Responde a 10 perguntas e ganha estrelas!</p>
+    <button class="primary" id="startButton" type="button">COMEÇAR A JOGAR</button>
   </section>
 
-  <section class="card welcome" id="welcome">
-    <div class="big-animal">🦁 🐘 🦒</div>
-    <h2 id="welcomeTitle">Estás pronto para o desafio?</h2>
-    <p id="welcomeText">
-      Descobre animais, responde às perguntas e ganha estrelas.
-      Cada partida tem 10 perguntas!
-    </p>
-    <button class="main-btn" id="startButton" type="button">COMEÇAR A JOGAR 🚀</button>
-  </section>
-
-  <section class="card hidden" id="gamePanel">
-    <div class="stats">
-      <div class="stat">
-        <strong id="score">0</strong>
-        <span id="scoreLabel">Pontos</span>
-      </div>
-      <div class="stat">
-        <strong id="starCount">⭐ 0</strong>
-        <span id="starsLabel">Estrelas</span>
-      </div>
-      <div class="stat">
-        <strong id="questionCount">1/10</strong>
-        <span id="progressLabel">Pergunta</span>
-      </div>
+  <section class="panel" id="game">
+    <div class="row">
+      <strong id="questionCount">Pergunta 1 de 10</strong>
+      <strong id="score">⭐ 0</strong>
     </div>
-
-    <div class="progress-bg">
-      <div class="progress" id="progressBar"></div>
-    </div>
-
-    <div class="question-label" id="questionLabel">DESCOBRE O ANIMAL</div>
-    <div class="animal-emoji" id="animalEmoji">🐘</div>
-    <div class="question" id="questionText"></div>
-
+    <div id="progress"><div id="bar"></div></div>
+    <div id="animal">🐘</div>
+    <div id="question"></div>
     <div class="answers" id="answers"></div>
-    <div class="feedback" id="feedback"></div>
-
-    <div class="next-wrap">
-      <button class="main-btn hidden" id="nextButton" type="button">PRÓXIMA PERGUNTA ➜</button>
-    </div>
+    <div id="feedback" aria-live="polite"></div>
+    <button id="next" type="button">PRÓXIMA</button>
   </section>
 
-  <section class="card result hidden" id="resultPanel">
-    <div class="result-emoji">🏆</div>
-    <h2 id="resultTitle">Desafio terminado!</h2>
-    <div class="stars" id="finalStars">⭐⭐⭐</div>
+  <section class="panel" id="result">
+    <div id="resultStars">🌟</div>
+    <h2 id="resultTitle">Muito bem!</h2>
     <p id="resultText"></p>
-    <button class="main-btn" id="againButton" type="button">JOGAR NOVAMENTE 🔄</button>
+    <button class="primary" id="again" type="button">JOGAR NOVAMENTE</button>
+    <p><button class="secondary" id="home" type="button">Voltar ao início</button></p>
   </section>
-
 </main>
-
-<footer>DESAFIA+ KIDS · Aprende enquanto brincas!</footer>
 
 <script>
 "use strict";
 
-/* ANIMAIS E CURIOSIDADES EM QUATRO IDIOMAS */
-const animals = [
- {id:"leao",emoji:"🦁",n:["Leão","Lion","Lion","León"],c:[
-  "É conhecido como o rei dos animais e vive em grupos.",
-  "It is known as the king of animals and lives in groups.",
-  "Il est connu comme le roi des animaux et vit en groupe.",
-  "Es conocido como el rey de los animales y vive en grupos."
- ]},
- {id:"elefante",emoji:"🐘",n:["Elefante","Elephant","Éléphant","Elefante"],c:[
-  "É um animal muito grande e tem uma tromba comprida.",
-  "It is a very large animal with a long trunk.",
-  "C'est un très grand animal avec une longue trompe.",
-  "Es un animal muy grande y tiene una trompa larga."
- ]},
- {id:"girafa",emoji:"🦒",n:["Girafa","Giraffe","Girafe","Jirafa"],c:[
-  "Tem um pescoço muito comprido e come folhas das árvores.",
-  "It has a very long neck and eats leaves from trees.",
-  "Elle a un très long cou et mange les feuilles des arbres.",
-  "Tiene un cuello muy largo y come hojas de los árboles."
- ]},
- {id:"zebra",emoji:"🦓",n:["Zebra","Zebra","Zèbre","Cebra"],c:[
-  "Tem o corpo coberto de riscas pretas e brancas.",
-  "Its body is covered with black and white stripes.",
-  "Son corps est couvert de rayures noires et blanches.",
-  "Su cuerpo está cubierto de rayas blancas y negras."
- ]},
- {id:"macaco",emoji:"🐒",n:["Macaco","Monkey","Singe","Mono"],c:[
-  "É um animal que pode viver nas árvores e gosta de trepar.",
-  "It can live in trees and likes to climb.",
-  "Il peut vivre dans les arbres et aime grimper.",
-  "Puede vivir en los árboles y le gusta trepar."
- ]},
- {id:"golfinho",emoji:"🐬",n:["Golfinho","Dolphin","Dauphin","Delfín"],c:[
-  "Vive no mar, nada muito bem e precisa de respirar ar.",
-  "It lives in the sea, swims very well and needs to breathe air.",
-  "Il vit dans la mer, nage très bien et doit respirer de l'air.",
-  "Vive en el mar, nada muy bien y necesita respirar aire."
- ]},
- {id:"tubarao",emoji:"🦈",n:["Tubarão","Shark","Requin","Tiburón"],c:[
-  "É um peixe que vive no mar e tem várias filas de dentes.",
-  "It is a fish that lives in the sea and has several rows of teeth.",
-  "C'est un poisson qui vit dans la mer et possède plusieurs rangées de dents.",
-  "Es un pez que vive en el mar y tiene varias filas de dientes."
- ]},
- {id:"tartaruga",emoji:"🐢",n:["Tartaruga","Turtle","Tortue","Tortuga"],c:[
-  "Tem uma carapaça que protege o seu corpo.",
-  "It has a shell that protects its body.",
-  "Elle possède une carapace qui protège son corps.",
-  "Tiene un caparazón que protege su cuerpo."
- ]},
- {id:"pinguim",emoji:"🐧",n:["Pinguim","Penguin","Pingouin","Pingüino"],c:[
-  "É uma ave que não voa e sabe nadar muito bem.",
-  "It is a bird that cannot fly and swims very well.",
-  "C'est un oiseau qui ne vole pas et nage très bien.",
-  "Es un ave que no vuela y sabe nadar muy bien."
- ]},
- {id:"aguia",emoji:"🦅",n:["Águia","Eagle","Aigle","Águila"],c:[
-  "É uma ave de rapina que tem uma visão muito apurada.",
-  "It is a bird of prey with very sharp eyesight.",
-  "C'est un rapace qui possède une vue très perçante.",
-  "Es un ave rapaz que tiene una vista muy aguda."
- ]},
- {id:"coruja",emoji:"🦉",n:["Coruja","Owl","Chouette","Búho"],c:[
-  "É uma ave conhecida por estar ativa durante a noite.",
-  "It is a bird known for being active at night.",
-  "C'est un oiseau connu pour être actif pendant la nuit.",
-  "Es un ave conocida por estar activa durante la noche."
- ]},
- {id:"papagaio",emoji:"🦜",n:["Papagaio","Parrot","Perroquet","Loro"],c:[
-  "É uma ave colorida que consegue imitar alguns sons.",
-  "It is a colourful bird that can imitate some sounds.",
-  "C'est un oiseau coloré qui peut imiter certains sons.",
-  "Es un ave colorida que puede imitar algunos sonidos."
- ]},
- {id:"crocodilo",emoji:"🐊",n:["Crocodilo","Crocodile","Crocodile","Cocodrilo"],c:[
-  "É um réptil que vive perto da água e tem mandíbulas fortes.",
-  "It is a reptile that lives near water and has strong jaws.",
-  "C'est un reptile qui vit près de l'eau et possède de puissantes mâchoires.",
-  "Es un reptil que vive cerca del agua y tiene mandíbulas fuertes."
- ]},
- {id:"camelo",emoji:"🐪",n:["Camelo","Camel","Chameau","Camello"],c:[
-  "É um animal adaptado ao deserto e tem uma ou duas bossas.",
-  "It is an animal adapted to the desert and has one or two humps.",
-  "C'est un animal adapté au désert qui possède une ou deux bosses.",
-  "Es un animal adaptado al desierto y tiene una o dos jorobas."
- ]},
- {id:"canguru",emoji:"🦘",n:["Canguru","Kangaroo","Kangourou","Canguro"],c:[
-  "É conhecido por saltar e por transportar a cria numa bolsa.",
-  "It is known for jumping and carrying its baby in a pouch.",
-  "Il est connu pour ses sauts et porte son petit dans une poche.",
-  "Es conocido por saltar y llevar a su cría en una bolsa."
- ]},
- {id:"urso",emoji:"🐻",n:["Urso","Bear","Ours","Oso"],c:[
-  "É um mamífero forte que pode viver em florestas.",
-  "It is a strong mammal that can live in forests.",
-  "C'est un mammifère puissant qui peut vivre dans les forêts.",
-  "Es un mamífero fuerte que puede vivir en los bosques."
- ]},
- {id:"raposa",emoji:"🦊",n:["Raposa","Fox","Renard","Zorro"],c:[
-  "É um mamífero conhecido pela cauda comprida e pelo focinho fino.",
-  "It is a mammal known for its long tail and pointed snout.",
-  "C'est un mammifère connu pour sa longue queue et son museau fin.",
-  "Es un mamífero conocido por su cola larga y su hocico fino."
- ]},
- {id:"lobo",emoji:"🐺",n:["Lobo","Wolf","Loup","Lobo"],c:[
-  "É um animal que pode viver e caçar em alcateias.",
-  "It is an animal that can live and hunt in packs.",
-  "C'est un animal qui peut vivre et chasser en meute.",
-  "Es un animal que puede vivir y cazar en manadas."
- ]},
- {id:"abelha",emoji:"🐝",n:["Abelha","Bee","Abeille","Abeja"],c:[
-  "É um inseto que ajuda a polinizar flores e produz mel.",
-  "It is an insect that helps pollinate flowers and makes honey.",
-  "C'est un insecte qui aide à polliniser les fleurs et produit du miel.",
-  "Es un insecto que ayuda a polinizar flores y produce miel."
- ]},
- {id:"borboleta",emoji:"🦋",n:["Borboleta","Butterfly","Papillon","Mariposa"],c:[
-  "É um inseto com asas coloridas que passa por uma metamorfose.",
-  "It is an insect with colourful wings that goes through metamorphosis.",
-  "C'est un insecte aux ailes colorées qui subit une métamorphose.",
-  "Es un insecto con alas coloridas que pasa por una metamorfosis."
- ]},
- {id:"sapo",emoji:"🐸",n:["Sapo","Frog","Grenouille","Rana"],c:[
-  "É um anfíbio que consegue saltar e vive perto de locais húmidos.",
-  "It is an amphibian that can jump and lives near damp places.",
-  "C'est un amphibien qui saute et vit près des endroits humides.",
-  "Es un anfibio que puede saltar y vive cerca de lugares húmedos."
- ]},
- {id:"cavalo",emoji:"🐴",n:["Cavalo","Horse","Cheval","Caballo"],c:[
-  "É um mamífero que corre e é conhecido por ser usado para montaria.",
-  "It is a mammal that runs and is known for being ridden.",
-  "C'est un mammifère qui court et que l'on peut monter.",
-  "Es un mamífero que corre y se utiliza para montar."
- ]},
- {id:"vaca",emoji:"🐮",n:["Vaca","Cow","Vache","Vaca"],c:[
-  "É um animal doméstico que produz leite.",
-  "It is a farm animal that produces milk.",
-  "C'est un animal domestique qui produit du lait.",
-  "Es un animal doméstico que produce leche."
- ]},
- {id:"galinha",emoji:"🐔",n:["Galinha","Chicken","Poule","Gallina"],c:[
-  "É uma ave doméstica que põe ovos.",
-  "It is a farm bird that lays eggs.",
-  "C'est un oiseau domestique qui pond des œufs.",
-  "Es un ave doméstica que pone huevos."
- ]}
-];
-
-/* FRASES DIFERENTES PARA VARIAR AS PERGUNTAS */
-const templates = {
- pt:[
-  "Que animal é este? ",
-  "Descobre o animal pela pista: ",
-  "Consegues adivinhar? ",
-  "Escolhe o animal correto: ",
-  "Qual destes animais corresponde à descrição? ",
-  "Mostra o que sabes! ",
-  "Lê a pista e encontra o animal: ",
-  "Vamos descobrir: ",
-  "Atenção à descrição! ",
-  "Qual é o animal misterioso? "
- ],
- en:[
-  "Which animal is this? ",
-  "Guess the animal from this clue: ",
-  "Can you guess? ",
-  "Choose the correct animal: ",
-  "Which animal matches this description? ",
-  "Show what you know! ",
-  "Read the clue and find the animal: ",
-  "Let's discover: ",
-  "Pay attention to the clue! ",
-  "Which is the mystery animal? "
- ],
- fr:[
-  "Quel est cet animal ? ",
-  "Devine l'animal grâce à cet indice : ",
-  "Peux-tu deviner ? ",
-  "Choisis le bon animal : ",
-  "Quel animal correspond à cette description ? ",
-  "Montre ce que tu sais ! ",
-  "Lis l'indice et trouve l'animal : ",
-  "Découvrons : ",
-  "Attention à la description ! ",
-  "Quel est l'animal mystère ? "
- ],
- es:[
-  "¿Qué animal es este? ",
-  "Adivina el animal con esta pista: ",
-  "¿Puedes adivinarlo? ",
-  "Elige el animal correcto: ",
-  "¿Qué animal coincide con esta descripción? ",
-  "¡Demuestra lo que sabes! ",
-  "Lee la pista y encuentra el animal: ",
-  "Vamos a descubrirlo: ",
-  "¡Presta atención a la pista! ",
-  "¿Cuál es el animal misterioso? "
- ]
-};
-
-const words = {
- pt:{
-  subtitle:"Aprende, descobre e diverte-te!",
-  welcome:"Estás pronto para o desafio?",
-  intro:"Descobre animais, responde às perguntas e ganha estrelas. Cada partida tem 10 perguntas!",
-  start:"COMEÇAR A JOGAR 🚀",points:"Pontos",stars:"Estrelas",question:"Pergunta",
-  label:"DESCOBRE O ANIMAL",next:"PRÓXIMA PERGUNTA ➜",
-  good:"Muito bem! Resposta certa! ⭐",bad:"Quase! A resposta certa é: ",
-  finish:"Desafio terminado!",again:"JOGAR NOVAMENTE 🔄",
-  result:"Acertaste em {score} de 10 perguntas e ganhaste {stars} estrelas!",
-  musicOn:"🔊 Música: ON",musicOff:"🔇 Música: OFF"
- },
- en:{
-  subtitle:"Learn, discover and have fun!",
-  welcome:"Are you ready for the challenge?",
-  intro:"Discover animals, answer questions and earn stars. Each game has 10 questions!",
-  start:"START PLAYING 🚀",points:"Points",stars:"Stars",question:"Question",
-  label:"DISCOVER THE ANIMAL",next:"NEXT QUESTION ➜",
-  good:"Well done! Correct answer! ⭐",bad:"Almost! The correct answer is: ",
-  finish:"Challenge completed!",again:"PLAY AGAIN 🔄",
-  result:"You got {score} out of 10 questions right and earned {stars} stars!",
-  musicOn:"🔊 Music: ON",musicOff:"🔇 Music: OFF"
- },
- fr:{
-  subtitle:"Apprends, découvre et amuse-toi !",
-  welcome:"Es-tu prêt pour le défi ?",
-  intro:"Découvre des animaux, réponds aux questions et gagne des étoiles. Chaque partie comporte 10 questions !",
-  start:"COMMENCER 🚀",points:"Points",stars:"Étoiles",question:"Question",
-  label:"DÉCOUVRE L'ANIMAL",next:"QUESTION SUIVANTE ➜",
-  good:"Bravo ! Bonne réponse ! ⭐",bad:"Presque ! La bonne réponse est : ",
-  finish:"Défi terminé !",again:"REJOUER 🔄",
-  result:"Tu as trouvé {score} bonnes réponses sur 10 et gagné {stars} étoiles !",
-  musicOn:"🔊 Musique : ON",musicOff:"🔇 Musique : OFF"
- },
- es:{
-  subtitle:"¡Aprende, descubre y diviértete!",
-  welcome:"¿Estás listo para el desafío?",
-  intro:"Descubre animales, responde preguntas y gana estrellas. ¡Cada partida tiene 10 preguntas!",
-  start:"EMPEZAR A JUGAR 🚀",points:"Puntos",stars:"Estrellas",question:"Pregunta",
-  label:"DESCUBRE EL ANIMAL",next:"SIGUIENTE PREGUNTA ➜",
-  good:"¡Muy bien! ¡Respuesta correcta! ⭐",bad:"¡Casi! La respuesta correcta es: ",
-  finish:"¡Desafío terminado!",again:"JUGAR DE NUEVO 🔄",
-  result:"¡Has acertado {score} de 10 preguntas y has ganado {stars} estrellas!",
-  musicOn:"🔊 Música: ON",musicOff:"🔇 Música: OFF"
- }
-};
-
-const HISTORY_KEY = "desafiamais_animais_history_365_v3";
-const DAY_MS = 24 * 60 * 60 * 1000;
-const GAME_SIZE = 10;
-
-let language = "pt";
-let bank = [];
-let gameQuestions = [];
-let currentIndex = 0;
-let score = 0;
-let answered = false;
-let musicEnabled = true;
-let audioContext = null;
-let musicTimer = null;
-let noteIndex = 0;
-let currentQuestion = null;
-
 const $ = id => document.getElementById(id);
 
-function shuffle(list){
-  const copy = [...list];
-  for(let i=copy.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [copy[i],copy[j]] = [copy[j],copy[i]];
-  }
-  return copy;
-}
+const words = {
+  pt:{language:"Idioma",intro:"Responde a 10 perguntas e ganha estrelas!",start:"COMEÇAR A JOGAR",question:"Pergunta",of:"de",next:"PRÓXIMA",correct:"Muito bem! Resposta certa! 🎉",wrong:"Quase! Vamos aprender juntos.",finish:"Terminaste o desafio!",points:"Acertaste",again:"JOGAR NOVAMENTE",home:"Voltar ao início",musicOn:"🔊 Som ligado",musicOff:"🔇 Som desligado",result:"O teu resultado",excellent:"Excelente trabalho!",good:"Muito bem! Continua a aprender!",try:"Boa tentativa! Joga novamente!",clues:["Que animal é este?","Descobre o animal pela pista:","Qual é o animal?"]},
+  en:{language:"Language",intro:"Answer 10 questions and earn stars!",start:"START PLAYING",question:"Question",of:"of",next:"NEXT",correct:"Well done! Correct answer! 🎉",wrong:"Almost! Let's learn together.",finish:"You finished the challenge!",points:"You got",again:"PLAY AGAIN",home:"Back to start",musicOn:"🔊 Sound on",musicOff:"🔇 Sound off",result:"Your result",excellent:"Excellent work!",good:"Well done! Keep learning!",try:"Good try! Play again!",clues:["What animal is this?","Guess the animal from the clue:","Which animal is it?"]},
+  fr:{language:"Langue",intro:"Réponds à 10 questions et gagne des étoiles !",start:"COMMENCER",question:"Question",of:"sur",next:"SUIVANTE",correct:"Bravo ! Bonne réponse ! 🎉",wrong:"Presque ! Apprenons ensemble.",finish:"Tu as terminé le défi !",points:"Tu as trouvé",again:"REJOUER",home:"Retour",musicOn:"🔊 Son activé",musicOff:"🔇 Son désactivé",result:"Ton résultat",excellent:"Excellent travail !",good:"Bravo ! Continue à apprendre !",try:"Bel essai ! Recommence !",clues:["Quel est cet animal ?","Trouve l'animal grâce à l'indice :","De quel animal s'agit-il ?"]},
+  es:{language:"Idioma",intro:"¡Responde 10 preguntas y gana estrellas!",start:"EMPEZAR A JUGAR",question:"Pregunta",of:"de",next:"SIGUIENTE",correct:"¡Muy bien! ¡Respuesta correcta! 🎉",wrong:"¡Casi! Aprendamos juntos.",finish:"¡Has terminado el desafío!",points:"Has acertado",again:"JUGAR OTRA VEZ",home:"Volver al inicio",musicOn:"🔊 Sonido activado",musicOff:"🔇 Sonido desactivado",result:"Tu resultado",excellent:"¡Excelente trabajo!",good:"¡Muy bien! Sigue aprendiendo.",try:"¡Buen intento! Vuelve a jugar.",clues:["¿Qué animal es este?","Adivina el animal con esta pista:","¿Qué animal será?"]}
+};
 
-function makeBank(){
-  bank = [];
-  animals.forEach(animal=>{
-    for(let i=0;i<10;i++){
-      bank.push({
-        id:animal.id+"-"+i,
-        animal:animal,
-        template:i
-      });
-    }
-  });
-}
+const animals = [
+ {e:"🦁",n:["Leão","Lion","Lion","León"],d:["É conhecido como o rei da selva e tem uma juba.","It is known as the king of the jungle and has a mane.","Il est connu comme le roi de la jungle et possède une crinière.","Es conocido como el rey de la selva y tiene melena."]},
+ {e:"🐘",n:["Elefante","Elephant","Éléphant","Elefante"],d:["Tem uma tromba comprida e orelhas grandes.","It has a long trunk and large ears.","Il a une longue trompe et de grandes oreilles.","Tiene una trompa larga y orejas grandes."]},
+ {e:"🦒",n:["Girafa","Giraffe","Girafe","Jirafa"],d:["Tem um pescoço muito comprido e manchas no corpo.","It has a very long neck and spots on its body.","Elle a un très long cou et des taches sur le corps.","Tiene un cuello muy largo y manchas en el cuerpo."]},
+ {e:"🐒",n:["Macaco","Monkey","Singe","Mono"],d:["Gosta de trepar às árvores e muitos comem frutas.","It likes climbing trees and many eat fruit.","Il aime grimper aux arbres et beaucoup mangent des fruits.","Le gusta trepar a los árboles y muchos comen frutas."]},
+ {e:"🦓",n:["Zebra","Zebra","Zèbre","Cebra"],d:["Tem o corpo coberto de riscas pretas e brancas.","It has a body covered in black and white stripes.","Son corps est couvert de rayures noires et blanches.","Tiene el cuerpo cubierto de rayas blancas y negras."]},
+ {e:"🐊",n:["Crocodilo","Crocodile","Crocodile","Cocodrilo"],d:["É um réptil que vive perto da água e tem dentes fortes.","It is a reptile that lives near water and has strong teeth.","C'est un reptile qui vit près de l'eau et possède de fortes dents.","Es un reptil que vive cerca del agua y tiene dientes fuertes."]},
+ {e:"🦛",n:["Hipopótamo","Hippopotamus","Hippopotame","Hipopótamo"],d:["É um animal grande que passa muito tempo na água.","It is a large animal that spends a lot of time in water.","C'est un grand animal qui passe beaucoup de temps dans l'eau.","Es un animal grande que pasa mucho tiempo en el agua."]},
+ {e:"🐬",n:["Golfinho","Dolphin","Dauphin","Delfín"],d:["É um mamífero marinho conhecido pelos seus saltos.","It is a sea mammal known for its jumps.","C'est un mammifère marin connu pour ses sauts.","Es un mamífero marino conocido por sus saltos."]},
+ {e:"🦈",n:["Tubarão","Shark","Requin","Tiburón"],d:["É um peixe marinho com várias filas de dentes.","It is a sea fish with several rows of teeth.","C'est un poisson marin avec plusieurs rangées de dents.","Es un pez marino con varias filas de dientes."]},
+ {e:"🐧",n:["Pinguim","Penguin","Manchot","Pingüino"],d:["É uma ave que não voa e nada muito bem.","It is a bird that cannot fly and swims very well.","C'est un oiseau qui ne vole pas et nage très bien.","Es un ave que no vuela y nada muy bien."]},
+ {e:"🦅",n:["Águia","Eagle","Aigle","Águila"],d:["É uma ave de rapina com visão muito apurada.","It is a bird of prey with very sharp eyesight.","C'est un rapace avec une vue très perçante.","Es un ave rapaz con una vista muy aguda."]},
+ {e:"🦉",n:["Coruja","Owl","Hibou","Búho"],d:["É uma ave que costuma estar ativa durante a noite.","It is a bird that is often active at night.","C'est un oiseau souvent actif pendant la nuit.","Es un ave que suele estar activa durante la noche."]},
+ {e:"🐢",n:["Tartaruga","Turtle","Tortue","Tortuga"],d:["Tem uma carapaça que protege o seu corpo.","It has a shell that protects its body.","Elle possède une carapace qui protège son corps.","Tiene un caparazón que protege su cuerpo."]},
+ {e:"🐍",n:["Cobra","Snake","Serpent","Serpiente"],d:["É um réptil comprido que não tem patas.","It is a long reptile with no legs.","C'est un long reptile sans pattes.","Es un reptil alargado que no tiene patas."]},
+ {e:"🐸",n:["Rã","Frog","Grenouille","Rana"],d:["É um anfíbio que salta e vive perto de locais húmidos.","It is an amphibian that jumps and lives near wet places.","C'est un amphibien qui saute et vit près des endroits humides.","Es un anfibio que salta y vive cerca de lugares húmedos."]},
+ {e:"🦋",n:["Borboleta","Butterfly","Papillon","Mariposa"],d:["É um inseto com asas coloridas.","It is an insect with colorful wings.","C'est un insecte aux ailes colorées.","Es un insecto con alas de colores."]},
+ {e:"🐝",n:["Abelha","Bee","Abeille","Abeja"],d:["Produz mel e ajuda a polinizar as flores.","It makes honey and helps pollinate flowers.","Elle produit du miel et aide à polliniser les fleurs.","Produce miel y ayuda a polinizar las flores."]},
+ {e:"🐜",n:["Formiga","Ant","Fourmi","Hormiga"],d:["É um pequeno inseto que vive em colónias.","It is a small insect that lives in colonies.","C'est un petit insecte qui vit en colonies.","Es un pequeño insecto que vive en colonias."]},
+ {e:"🐕",n:["Cão","Dog","Chien","Perro"],d:["É um animal doméstico conhecido pela sua amizade com as pessoas.","It is a pet known for its friendship with people.","C'est un animal domestique connu pour son amitié avec les humains.","Es un animal doméstico conocido por su amistad con las personas."]},
+ {e:"🐈",n:["Gato","Cat","Chat","Gato"],d:["É um animal doméstico que gosta de brincar e de dormir.","It is a pet that likes to play and sleep.","C'est un animal domestique qui aime jouer et dormir.","Es un animal doméstico al que le gusta jugar y dormir."]},
+ {e:"🐄",n:["Vaca","Cow","Vache","Vaca"],d:["É um animal de quinta que produz leite.","It is a farm animal that produces milk.","C'est un animal de ferme qui produit du lait.","Es un animal de granja que produce leche."]},
+ {e:"🐎",n:["Cavalo","Horse","Cheval","Caballo"],d:["É um animal forte que pode ser montado e corre depressa.","It is a strong animal that can be ridden and runs fast.","C'est un animal fort que l'on peut monter et qui court vite.","Es un animal fuerte que se puede montar y corre rápido."]},
+ {e:"🐑",n:["Ovelha","Sheep","Mouton","Oveja"],d:["Tem lã no corpo e vive muitas vezes em rebanhos.","It has wool on its body and often lives in flocks.","Elle porte de la laine et vit souvent en troupeau.","Tiene lana en el cuerpo y suele vivir en rebaños."]},
+ {e:"🐔",n:["Galinha","Chicken","Poule","Gallina"],d:["É uma ave doméstica que põe ovos.","It is a domestic bird that lays eggs.","C'est un oiseau domestique qui pond des œufs.","Es un ave doméstica que pone huevos."]},
+ {e:"🐪",n:["Camelo","Camel","Chameau","Camello"],d:["É um animal adaptado a viver no deserto.","It is an animal adapted to living in the desert.","C'est un animal adapté à la vie dans le désert.","Es un animal adaptado para vivir en el desierto."]}
+];
 
-function getHistory(){
-  try{
-    const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "{}");
-    const now = Date.now();
-    const clean = {};
-    Object.keys(saved).forEach(id=>{
-      if(Number(saved[id]) && now-Number(saved[id]) < 365*DAY_MS){
-        clean[id] = Number(saved[id]);
-      }
-    });
-    return clean;
-  }catch(error){
-    return {};
-  }
-}
+let lang="pt", questions=[], index=0, points=0, locked=false, musicEnabled=true;
+let audio=null, musicTimer=null;
 
-function saveSeen(id){
-  try{
-    const history = getHistory();
-    history[id] = Date.now();
-    localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
-  }catch(error){
-    /* O jogo continua mesmo se o armazenamento estiver indisponível. */
-  }
-}
-
-function makeGameQuestions(){
-  let history = getHistory();
-  let available = bank.filter(item=>!history[item.id]);
-
-  if(available.length < GAME_SIZE){
-    try{localStorage.removeItem(HISTORY_KEY)}catch(error){}
-    history = {};
-    available = [...bank];
-  }
-
-  return shuffle(available).slice(0,GAME_SIZE);
-}
-
+function langIndex(){return ["pt","en","fr","es"].indexOf(lang);}
+function shuffle(list){const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function setLanguage(){
-  language = $("language").value;
-  const w = words[language];
-
-  document.documentElement.lang = language;
-  $("subtitle").textContent = w.subtitle;
-  $("welcomeTitle").textContent = w.welcome;
-  $("welcomeText").textContent = w.intro;
-  $("startButton").textContent = w.start;
-  $("scoreLabel").textContent = w.points;
-  $("starsLabel").textContent = w.stars;
-  $("progressLabel").textContent = w.question;
-  $("questionLabel").textContent = w.label;
-  $("nextButton").textContent = w.next;
-  $("resultTitle").textContent = w.finish;
-  $("againButton").textContent = w.again;
-  updateMusicButton();
-
-  if(currentQuestion && !$("gamePanel").classList.contains("hidden")){
-    renderQuestion();
-  }
+  lang=$("language").value;
+  const w=words[lang];
+  $("languageLabel").textContent=w.language;
+  $("intro").textContent=w.intro;
+  $("startButton").textContent=w.start;
+  $("musicButton").textContent=musicEnabled?w.musicOn:w.musicOff;
+  $("next").textContent=w.next;
+  $("again").textContent=w.again;
+  $("home").textContent=w.home;
+  document.documentElement.lang=lang;
 }
-
-function updateMusicButton(){
-  const w = words[language];
-  $("musicButton").textContent = musicEnabled ? w.musicOn : w.musicOff
-;
-
+function makeQuestions(){
+  const li=langIndex();
+  questions=shuffle(animals).slice(0,10).map((animal,i)=>{
+    const wrong=shuffle(animals.filter(a=>a!==animal)).slice(0,3);
+    const options=shuffle([animal,...wrong]);
+    return {animal, clue:words[lang].clues[i%3]+" "+animal.d[li], options};
+  });
 }
-
-function updateMusicButton(){
-  const w = words[language];
-  $("musicButton").textContent = musicEnabled ? w.musicOn : w.musicOff;
-}
-
 function startGame(){
-  stopSpeech();
-  gameQuestions = makeGameQuestions();
-  currentIndex = 0;
-  score = 0;
-  answered = false;
-
-  $("welcome").classList.add("hidden");
-  $("resultPanel").classList.add("hidden");
-  $("gamePanel").classList.remove("hidden");
-
-  startMusic();
+  stopMusic();
+  makeQuestions();index=0;points=0;locked=false;
+  $("result").style.display="none";
+  $("game").style.display="block";
+  $("startButton").style.display="none";
+  $("score").textContent="⭐ 0";
   showQuestion();
+  if(musicEnabled) startMusic();
 }
-
 function showQuestion(){
-  if(currentIndex >= gameQuestions.length){
-    finishGame();
-    return;
-  }
-
-  answered = false;
-  currentQuestion = gameQuestions[currentIndex];
-  saveSeen(currentQuestion.id);
-  renderQuestion();
-}
-
-function renderQuestion(){
-  if(!currentQuestion) return;
-
-  const w = words[language];
-  const animal = currentQuestion.animal;
-  const langIndex = ["pt","en","fr","es"].indexOf(language);
-
-  $("score").textContent = score;
-  $("starCount").textContent = "⭐ "+score;
-  $("questionCount").textContent = (currentIndex+1)+"/"+GAME_SIZE;
-  $("progressBar").style.width = (currentIndex/GAME_SIZE*100)+"%";
-  $("animalEmoji").textContent = animal.emoji;
-  $("questionText").textContent =
-    templates[language][currentQuestion.template] + animal.c[langIndex];
-
-  $("feedback").textContent = "";
-  $("nextButton").classList.add("hidden");
-
-  const wrongAnswers = shuffle(
-    animals.filter(a=>a.id!==animal.id)
-  ).slice(0,3);
-
-  const options = shuffle([animal,...wrongAnswers]);
-  const answersBox = $("answers");
-  answersBox.innerHTML = "";
-
-  options.forEach(option=>{
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "answer";
-    button.textContent = option.emoji+"  "+option.n[langIndex];
-    button.addEventListener("click",()=>{
-      checkAnswer(button,option.id);
-    });
-    answersBox.appendChild(button);
+  locked=false;
+  const q=questions[index], w=words[lang], li=langIndex();
+  $("questionCount").textContent=w.question+" "+(index+1)+" "+w.of+" 10";
+  $("bar").style.width=(index/10*100)+"%";
+  $("animal").textContent="❓";
+  $("question").textContent=q.clue;
+  $("feedback").textContent="";
+  $("next").style.display="none";
+  const area=$("answers");area.innerHTML="";
+  q.options.forEach(option=>{
+    const b=document.createElement("button");
+    b.type="button";b.className="answer";b.textContent=option.n[li];
+    b.addEventListener("click",()=>checkAnswer(b,option));
+    area.appendChild(b);
   });
-
-  speak($("questionText").textContent);
+  speak(q.clue);
 }
-
-function checkAnswer(button,selectedId){
-  if(answered) return;
-  answered = true;
-
-  const animal = currentQuestion.animal;
-  const langIndex = ["pt","en","fr","es"].indexOf(language);
-  const correct = selectedId === animal.id;
-  const buttons = [...$("answers").querySelectorAll("button")];
-
-  buttons.forEach(btn=>{
-    btn.disabled = true;
-    if(btn.textContent.includes(animal.n[langIndex])){
-      btn.classList.add("correct");
-    }
+function checkAnswer(button,chosen){
+  if(locked)return;
+  locked=true;
+  const q=questions[index], li=langIndex(), w=words[lang];
+  const correct=chosen===q.animal;
+  if(correct){points++;$("feedback").textContent=w.correct;button.classList.add("correct");playTone(660);}
+  else{$("feedback").textContent=w.wrong;button.classList.add("wrong");playTone(220);}
+  $("animal").textContent=q.animal.e;
+  $("score").textContent="⭐ "+points;
+  [...$("answers").children].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===q.animal.n[li])b.classList.add("correct");
   });
-
-  if(correct){
-    score++;
-    button.classList.add("correct");
-    $("feedback").textContent = words[language].good;
-    playTone(660,0.15);
-    setTimeout(()=>playTone(880,0.18),130);
-  }else{
-    button.classList.add("wrong");
-    $("feedback").textContent =
-      words[language].bad + animal.n[langIndex];
-    playTone(190,0.25);
-  }
-
-  $("score").textContent = score;
-  $("starCount").textContent = "⭐ "+score;
-  $("progressBar").style.width =
-    ((currentIndex+1)/GAME_SIZE*100)+"%";
-
-  $("nextButton").classList.remove("hidden");
-  stopSpeech();
+  $("next").style.display="block";
+  speak(correct?w.correct:w.wrong);
 }
-
 function nextQuestion(){
-  if(!answered) return;
-  currentIndex++;
+  index++;
+  if(index>=questions.length){finishGame();return;}
   showQuestion();
 }
-
 function finishGame(){
-  stopSpeech();
-  $("gamePanel").classList.add("hidden");
-  $("resultPanel").classList.remove("hidden");
-
-  const w = words[language];
-  $("finalStars").textContent = "⭐".repeat(Math.max(1,score));
-  $("resultText").textContent =
-    w.result.replace("{score}",score).replace("{stars}",score);
+  stopMusic();
+  $("game").style.display="none";
+  $("result").style.display="block";
+  const w=words[lang];
+  $("resultStars").textContent="⭐".repeat(Math.max(1,Math.ceil(points/2)));
+  $("resultTitle").textContent=points>=8?w.excellent:points>=5?w.good:w.try;
+  $("resultText").textContent=w.finish+" "+w.points+" "+points+" / 10.";
+  $("bar").style.width="100%";
+  speak($("resultTitle").textContent+" "+$("resultText").textContent);
 }
-
+function goHome(){
+  stopMusic();
+  $("result").style.display="none";$("game").style.display="none";
+  $("startButton").style.display="block";
+}
 function getAudio(){
-  if(!audioContext){
-    const AudioClass = window.AudioContext || window.webkitAudioContext;
-    if(!AudioClass) return null;
-    audioContext = new AudioClass();
-  }
-
-  if(audioContext.state === "suspended"){
-    audioContext.resume().catch(()=>{});
-  }
-
-  return audioContext;
+  if(!audio){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audio=new AC();}
+  if(audio&&audio.state==="suspended")audio.resume();
+  return audio;
 }
-
-function playTone(frequency,duration){
-  if(!musicEnabled) return;
-  const ctx = getAudio();
-  if(!ctx) return;
-
-  const oscillator = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  oscillator.type = "sine";
-  oscillator.frequency.value = frequency;
-  gain.gain.setValueAtTime(0.0001,ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.12,ctx.currentTime+0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+duration);
-
-  oscillator.connect(gain);
-  gain.connect(ctx.destination);
-  oscillator.start();
-  oscillator.stop(ctx.currentTime+duration+0.03);
+function playTone(freq){
+  if(!musicEnabled)return;
+  const a=getAudio();if(!a)return;
+  const osc=a.createOscillator(),gain=a.createGain();
+  osc.type="sine";osc.frequency.value=freq;
+  gain.gain.setValueAtTime(.0001,a.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.12,a.currentTime+.03);
+  gain.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.22);
+  osc.connect(gain);gain.connect(a.destination);osc.start();osc.stop(a.currentTime+.23);
 }
-
 function startMusic(){
-  if(!musicEnabled || musicTimer) return;
-  getAudio();
-
-  const melody = [392,440,523,440,392,330,392,523];
-
-  musicTimer = setInterval(()=>{
-    if(!musicEnabled || !audioContext) return;
-    playBackgroundNote(melody[noteIndex % melody.length]);
-    noteIndex++;
-  },420);
+  if(!musicEnabled||musicTimer)return;
+  const notes=[392,494,587,494,440,523,659,523];let n=0;
+  musicTimer=setInterval(()=>{
+    if(!musicEnabled||!$("game")||$("game").style.display==="none"){stopMusic();return;}
+    const a=getAudio();if(!a)return;
+    const osc=a.createOscillator(),gain=a.createGain();
+    osc.type="triangle";osc.frequency.value=notes[n++%notes.length];
+    gain.gain.setValueAtTime(.0001,a.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.025,a.currentTime+.04);
+    gain.gain.exponentialRampToValueAtTime(.0001,a.currentTime+.28);
+    osc.connect(gain);gain.connect(a.destination);osc.start();osc.stop(a.currentTime+.3);
+  },360);
 }
-
-function playBackgroundNote(frequency){
-  if(!audioContext || !musicEnabled) return;
-
-  const ctx = audioContext;
-  const oscillator = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  oscillator.type = "sine";
-  oscillator.frequency.value = frequency;
-  gain.gain.setValueAtTime(0.0001,ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.025,ctx.currentTime+0.04);
-  gain.gain.linearRampToValueAtTime(0.0001,ctx.currentTime+0.32);
-
-  oscillator.connect(gain);
-  gain.connect(ctx.destination);
-  oscillator.start();
-  oscillator.stop(ctx.currentTime+0.34);
-}
-
+function stopMusic(){if(musicTimer){clearInterval(musicTimer);musicTimer=null;}}
 function toggleMusic(){
-  musicEnabled = !musicEnabled;
-
-  if(musicEnabled){
-    startMusic();
-  }else{
-    if(musicTimer){
-      clearInterval(musicTimer);
-      musicTimer = null;
-    }
-    stopSpeech();
-  }
-
-  updateMusicButton();
+  musicEnabled=!musicEnabled;
+  $("musicButton").textContent=musicEnabled?words[lang].musicOn:words[lang].musicOff;
+  if(musicEnabled&&$("game").style.display==="block"){getAudio();startMusic();}
+  else stopMusic();
 }
-
 function speak(message){
-  if(!musicEnabled || !("speechSynthesis" in window)) return;
-
-  stopSpeech();
-
-  const utterance = new SpeechSynthesisUtterance(message);
-  utterance.lang = {
-    pt:"pt-PT",
-    en:"en-US",
-    fr:"fr-FR",
-    es:"es-ES"
-  }[language];
-
-  utterance.rate = 0.9;
-  utterance.pitch = 1.05;
-  window.speechSynthesis.speak(utterance);
+  if(!("speechSynthesis" in window))return;
+  window.speechSynthesis.cancel();
+  const utter=new SpeechSynthesisUtterance(message);
+  utter.lang={pt:"pt-PT",en:"en-US",fr:"fr-FR",es:"es-ES"}[lang];
+  utter.rate=.9;window.speechSynthesis.speak(utter);
 }
 
-function stopSpeech(){
-  if("speechSynthesis" in window){
-    window.speechSynthesis.cancel();
-  }
-}
-
+$("language").addEventListener("change",()=>{setLanguage();});
 $("startButton").addEventListener("click",startGame);
-$("againButton").addEventListener("click",startGame);
-$("nextButton").addEventListener("click",nextQuestion);
+$("next").addEventListener("click",nextQuestion);
+$("again").addEventListener("click",startGame);
+$("home").addEventListener("click",goHome);
 $("musicButton").addEventListener("click",toggleMusic);
-$("language").addEventListener("change",setLanguage);
-
-makeBank();
 setLanguage();
-
 </script>
 </body>
 </html>
