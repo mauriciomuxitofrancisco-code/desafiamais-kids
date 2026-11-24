@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#7856e8">
 <title>Matemática Divertida | DESAFIA+ KIDS</title>
 
@@ -11,25 +11,25 @@
 body{
  margin:0;
  font-family:'Trebuchet MS',Arial,sans-serif;
- background:linear-gradient(135deg,#fff4c7,#f4eaff,#dff7ff);
+ background:linear-gradient(135deg,#fff2bd,#f0e5ff,#dff8ff);
  color:#30245c;
  min-height:100vh;
 }
 header{
- background:linear-gradient(120deg,#7048e8,#a34be8);
+ background:linear-gradient(120deg,#7048e8,#ae50e9);
  color:white;text-align:center;padding:22px 12px;
  border-radius:0 0 30px 30px;
 }
-.logo{font-size:25px;font-weight:900}
+.logo{font-size:26px;font-weight:900}
 header p{margin:7px 0 0}
 .container{width:92%;max-width:520px;margin:22px auto}
 .panel{
- background:white;padding:22px;border-radius:25px;
- box-shadow:0 7px 20px #39236b18;text-align:center;
+ background:white;padding:20px;border-radius:25px;
+ box-shadow:0 7px 22px #39236b18;text-align:center;
 }
 .topbar{
  display:flex;justify-content:center;gap:8px;
- align-items:center;flex-wrap:wrap;
+ flex-wrap:wrap;align-items:center;
 }
 select,.small-btn{
  padding:10px;border-radius:12px;
@@ -38,19 +38,18 @@ select,.small-btn{
 }
 h1{font-size:25px;margin:20px 0 8px}
 .score{
- background:#fff1a8;padding:10px 15px;
- border-radius:15px;font-weight:bold;
- display:inline-block;
+ background:#fff1a8;padding:10px 16px;
+ border-radius:15px;font-weight:bold;display:inline-block;
 }
 .question{
  background:#f1eaff;border-radius:22px;
- padding:25px 10px;margin:20px 0;
+ padding:24px 10px;margin:20px 0;
 }
 .question small{color:#7959c5;font-weight:bold}
-.math{font-size:48px;font-weight:900;color:#673bd1;margin:12px 0}
+.math{font-size:48px;font-weight:900;color:#673bd1;margin:12px}
 .answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .answer{
- border:none;border-radius:18px;padding:19px 8px;
+ border:0;border-radius:18px;padding:19px 8px;
  font-size:25px;font-weight:900;color:#38245f;
  background:#e8f5ff;cursor:pointer;
  box-shadow:0 4px 0 #c5e3f7;
@@ -58,24 +57,25 @@ h1{font-size:25px;margin:20px 0 8px}
 .answer:nth-child(2){background:#ffe9ed;box-shadow:0 4px 0 #f7c8d1}
 .answer:nth-child(3){background:#e8ffe9;box-shadow:0 4px 0 #bce8c0}
 .answer:nth-child(4){background:#fff4d8;box-shadow:0 4px 0 #f2dfaa}
-.answer:disabled{opacity:.8;cursor:default}
-.feedback{min-height:42px;font-weight:bold;font-size:19px;margin:15px 0 5px}
-.stars{font-size:28px;letter-spacing:4px;margin:12px 0}
-.progress{height:12px;background:#eee8fa;border-radius:20px;overflow:hidden;margin-top:15px}
+.answer:disabled{opacity:.8}
+.feedback{min-height:45px;font-weight:bold;font-size:18px;margin:14px 0}
+.stars{font-size:27px;letter-spacing:3px;margin:12px}
+.progress{height:12px;background:#eee8fa;border-radius:20px;overflow:hidden}
 .progress div{
  height:100%;width:0;
  background:linear-gradient(90deg,#ffbd35,#ff7a59);
  transition:width .3s;
 }
 button.main{
- border:none;background:linear-gradient(120deg,#7048e8,#a34be8);
+ border:0;background:linear-gradient(120deg,#7048e8,#a34be8);
  color:white;font-weight:bold;padding:15px 24px;
  border-radius:16px;font-size:17px;cursor:pointer;margin-top:15px;
 }
 button:focus-visible,select:focus-visible{
  outline:3px solid #ffae30;outline-offset:3px;
 }
-.hidden{display:none}
+.hidden{display:none!important}
+.music-status{font-size:13px;color:#796c9d;margin-top:10px}
 footer{text-align:center;padding:20px;color:#796c9d;font-size:13px}
 @media(max-width:360px){
  .math{font-size:39px}
@@ -101,18 +101,16 @@ footer{text-align:center;padding:20px;color:#796c9d;font-size:13px}
    <option value="fr">🇫🇷 Français</option>
    <option value="es">🇪🇸 Español</option>
   </select>
-
-  <button class="small-btn" id="musicBtn" onclick="toggleMusic()">🎵 Ativar música</button>
+  <button class="small-btn" id="musicBtn" onclick="toggleMusic()">🎵 Ligar música</button>
   <button class="small-btn" id="soundBtn" onclick="toggleSound()">🔊 Efeitos ligados</button>
  </div>
+
+ <div class="music-status" id="musicStatus">A música começa quando tocares no botão 🎵</div>
 
  <h1 id="title">🧮 Matemática divertida</h1>
  <p id="intro">Vamos descobrir quantas respostas consegues acertar!</p>
 
- <div class="score">
-  ⭐ <span id="points">0</span>
-  <span id="pointsLabel"> estrelas</span>
- </div>
+ <div class="score">⭐ <span id="points">0</span><span id="pointsLabel"> estrelas</span></div>
 
  <div class="question">
   <small id="questionLabel">PERGUNTA 1 DE 10</small>
@@ -129,7 +127,6 @@ footer{text-align:center;padding:20px;color:#796c9d;font-size:13px}
 
  <div class="feedback" id="feedback" aria-live="polite"></div>
  <div class="stars" id="stars">☆☆☆☆☆☆☆☆☆☆</div>
-
  <div class="progress"><div id="progress"></div></div>
 
  <button class="main hidden" id="nextBtn" onclick="nextQuestion()">Próxima pergunta ➜</button>
@@ -152,9 +149,11 @@ header:"Aprender também pode ser uma aventura!",
 title:"🧮 Matemática divertida",
 intro:"Vamos descobrir quantas respostas consegues acertar!",
 points:" estrelas",question:"PERGUNTA",of:"DE",
-listen:"Ouvir pergunta",musicOn:"🎵 Música ligada",
-musicOff:"🎵 Ativar música",soundOn:"🔊 Efeitos ligados",
+listen:"Ouvir pergunta",musicOn:"🎵 Desligar música",
+musicOff:"🎵 Ligar música",soundOn:"🔊 Efeitos ligados",
 soundOff:"🔇 Efeitos desligados",
+statusOn:"A música está a tocar 🎶",
+statusOff:"A música está desligada",
 correct:"🎉 Muito bem! Acertaste!",
 wrong:"😊 Não faz mal! Vamos tentar a próxima!",
 next:"Próxima pergunta ➜",result:"🏆 Parabéns!",
@@ -167,9 +166,10 @@ header:"Learning can also be an adventure!",
 title:"🧮 Fun Mathematics",
 intro:"Let's see how many answers you can get right!",
 points:" stars",question:"QUESTION",of:"OF",
-listen:"Listen to question",musicOn:"🎵 Music on",
-musicOff:"🎵 Activate music",soundOn:"🔊 Effects on",
-soundOff:"🔇 Effects off",
+listen:"Listen to question",musicOn:"🎵 Turn music off",
+musicOff:"🎵 Turn music on",soundOn:"🔊 Effects on",
+soundOff:"🔇 Effects off",statusOn:"Music is playing 🎶",
+statusOff:"Music is off",
 correct:"🎉 Well done! Correct!",
 wrong:"😊 That's okay! Let's try the next one!",
 next:"Next question ➜",result:"🏆 Congratulations!",
@@ -182,9 +182,10 @@ header:"Apprendre peut aussi être une aventure !",
 title:"🧮 Mathématiques amusantes",
 intro:"Voyons combien de réponses tu peux trouver !",
 points:" étoiles",question:"QUESTION",of:"SUR",
-listen:"Écouter la question",musicOn:"🎵 Musique activée",
+listen:"Écouter la question",musicOn:"🎵 Couper la musique",
 musicOff:"🎵 Activer la musique",soundOn:"🔊 Effets activés",
 soundOff:"🔇 Effets désactivés",
+statusOn:"La musique joue 🎶",statusOff:"La musique est coupée",
 correct:"🎉 Bravo ! Bonne réponse !",
 wrong:"😊 Ce n'est pas grave ! Passons à la suivante !",
 next:"Question suivante ➜",result:"🏆 Félicitations !",
@@ -197,9 +198,10 @@ header:"¡Aprender también puede ser una aventura!",
 title:"🧮 Matemáticas divertidas",
 intro:"¡Vamos a ver cuántas respuestas puedes acertar!",
 points:" estrellas",question:"PREGUNTA",of:"DE",
-listen:"Escuchar pregunta",musicOn:"🎵 Música activada",
+listen:"Escuchar pregunta",musicOn:"🎵 Apagar música",
 musicOff:"🎵 Activar música",soundOn:"🔊 Efectos activados",
 soundOff:"🔇 Efectos desactivados",
+statusOn:"La música está sonando 🎶",statusOff:"La música está apagada",
 correct:"🎉 ¡Muy bien! ¡Correcto!",
 wrong:"😊 ¡No pasa nada! ¡Vamos con la siguiente!",
 next:"Siguiente pregunta ➜",result:"🏆 ¡Felicidades!",
@@ -223,67 +225,69 @@ let answered=false;
 const melody=[
 523.25,659.25,783.99,659.25,
 587.33,698.46,880,698.46,
-523.25,659.25,783.99,1046.5,
+523.25,659.25,783.99,880,
 783.99,659.25,587.33,523.25
 ];
 
+const bass=[130.81,164.81,196,164.81];
+
 function getAudio(){
  if(!audioContext){
-  audioContext=new (window.AudioContext||window.webkitAudioContext)();
+  const Audio=window.AudioContext||window.webkitAudioContext;
+  if(!Audio)throw new Error("Áudio não suportado");
+  audioContext=new Audio();
  }
- if(audioContext.state==="suspended") audioContext.resume();
  return audioContext;
 }
 
-function playTone(freq,duration=.15){
- if(!sound)return;
- try{
-  const ctx=getAudio();
-  const osc=ctx.createOscillator();
-  const gain=ctx.createGain();
-  osc.type="sine";
-  osc.frequency.value=freq;
-  gain.gain.setValueAtTime(.10,ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+duration);
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime+duration);
- }catch(e){}
+function note(freq,volume,duration,type="sine"){
+ const ctx=getAudio();
+ const osc=ctx.createOscillator();
+ const gain=ctx.createGain();
+ const now=ctx.currentTime;
+
+ osc.type=type;
+ osc.frequency.setValueAtTime(freq,now);
+ gain.gain.setValueAtTime(0.0001,now);
+ gain.gain.linearRampToValueAtTime(volume,now+.04);
+ gain.gain.setValueAtTime(volume,now+duration*.65);
+ gain.gain.linearRampToValueAtTime(.0001,now+duration);
+
+ osc.connect(gain);
+ gain.connect(ctx.destination);
+ osc.start(now);
+ osc.stop(now+duration+.02);
 }
 
 function playMusicNote(){
  if(!musicEnabled||!audioContext)return;
 
- const ctx=audioContext;
- const now=ctx.currentTime;
- const melodyNotes=melody[musicStep%melody.length];
+ const index=musicStep%melody.length;
 
- const osc=ctx.createOscillator();
- const gain=ctx.createGain();
-
- osc.type="sine";
- osc.frequency.value=melodyNotes;
-
- gain.gain.setValueAtTime(.0001,now);
- gain.gain.linearRampToValueAtTime(.025,now+.08);
- gain.gain.linearRampToValueAtTime(.0001,now+.55);
-
- osc.connect(gain);
- gain.connect(ctx.destination);
- osc.start(now);
- osc.stop(now+.58);
+ note(melody[index],.055,.48,"triangle");
+ note(bass[musicStep%bass.length],.035,.52,"sine");
 
  musicStep++;
 }
 
-function startMusic(){
- if(musicTimer||!musicEnabled)return;
+async function startMusic(){
+ if(!musicEnabled||musicTimer)return;
+
  try{
-  getAudio();
+  const ctx=getAudio();
+  await ctx.resume();
+
+  if(!musicEnabled)return;
+
   playMusicNote();
-  musicTimer=setInterval(playMusicNote,600);
- }catch(e){}
+  musicTimer=setInterval(playMusicNote,550);
+
+  document.getElementById("musicStatus").textContent=
+   translations[lang].statusOn;
+ }catch(error){
+  document.getElementById("musicStatus").textContent=
+   "Não foi possível iniciar o áudio. Toca novamente no botão.";
+ }
 }
 
 function stopMusic(){
@@ -291,15 +295,27 @@ function stopMusic(){
   clearInterval(musicTimer);
   musicTimer=null;
  }
+ document.getElementById("musicStatus").textContent=
+  translations[lang].statusOff;
 }
 
-function toggleMusic(){
- musicEnabled=!musicEnabled;
- document.getElementById("musicBtn").textContent=
-  musicEnabled?translations[lang].musicOn:translations[lang].musicOff;
+async function toggleMusic(){
+ if(!musicEnabled){
+  musicEnabled=true;
+  document.getElementById("musicBtn").textContent=
+   translations[lang].musicOn;
+  await startMusic();
+ }else{
+  musicEnabled=false;
+  stopMusic();
+  document.getElementById("musicBtn").textContent=
+   translations[lang].musicOff;
+ }
+}
 
- if(musicEnabled)startMusic();
- else stopMusic();
+function playTone(freq,duration=.16){
+ if(!sound)return;
+ try{note(freq,.10,duration,"sine");}catch(e){}
 }
 
 function toggleSound(){
@@ -329,7 +345,7 @@ function speakQuestion(){
 }
 
 function makeQuestions(){
- let list=[];
+ const list=[];
  for(let i=0;i<10;i++){
   let a=Math.floor(Math.random()*10)+1;
   let b=Math.floor(Math.random()*10)+1;
@@ -337,15 +353,15 @@ function makeQuestions(){
 
   if(operation==="-"&&b>a)[a,b]=[b,a];
 
-  let answer=operation==="+"?a+b:a-b;
-  let choices=new Set([answer]);
+  const answer=operation==="+"?a+b:a-b;
+  const choices=new Set([answer]);
 
   while(choices.size<4){
-   let option=answer+Math.floor(Math.random()*9)-4;
+   const option=answer+Math.floor(Math.random()*9)-4;
    if(option>=0&&option!==answer)choices.add(option);
   }
 
-  let options=[...choices].sort(()=>Math.random()-.5);
+  const options=[...choices].sort(()=>Math.random()-.5);
   list.push({a,b,operation,answer,options});
  }
  return list;
@@ -361,13 +377,17 @@ function changeLanguage(){
  document.getElementById("intro").textContent=t.intro;
  document.getElementById("pointsLabel").textContent=t.points;
  document.getElementById("listenText").textContent=t.listen;
- document.getElementById("musicBtn").textContent=musicEnabled?t.musicOn:t.musicOff;
- document.getElementById("soundBtn").textContent=sound?t.soundOn:t.soundOff;
+ document.getElementById("musicBtn").textContent=
+  musicEnabled?t.musicOn:t.musicOff;
+ document.getElementById("soundBtn").textContent=
+  sound?t.soundOn:t.soundOff;
+ document.getElementById("musicStatus").textContent=
+  musicEnabled?t.statusOn:t.statusOff;
  document.getElementById("nextBtn").textContent=t.next;
  document.getElementById("resultTitle").textContent=t.result;
  document.getElementById("restartBtn").textContent=t.restart;
 
- if(current<10&&questions.length)showQuestion();
+ if(questions.length&&current<10)showQuestion();
 }
 
 function checkAnswer(index){
@@ -376,14 +396,12 @@ function checkAnswer(index){
 
  const q=questions[current];
  const t=translations[lang];
- const buttons=document.querySelectorAll(".answer");
-
- buttons.forEach(b=>b.disabled=true);
+ document.querySelectorAll(".answer").forEach(b=>b.disabled=true);
 
  if(q.options[index]===q.answer){
   score++;
   playTone(660,.15);
-  setTimeout(()=>playTone(880,.2),150);
+  setTimeout(()=>playTone(880,.2),160);
   document.getElementById("feedback").textContent=t.correct;
  }else{
   playTone(220,.2);
@@ -393,7 +411,8 @@ function checkAnswer(index){
  document.getElementById("points").textContent=score;
  document.getElementById("stars").textContent=
   "★".repeat(score)+"☆".repeat(10-score);
- document.getElementById("progress").style.width=((current+1)*10)+"%";
+ document.getElementById("progress").style.width=
+  ((current+1)*10)+"%";
  document.getElementById("nextBtn").classList.remove("hidden");
 }
 
@@ -404,15 +423,12 @@ function showQuestion(){
 
  document.getElementById("math").textContent=
   q.a+" "+q.operation+" "+q.b+" = ?";
-
  document.getElementById("questionLabel").textContent=
   t.question+" "+(current+1)+" "+t.of+" 10";
-
  document.getElementById("feedback").textContent="";
  document.getElementById("nextBtn").classList.add("hidden");
 
- const buttons=document.querySelectorAll(".answer");
- buttons.forEach((button,index)=>{
+ document.querySelectorAll(".answer").forEach((button,index)=>{
   button.disabled=false;
   button.textContent=q.options[index];
  });
@@ -420,10 +436,7 @@ function showQuestion(){
 
 function nextQuestion(){
  current++;
- if(current>=10){
-  finishGame();
-  return;
- }
+ if(current>=10){finishGame();return;}
  showQuestion();
 }
 
@@ -451,7 +464,6 @@ function startGame(){
  document.getElementById("points").textContent="0";
  document.getElementById("stars").textContent="☆☆☆☆☆☆☆☆☆☆";
  document.getElementById("progress").style.width="0%";
-
  document.getElementById("result").classList.add("hidden");
  document.getElementById("answers").classList.remove("hidden");
  document.querySelector(".question").classList.remove("hidden");
@@ -461,6 +473,5 @@ function startGame(){
 
 startGame();
 </script>
-
 </body>
 </html>
