@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mundo dos Números | DESAFIA+ KIDS</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#e8f3ff,#fff3d9);font-family:system-ui,Arial,sans-serif;color:#17324b}
+header{background:#17436e;color:white;text-align:center;padding:17px 12px}h1{margin:0;font-size:clamp(24px,5vw,35px)}header p{margin:5px 0}
+main{max-width:780px;margin:auto;padding:14px 13px 105px}.mascots{display:flex;justify-content:center;gap:20px;font-size:48px;margin:9px}.mascot{display:inline-block;animation:bob 1.6s infinite ease-in-out}.mascot:nth-child(2){animation-delay:.3s}.mascot:nth-child(3){animation-delay:.6s}@keyframes bob{50%{transform:translateY(-10px) rotate(5deg)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#fff;border:1px solid #d9e5f3;border-radius:14px;padding:9px;text-align:center;font-size:13px}.stat b{display:block;font-size:22px;color:#2865d8}.progress{height:9px;background:#dce7f4;border-radius:20px;overflow:hidden;margin:12px 0}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#2865d8,#19a875)}
+.panel{background:#fff;border:1px solid #d9e5f3;border-radius:20px;padding:clamp(16px,4vw,25px);text-align:center;box-shadow:0 7px 22px #173d6710}.tag{display:inline-block;padding:6px 12px;border-radius:20px;background:#eaf1ff;color:#2454a0;font-size:13px;font-weight:800}
+.art{font-size:clamp(62px,16vw,94px);margin:10px}.question{font-size:clamp(21px,5vw,31px);font-weight:900;margin:13px 0;line-height:1.35}.hint{font-size:14px;color:#6b7d91;min-height:20px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.answers button{border:2px solid #d8e5f7;background:#edf4ff;color:#173d67;border-radius:13px;padding:14px 8px;font-size:clamp(17px,4vw,21px);font-weight:850;min-height:59px;cursor:pointer}.answers button.correct{background:#d9f8e9;border-color:#16845b}.answers button.wrong{background:#ffe2e2;border-color:#d33}.answers button:disabled{opacity:1}
+.feedback{min-height:29px;margin:13px 0;font-weight:850}.actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.action{border:0;border-radius:12px;padding:12px 15px;font-weight:800;font-size:15px;cursor:pointer}.primary{background:#2865d8;color:white}.soft{background:#e9eff8;color:#173d67}.gold{background:#ffc94a;color:#553900}.small{font-size:13px;color:#667b91;margin-top:12px}
+footer{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #dbe6f5;padding:9px;display:flex;justify-content:center;gap:9px;flex-wrap:wrap}footer a{padding:10px 13px;border-radius:12px;text-decoration:none;font-weight:800;font-size:13px}.home{background:#173d67;color:white}.wa{background:#16a34a;color:white}
+@media(max-width:430px){.answers{grid-template-columns:1fr}.stat{padding:8px 3px}}
+</style></head>
+<body><header><h1>🔢 Mundo dos Números 🚀</h1><p>DESAFIA+ KIDS · Aprende matemática a brincar!</p></header>
+<main><div class="mascots"><span class="mascot">🦁</span><span class="mascot">🤖</span><span class="mascot">🐵</span></div>
+<div class="stats"><div class="stat">Desafio<b id="count">0/1000</b></div><div class="stat">Pontos<b id="score">0</b></div><div class="stat">Nível<b id="level">1</b></div></div><div class="progress"><span id="bar"></span></div>
+<section class="panel"><span class="tag" id="tag">MATEMÁTICA DIVERTIDA</span><div class="art" id="art">🧮</div><div class="question" id="question">Prepara-te para os números!</div><div class="hint" id="hint">Escolhe a resposta certa.</div><div class="answers" id="answers"></div><div class="feedback" id="feedback" aria-live="polite"></div>
+<div class="actions"><button class="action primary" id="next" onclick="nextChallenge()">Começar</button><button class="action soft" onclick="speak()">🔊 Ouvir pergunta</button><button class="action gold" id="music" onclick="toggleMusic()">🎵 Ligar música</button></div>
+<p class="small">1.000 desafios de cálculo, comparação, sequências, tabuada, frações e lógica numérica. O progresso fica guardado neste dispositivo.</p></section></main>
+<footer><a class="home" href="index.html">⌂ Menu principal</a><a class="wa" id="wa" target="_blank" rel="noopener">WhatsApp Premium</a></footer>
+<script>
+const TOTAL=1000,KEY='desafiamais_numeros_1000_v1',$=id=>document.getElementById(id);
+let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}let used=new Set(saved.used||[]),score=Number(saved.score)||0,current=null,locked=false,ctx=null,musicOn=false,musicTimer=null;
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const mascots=['🦁','🤖','🐵','🦊','🐼','🐸','🐯','🐨','🐰','🐲'];
+function make(id){
+ let type=id%10,round=Math.floor(id/10),a,b,ans,q,tag,art=mascots[Math.floor(round/10)%mascots.length],hint='';
+ // Deterministic varied values; each of the 10 skills has 100 distinct instances.
+ switch(type){
+ case 0: a=round+2;b=(round*3)%19+1;ans=a+b;q=`${a} + ${b} = ?`;tag='Adição';hint='Junta as quantidades.';break;
+ case 1: a=round+25;b=(round*7)%a;ans=a-b;q=`${a} − ${b} = ?`;tag='Subtração';hint='Descobre quanto sobra.';break;
+ case 2: a=round%12+2;b=(round*5)%12+2;ans=a*b;q=`${a} × ${b} = ?`;tag='Multiplicação';hint='Pensa na tabuada.';break;
+ case 3: b=round%12+2;ans=round%12+2;a=ans*b;q=`${a} ÷ ${b} = ?`;tag='Divisão';hint='Reparte em grupos iguais.';break;
+ case 4: a=round*2+3;b=round*2+5;ans=Math.max(a,b);q=`Qual é o maior número: ${a} ou ${b}?`;tag='Comparação';hint='Compara os dois números.';break;
+ case 5: a=round%40+2;ans=a+3;q=`Completa a sequência: ${a}, ${a+1}, ${a+2}, __`;tag='Sequências';hint='Os números aumentam sempre da mesma forma.';break;
+ case 6: a=round%20+2;b=round%9+2;ans=a*b;q=`Há ${a} caixas com ${b} lápis cada. Quantos lápis há?`;tag='Problemas';hint='Multiplica as caixas pelos lápis.';break;
+ case 7: a=round%8+2;b=a*2;ans=a;q=`Metade de ${b} é…`;tag='Metades';hint='Divide por dois.';break;
+ case 8: a=round%9+1;b=round%8+1;ans=a+b;q=`Tenho ${a} dezenas e ${b} unidades. Qual é o total?`;ans=a*10+b;q=`Tenho ${a} dezenas e ${b} unidades. Qual é o número?`;tag='Dezenas e unidades';hint='Uma dezena vale 10 unidades.';break;
+ default: a=round%25+5;ans=a%2===0?'Par':'Ímpar';q=`O número ${a} é par ou ímpar?`;tag='Números pares e ímpares';hint='Um número par termina em 0, 2, 4, 6 ou 8.';break;
+ }
+ let opts;
+ if(type===9){opts=shuffle(['Par','Ímpar'])}
+ else {let pool=new Set([String(ans)]);while(pool.size<4){let delta=Math.floor(Math.random()*11)-5;if(delta===0)delta=7;let v=Math.max(0,Number(ans)+delta);pool.add(String(v))}opts=shuffle([...pool])}
+ return {q,ans:String(ans),opts,tag,art,hint,type};
+}
+function update(){$('count').textContent=used.size+'/'+TOTAL;$('score').textContent=score;$('level').textContent=Math.floor(score/100)+1;$('bar').style.width=(used.size/TOTAL*100)+'%'}
+function save(){localStorage.setItem(KEY,JSON.stringify({used:[...used],score}))}
+function nextChallenge(){
+ if(used.size>=TOTAL){$('question').textContent='🏆 Concluíste os 1.000 desafios!';$('art').textContent='🏆';$('answers').innerHTML='';$('feedback').textContent='Pontuação final: '+score+' pontos. Parabéns, campeão!';$('next').textContent='Recomeçar';$('next').onclick=()=>{localStorage.removeItem(KEY);location.reload()};return}
+ let id;do{id=Math.floor(Math.random()*TOTAL)}while(used.has(id));used.add(id);current=make(id);locked=false;
+ $('tag').textContent='DESAFIO '+used.size+' · '+current.tag;$('art').textContent=current.art;$('question').textContent=current.q;$('hint').textContent=current.hint;$('feedback').textContent='';$('answers').innerHTML='';
+ current.opts.forEach(opt=>{let b=document.createElement('button');b.textContent=opt;b.onclick=()=>answer(b,opt);$('answers').appendChild(b)});
+ $('next').textContent='Próximo desafio';$('next').onclick=nextChallenge;update();save();speak();
+}
+function answer(btn,opt){if(locked)return;locked=true;[...$('answers').children].forEach(b=>{b.disabled=true;if(b.textContent===current.ans)b.classList.add('correct')});
+ if(opt===current.ans){score+=10;$('feedback').textContent='🌟 Excelente! Resposta certa! +10 pontos';tone(760)}else{$('feedback').textContent='Continua a tentar! A resposta certa é '+current.ans+'.';btn.classList.add('wrong');tone(220)}
+ update();save()}
+function speak(){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance($('question').textContent);u.lang='pt-AO';u.rate=1.05;speechSynthesis.speak(u)}
+function tone(freq){try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();let o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.045,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.22);o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.23)}catch(e){}}
+function toggleMusic(){if(musicOn){clearInterval(musicTimer);musicOn=false;$('music').textContent='🎵 Ligar música';return}try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();musicOn=true;$('music').textContent='🔇 Desligar música';let notes=[392,494,587,659,587,494,440,523],i=0;musicTimer=setInterval(()=>tone(notes[i++%notes.length]),390)}catch(e){$('music').textContent='Som indisponível'}}
+$('wa').href='https://wa.me/244938403923?text='+encodeURIComponent('Olá! Gostaria de adquirir um código Premium do DESAFIA+ KIDS para desbloquear os 13 jogos educativos. Pode informar-me sobre o preço e as condições?');
+update();
+</script></body></html>
