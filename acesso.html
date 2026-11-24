@@ -12,47 +12,57 @@
 </head>
 <body>
 <main class="wrap">
-<header class="head"><div class="logo">🎮⭐</div><h1>DESAFIA+ KIDS</h1><p>Conta do encarregado de educação e ativação do acesso Premium aos 13 jogos.</p></header>
+<header class="head"><div class="logo">🎮⭐</div><h1>DESAFIA+ KIDS</h1><p>Acesso simples e seguro aos 13 jogos Premium.</p></header>
 <section class="card">
-<div class="notice"><p class="small"><strong>Importante:</strong> um código só pode ser ativado uma vez e fica associado a uma única conta. O encarregado de educação deve gerir o e-mail e a palavra-passe.</p></div>
-<div class="tabs"><button id="tabCreate" class="active" type="button">Criar conta</button><button id="tabLogin" class="secondary" type="button">Já tenho conta</button></div>
-<div id="createPane">
-<h2>Criar conta do encarregado</h2>
-<label for="newEmail">E-mail do encarregado de educação</label><input id="newEmail" type="email" autocomplete="email" placeholder="E-mail do responsável">
-<label for="newPassword">Criar palavra-passe</label><input id="newPassword" type="password" autocomplete="new-password" minlength="10" placeholder="Pelo menos 10 caracteres">
-<label for="newCode">Código Premium</label><input id="newCode" type="text" autocomplete="off" placeholder="Ex.: DK-XXXXXXXX" autocapitalize="characters">
-<button id="createAccount">Criar conta e ativar código</button>
+<div class="notice"><p class="small"><strong>Como funciona:</strong> na primeira ativação, confirma o e-mail com um código enviado para a tua caixa de entrada. Depois, a sessão fica guardada neste dispositivo. Se mudares de dispositivo ou terminares a sessão, poderás confirmar o e-mail novamente.</p></div>
+<div class="tabs"><button id="tabActivate" class="active" type="button">Ativar Premium</button><button id="tabReturn" class="secondary" type="button">Já tenho acesso</button></div>
+<div id="activatePane">
+<h2>Criar conta e ativar código</h2>
+<label for="guardianName">Nome do encarregado de educação</label><input id="guardianName" type="text" autocomplete="name" maxlength="80" placeholder="Nome do responsável">
+<label for="activationEmail">E-mail do encarregado de educação</label><input id="activationEmail" type="email" autocomplete="email" placeholder="email@exemplo.com">
+<label for="premiumCode">Código Premium</label><input id="premiumCode" type="text" autocomplete="off" placeholder="Ex.: DK-XXXXXXXX" autocapitalize="characters">
+<button id="sendActivationOtp">Enviar código para o meu e-mail</button>
 </div>
-<div id="loginPane" class="hidden">
-<h2>Entrar na conta</h2>
-<label for="email">E-mail do encarregado de educação</label><input id="email" type="email" autocomplete="username" placeholder="E-mail do responsável">
-<label for="password">Palavra-passe</label><input id="password" type="password" autocomplete="current-password" placeholder="Palavra-passe">
-<button id="login">Entrar</button>
-<label for="loginCode">Código Premium (se ainda não foi ativado)</label><input id="loginCode" type="text" autocomplete="off" placeholder="Ex.: DK-XXXXXXXX" autocapitalize="characters">
-<button id="redeem" class="secondary">Ativar código nesta conta</button>
+<div id="returnPane" class="hidden">
+<h2>Entrar na minha conta</h2>
+<label for="returnEmail">E-mail do encarregado de educação</label><input id="returnEmail" type="email" autocomplete="email" placeholder="E-mail utilizado na ativação">
+<button id="sendLoginOtp">Enviar código de entrada</button>
 </div>
-<div id="status" class="status" aria-live="polite">Escolha criar uma conta ou entrar numa conta existente.</div>
-<div id="signedIn" class="hidden"><p id="accountInfo"></p><button id="checkAccess" class="secondary">Verificar acesso Premium</button><button id="logout" class="secondary">Terminar sessão</button></div>
+<div id="otpPane" class="hidden">
+<h2>Confirmar e-mail</h2>
+<p>Abre o e-mail que recebeste e introduz aqui o código de confirmação.</p>
+<label for="emailOtp">Código recebido por e-mail</label><input id="emailOtp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Código de confirmação">
+<button id="verifyOtp">Confirmar e continuar</button>
+<button id="resendOtp" class="secondary">Enviar outro código</button>
+</div>
+<div id="signedIn" class="hidden">
+<p id="accountInfo"></p>
+<button id="checkAccess" class="secondary">Verificar acesso Premium</button>
+<button id="logout" class="secondary">Terminar sessão neste dispositivo</button>
+</div>
+<div id="status" class="status" aria-live="polite">Para começar, introduz o teu e-mail e o código Premium.</div>
 </section>
 <p class="small" style="text-align:center"><a class="back" href="./index.html">← Voltar aos jogos</a></p>
 </main>
 <script>
 const SUPABASE_URL="https://ounjndogaogngxchuijj.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
-const $=id=>document.getElementById(id);
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id);let pending={mode:null,email:null,code:null,name:null};
 const say=t=>{$("status").textContent=t;};
-function showTab(which){const create=which==="create";$ ("createPane").classList.toggle("hidden",!create);$("loginPane").classList.toggle("hidden",create);$("tabCreate").classList.toggle("active",create);$("tabLogin").classList.toggle("active",!create);$("tabCreate").classList.toggle("secondary",!create);$("tabLogin").classList.toggle("secondary",create);}
-function showUser(user){$("signedIn").classList.remove("hidden");$("accountInfo").textContent="Sessão iniciada: "+(user.email||"conta autenticada")+". Esta conta é a titular do acesso.";}
-async function currentUser(){const {data:{user}}=await db.auth.getUser();if(user)showUser(user);else $("signedIn").classList.add("hidden");return user;}
-async function redeem(code){const clean=(code||"").trim().toUpperCase();if(!clean){say("Introduza o código Premium.");return;}say("A validar o código…");const {data,error}=await db.rpc("redeem_premium_code",{p_code:clean});if(error){say("Não foi possível ativar: "+error.message);return;}say(typeof data==="string"?data:JSON.stringify(data));await checkAccess();}
-async function checkAccess(){say("A verificar o acesso…");const {data,error}=await db.rpc("check_premium_access");if(error){say("Não foi possível verificar: "+error.message);return;}if(data===true){say("Acesso Premium ativo! Esta conta tem acesso aos 13 jogos Premium.");}else{say("Esta conta ainda não tem acesso Premium ativo. Ative um código válido ou contacte o administrador.");}}
-$("tabCreate").onclick=()=>showTab("create");$("tabLogin").onclick=()=>showTab("login");
-$("createAccount").onclick=async()=>{const email=$("newEmail").value.trim();const password=$("newPassword").value;const code=$("newCode").value;if(!email||!password||password.length<10){say("Preencha o e-mail do encarregado e uma palavra-passe com pelo menos 10 caracteres.");return;}$("createAccount").disabled=true;say("A criar a conta…");const {data,error}=await db.auth.signUp({email,password});$("createAccount").disabled=false;if(error){say("Não foi possível criar a conta: "+error.message);return;}if(data.session){showUser(data.user);await redeem(code);}else{say("Conta criada. Verifique o e-mail do encarregado e confirme o endereço. Depois volte aqui, entre na conta e ative o código. O código ainda não foi utilizado.");showTab("login");$("email").value=email;$("loginCode").value=code;}};
-$("login").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;if(!email||!password){say("Introduza o e-mail e a palavra-passe.");return;}say("A iniciar sessão…");const {data,error}=await db.auth.signInWithPassword({email,password});if(error){say("Não foi possível entrar: "+error.message);return;}$("password").value="";showUser(data.user);say("Sessão iniciada. Pode ativar o código ou verificar o acesso.");};
-$("redeem").onclick=async()=>{const user=await currentUser();if(!user){say("Entre primeiro na conta do encarregado de educação.");return;}await redeem($("loginCode").value);};
-$("checkAccess").onclick=checkAccess;
-$("logout").onclick=async()=>{await db.auth.signOut();$("signedIn").classList.add("hidden");say("Sessão terminada.");};
+function showTab(which){const activate=which==="activate";$ ("activatePane").classList.toggle("hidden",!activate);$("returnPane").classList.toggle("hidden",activate);$("otpPane").classList.add("hidden");$("tabActivate").classList.toggle("active",activate);$("tabReturn").classList.toggle("active",!activate);$("tabActivate").classList.toggle("secondary",!activate);$("tabReturn").classList.toggle("secondary",activate);}
+function showUser(user){$("signedIn").classList.remove("hidden");$("accountInfo").textContent="Sessão iniciada para "+(user.email||"a tua conta")+". O acesso fica associado a esta conta e a sessão é mantida neste dispositivo.";}
+async function currentUser(){const {data:{user}}=await db.auth.getUser();if(user){showUser(user);await checkAccess(false);}else $("signedIn").classList.add("hidden");return user;}
+async function sendOtp(mode){let email,name,code;if(mode==="activate"){name=$("guardianName").value.trim();email=$("activationEmail").value.trim();code=$("premiumCode").value.trim().toUpperCase();if(!name||!email||!code){say("Preenche o nome do encarregado, o e-mail e o código Premium.");return;}pending={mode,email,code,name};}else{email=$("returnEmail").value.trim();if(!email){say("Introduz o e-mail utilizado na ativação.");return;}pending={mode,email,code:null,name:null};}
+const button=mode==="activate"?$("sendActivationOtp"):$("sendLoginOtp");button.disabled=true;say("A enviar o código de confirmação para o e-mail…");
+const options={shouldCreateUser:mode==="activate",emailRedirectTo:location.origin+location.pathname};if(mode==="activate")options.data={guardian_name:name};
+const {error}=await db.auth.signInWithOtp({email,options});button.disabled=false;if(error){say("Não foi possível enviar o e-mail: "+error.message);return;}
+$("otpPane").classList.remove("hidden");$("emailOtp").value="";say("Enviámos um código para "+email+". Abre o e-mail e introduz o código aqui. Não partilhes esse código com ninguém.");}
+async function verifyOtp(){const token=$("emailOtp").value.trim();if(!pending.email||!token){say("Introduz o código recebido por e-mail.");return;}$("verifyOtp").disabled=true;say("A confirmar o e-mail…");const {data,error}=await db.auth.verifyOtp({email:pending.email,token,type:"email"});$("verifyOtp").disabled=false;if(error){say("Não foi possível confirmar: "+error.message+". Confirma o código e tenta novamente.");return;}showUser(data.user);$("otpPane").classList.add("hidden");if(pending.mode==="activate"){const name=pending.name;const code=pending.code;if(name){const {error:metaError}=await db.auth.updateUser({data:{guardian_name:name}});if(metaError){say("A conta foi confirmada, mas não foi possível guardar o nome: "+metaError.message);return;}}await redeem(code);}else{await checkAccess(true);}pending={mode:null,email:null,code:null,name:null};}
+async function redeem(code){if(!code){say("Não recebemos o código Premium. Contacta o administrador.");return;}say("A validar o código Premium…");const {data,error}=await db.rpc("redeem_premium_code",{p_code:code});if(error){say("Não foi possível ativar o código: "+error.message);return;}say(typeof data==="string"?data:"Código validado. A verificar o acesso Premium…");await checkAccess(false);}
+async function checkAccess(showMessage=true){const {data,error}=await db.rpc("check_premium_access");if(error){say("Não foi possível verificar o acesso: "+error.message);return;}if(data===true){if(showMessage)say("Bem-vindo de volta! O teu acesso Premium está ativo para os 13 jogos.");else say("Acesso Premium ativo para os 13 jogos.");}else{say("A conta está autenticada, mas não tem um acesso Premium ativo. Introduz um código válido ou contacta o administrador.");}}
+$("tabActivate").onclick=()=>showTab("activate");$("tabReturn").onclick=()=>showTab("return");$("sendActivationOtp").onclick=()=>sendOtp("activate");$("sendLoginOtp").onclick=()=>sendOtp("return");$("verifyOtp").onclick=verifyOtp;$("resendOtp").onclick=()=>{if(pending.mode)sendOtp(pending.mode);};$("checkAccess").onclick=()=>checkAccess(true);
+$("logout").onclick=async()=>{await db.auth.signOut();$("signedIn").classList.add("hidden");say("Sessão terminada neste dispositivo. Para entrar novamente, confirma o teu e-mail.");};
 db.auth.onAuthStateChange((_event,session)=>{if(session)showUser(session.user);else $("signedIn").classList.add("hidden");});
 currentUser();
 </script>
