@@ -1,1 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16a085">
+<title>Mundo dos Animais | DESAFIA+ KIDS</title>
 
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:'Trebuchet MS',Arial,sans-serif;
+ background:linear-gradient(135deg,#d8fff0,#e8f5ff,#fff5d9);
+ color:#243447;
+ min-height:100vh;
+}
+header{
+ background:linear-gradient(120deg,#079b78,#35c99c);
+ color:white;
+ padding:22px 15px;
+ text-align:center;
+ border-radius:0 0 28px 28px;
+}
+header h1{margin:5px;font-size:29px}
+header p{margin:6px;font-size:14px}
+.top{
+ display:flex;justify-content:space-between;
+ align-items:center;gap:10px;
+ max-width:650px;margin:15px auto;padding:0 14px;
+}
+button,select{
+ border:0;border-radius:15px;padding:12px 15px;
+ font-weight:bold;font-size:14px;cursor:pointer;
+}
+.back{background:white;color:#168b70}
+select{background:white;color:#168b70}
+.container{
+ max-width:650px;margin:12px auto;padding:14px;
+}
+.stats{
+ display:grid;grid-template-columns:repeat(3,1fr);
+ gap:9px;margin-bottom:15px;
+}
+.stat{
+ background:white;border-radius:16px;padding:12px;
+ text-align:center;box-shadow:0 4px 12px #00000010;
+}
+.stat strong{display:block;font-size:21px;color:#079b78}
+.stat span{font-size:12px}
+.progress{
+ height:12px;background:#d5e9e2;border-radius:20px;
+ overflow:hidden;margin:10px 0 18px;
+}
+.bar{height:100%;width:0;background:#16b98b;transition:.3s}
+.game{
+ background:white;border-radius:25px;padding:20px;
+ box-shadow:0 8px 25px #00000012;text-align:center;
+}
+.animal{
+ font-size:95px;margin:12px auto;
+ width:150px;height:135px;
+ display:flex;align-items:center;justify-content:center;
+ background:#effcf6;border-radius:25px;
+}
+.question{font-size:21px;font-weight:bold;margin:15px 0}
+.answers{
+ display:grid;grid-template-columns:1fr 1fr;
+ gap:11px;margin-top:20px;
+}
+.answer{
+ background:#eaf8f2;color:#176b57;
+ border:2px solid #d2eee2;
+ min-height:62px;font-size:17px;
+}
+.answer:active{transform:scale(.97)}
+.answer:disabled{opacity:.85;cursor:default}
+.feedback{
+ min-height:35px;font-size:17px;
+ font-weight:bold;margin-top:15px;
+}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:15px}
+.primary{background:#0ca77e;color:white}
+.sound{background:#fff0bd;color:#765400}
+.hidden{display:none}
+.result{font-size:19px;padding:20px}
+footer{text-align:center;padding:20px;font-size:12px;color:#527568}
+@media(max-width:420px){
+ header h1{font-size:25px}
+ .question{font-size:19px}
+ .answer{font-size:15px;padding:10px 5px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div style="font-size:40px">🦁🐘🦒</div>
+ <h1>🌿 Mundo dos Animais</h1>
+ <p>Descobre, aprende e diverte-te!</p>
+</header>
+
+<div class="top">
+ <button class="back" onclick="location.href='index.html'">← Início</button>
+ <select id="language" onchange="changeLanguage()">
+  <option value="pt">🇦🇴 Português</option>
+  <option value="en">🇬🇧 English</option>
+  <option value="fr">🇫🇷 Français</option>
+  <option value="es">🇪🇸 Español</option>
+ </select>
+</div>
+
+<main class="container">
+
+ <div class="stats">
+  <div class="stat"><strong id="score">0</strong><span id="scoreLabel">Pontos</span></div>
+  <div class="stat"><strong id="stars">⭐ 0</strong><span id="starsLabel">Estrelas</span></div>
+  <div class="stat"><strong id="round">0/10</strong><span id="roundLabel">Perguntas</span></div>
+ </div>
+
+ <div class="progress"><div class="bar" id="bar"></div></div>
+
+ <section class="game" id="game">
+  <div class="animal" id="animal">🐘</div>
+  <div class="question" id="question">Prepara-te para descobrir os animais!</div>
+  <div class="answers" id="answers"></div>
+  <div class="feedback" id="feedback"></div>
+
+  <div class="actions">
+   <button class="primary" id="start" onclick="startGame()">Começar a jogar ▶</button>
+   <button class="sound" id="musicButton" onclick="toggleMusic()">🎵 Música: OFF</button>
+  </div>
+ </section>
+
+ <section class="game hidden" id="result">
+  <div style="font-size:65px">🏆</div>
+  <h2 id="resultTitle">Parabéns!</h2>
+  <div class="result" id="resultText"></div>
+  <button class="primary" onclick="startGame()" id="again">Jogar novamente 🔄</button>
+ </section>
+
+</main>
+
+<footer>DESAFIA+ KIDS • Aprender é uma aventura! 🌈</footer>
+
+<script>
+const translations={
+pt:{
+ points:"Pontos",stars:"Estrelas",questions:"Perguntas",
+ start:"Começar a jogar ▶",music:"🎵 Música: ",
+ on:"ON",off:"OFF",next:"Próxima pergunta ➜",
+ correct:"Muito bem! Resposta certa! ⭐",
+ wrong:"Quase! Vamos aprender juntos! 💚",
+ result:"Parabéns!",again:"Jogar novamente 🔄",
+ finished:"Terminaste o desafio!",
+ earned:"Pontuação:",empty:"Ainda não existem perguntas disponíveis.",
+ intro:"Prepara-te para descobrir os animais!",
+ question:"Qual é o animal apresentado?",
+ final:"Excelente participação! Continua a aprender!",
+ home:"← Início"
+},
+en:{
+ points:"Points",stars:"Stars",questions:"Questions",
+ start:"Start playing ▶",music:"🎵 Music: ",
+ on:"ON",off:"OFF",next:"Next question ➜",
+ correct:"Well done! Correct answer! ⭐",
+ wrong:"Almost! Let's learn together! 💚",
+ result:"Congratulations!",again:"Play again 🔄",
+ finished:"You completed the challenge!",
+ earned:"Score:",empty:"No questions available.",
+ intro:"Get ready to discover animals!",
+ question:"Which animal is shown?",
+ final:"Great participation! Keep learning!",
+ home:"← Home"
+},
+fr:{
+ points:"Points",stars:"Étoiles",questions:"Questions",
+ start:"Commencer ▶",music:"🎵 Musique : ",
+ on:"ON",off:"OFF",next:"Question suivante ➜",
+ correct:"Bravo ! Bonne réponse ! ⭐",
+ wrong:"Presque ! Apprenons ensemble ! 💚",
+ result:"Félicitations !",again:"Rejouer 🔄",
+ finished:"Tu as terminé le défi !",
+ earned:"Score :",empty:"Aucune question disponible.",
+ intro:"Prépare-toi à découvrir les animaux !",
+ question:"Quel animal est présenté ?",
+ final:"Excellente participation ! Continue !",
+ home:"← Accueil"
+},
+es:{
+ points:"Puntos",stars:"Estrellas",questions:"Preguntas",
+ start:"Comenzar ▶",music:"🎵 Música: ",
+ on:"ON",off:"OFF",next:"Siguiente pregunta ➜",
+ correct:"¡Muy bien! ¡Respuesta correcta! ⭐",
+ wrong:"¡Casi! ¡Aprendamos juntos! 💚",
+ result:"¡Felicidades!",again:"Jugar otra vez 🔄",
+ finished:"¡Has terminado el desafío!",
+ earned:"Puntuación:",empty:"No hay preguntas disponibles.",
+ intro:"¡Prepárate para descubrir animales!",
+ question:"¿Qué animal aparece?",
+ final:"¡Excelente participación! ¡Sigue aprendiendo!",
+ home:"← Inicio"
+}
+};
+
+const bank=[
+{e:"🦁",a:["Leão","Tigre","Gato","Lobo"],c:0,f:"O leão é conhecido como o rei da selva.",en:["Lion","Tiger","Cat","Wolf"],fr:["Lion","Tigre","Chat","Loup"],es:["León","Tigre","Gato","Lobo"]},
+{e:"🐘",a:["Girafa","Elefante","Rinoceronte","Hipopótamo"],c:1,f:"O elefante usa a tromba para muitas tarefas.",en:["Giraffe","Elephant","Rhino","Hippo"],fr:["Girafe","Éléphant","Rhinocéros","Hippopotame"],es:["Jirafa","Elefante","Rinoceronte","Hipopótamo"]},
+{e:"🦒",a:["Zebra","Camelo","Girafa","Cavalo"],c:2,f:"A girafa é o animal terrestre mais alto.",en:["Zebra","Camel","Giraffe","Horse"],fr:["Zèbre","Chameau","Girafe","Cheval"],es:["Cebra","Camello","Jirafa","Caballo"]},
+{e:"🐬",a:["Tubarão","Baleia","Foca","Golfinho"],c:3,f:"O golfinho é um mamífero que vive na água.",en:["Shark","Whale","Seal","Dolphin"],fr:["Requin","Baleine","Phoque","Dauphin"],es:["Tiburón","Ballena","Foca","Delfín"]},
+{e:"🐧",a:["Pinguim","Pato","Águia","Papagaio"],c:0,f:"Os pinguins são aves que não voam.",en:["Penguin","Duck","Eagle","Parrot"],fr:["Pingouin","Canard","Aigle","Perroquet"],es:["Pingüino","Pato","Águila","Loro"]},
+{e:"🐢",a:["Lagarto","Cobra","Tartaruga","Sapo"],c:2,f:"A tartaruga possui uma carapaça protetora.",en:["Lizard","Snake","Turtle","Frog"],fr:["Lézard","Serpent","Tortue","Grenouille"],es:["Lagarto","Serpiente","Tortuga","Rana"]},
+{e:"🦓",a:["Cavalo","Zebra","Burro","Vaca"],c:1,f:"Cada zebra tem um padrão próprio de riscas.",en:["Horse","Zebra","Donkey","Cow"],fr:["Cheval","Zèbre","Âne","Vache"],es:["Caballo","Cebra","Burro","Vaca"]},
+{e:"🐼",a:["Urso polar","Coala","Macaco","Panda"],c:3,f:"O panda alimenta-se principalmente de bambu.",en:["Polar bear","Koala","Monkey","Panda"],fr:["Ours polaire","Koala","Singe","Panda"],es:["Oso polar","Koala","Mono","Panda"]},
+{e:"🦜",a:["Papagaio","Coruja","Pomba","Águia"],c:0,f:"Muitos papagaios conseguem imitar sons.",en:["Parrot","Owl","Dove","Eagle"],fr:["Perroquet","Hibou","Colombe","Aigle"],es:["Loro","Búho","Paloma","Águila"]},
+{e:"🐊",a:["Lagartixa","Crocodilo","Tartaruga","Iguana"],c:1,f:"O crocodilo é um réptil que vive perto da água.",en:["Lizard","Crocodile","Turtle","Iguana"],fr:["Lézard","Crocodile","Tortue","Iguane"],es:["Lagartija","Cocodrilo","Tortuga","Iguana"]},
+{e:"🐝",a:["Mosca","Borboleta","Abelha","Formiga"],c:2,f:"As abelhas ajudam na polinização das plantas.",en:["Fly","Butterfly","Bee","Ant"],fr:["Mouche","Papillon","Abeille","Fourmi"],es:["Mosca","Mariposa","Abeja","Hormiga"]},
+{e:"🦉",a:["Coruja","Pato","Pavão","Galinha"],c:0,f:"Muitas corujas conseguem ver bem com pouca luz.",en:["Owl","Duck","Peacock","Chicken"],fr:["Hibou","Canard","Paon","Poule"],es:["Búho","Pato","Pavo real","Gallina"]},
+{e:"🐫",a:["Girafa","Camelo","Canguru","Cavalo"],c:1,f:"O camelo tem adaptações para viver em regiões secas.",en:["Giraffe","Camel","Kangaroo","Horse"],fr:["Girafe","Chameau","Kangourou","Cheval"],es:["Jirafa","Camello","Canguro","Caballo"]},
+{e:"🐸",a:["Sapo","Cobra","Peixe","Gato"],c:0,f:"Os sapos são anfíbios e muitos vivem perto da água.",en:["Toad","Snake","Fish","Cat"],fr:["Crapaud","Serpent","Poisson","Chat"],es:["Sapo","Serpiente","Pez","Gato"]},
+{e:"🦘",a:["Coelho","Raposa","Canguru","Macaco"],c:2,f:"O canguru desloca-se dando grandes saltos.",en:["Rabbit","Fox","Kangaroo","Monkey"],fr:["Lapin","Renard","Kangourou","Singe"],es:["Conejo","Zorro","Canguro","Mono"]},
+{e:"🐙",a:["Caranguejo","Polvo","Peixe","Estrela-do-mar"],c:1,f:"O polvo tem oito braços.",en:["Crab","Octopus","Fish","Starfish"],fr:["Crabe","Poulpe","Poisson","Étoile de mer"],es:["Cangrejo","Pulpo","Pez","Estrella de mar"]},
+{e:"🦛",a:["Hipopótamo","Elefante","Rinoceronte","Porco"],c:0,f:"O hipopótamo passa muito tempo dentro de água.",en:["Hippo","Elephant","Rhino","Pig"],fr:["Hippopotame","Éléphant","Rhinocéros","Cochon"],es:["Hipopótamo","Elefante","Rinoceronte","Cerdo"]},
+{e:"🦋",a:["Abelha","Libélula","Borboleta","Mosquito"],c:2,f:"As borboletas passam por uma transformação chamada metamorfose.",en:["Bee","Dragonfly","Butterfly","Mosquito"],fr:["Abeille","Libellule","Papillon","Moustique"],es:["Abeja","Libélula","Mariposa","Mosquito"]},
+{e:"🐪",a:["Cavalo","Camelo","Cão","Veado"],c:1,f:"O camelo pode sobreviver em ambientes muito secos.",en:["Horse","Camel","Dog","Deer"],fr:["Cheval","Chameau","Chien","Cerf"],es:["Caballo","Camello","Perro","Ciervo"]},
+{e:"🐺",a:["Lobo","Raposa","Leão","Cão"],c:0,f:"Os lobos vivem frequentemente em grupos chamados alcateias.",en:["Wolf","Fox","Lion","Dog"],fr:["Loup","Renard","Lion","Chien"],es:["Lobo","Zorro","León","Perro"]},
+{e:"🐮",a:["Cabra","Ovelha","Vaca","Cavalo"],c:2,f:"A vaca é um animal mamífero.",en:["Goat","Sheep","Cow","Horse"],fr:["Chèvre","Mouton","Vache","Cheval"],es:["Cabra","Oveja","Vaca","Caballo"]},
+{e:"🦈",a:["Golfinho","Tubarão","Baleia","Foca"],c:1,f:"Os tubarões são peixes, não mamíferos.",en:["Dolphin","Shark","Whale","Seal"],fr:["Dauphin","Requin","Baleine","Phoque"],es:["Delfín","Tiburón","Ballena","Foca"]},
+{e:"🐒",a:["Macaco","Gorila","Leão","Urso"],c:0,f:"Muitos macacos vivem em grupos e comunicam entre si.",en:["Monkey","Gorilla","Lion","Bear"],fr:["Singe","Gorille","Lion","Ours"],es:["Mono","Gorila","León","Oso"]},
+{e:"🦚",a:["Águia","Pavão","Pinguim","Pato"],c:1,f:"O pavão é conhecido pelas penas coloridas da cauda.",en:["Eagle","Peacock","Penguin","Duck"],fr:["Aigle","Paon","Pingouin","Canard"],es:["Águila","Pavo real","Pingüino","Pato"]},
+{e:"🐻‍❄️",a:["Panda","Urso polar","Lobo","Raposa"],c:1,f:"O urso polar vive nas regiões árticas.",en:["Panda","Polar bear","Wolf","Fox"],fr:["Panda","Ours polaire","Loup","Renard"],es:["Panda","Oso polar","Lobo","Zorro"]},
+{e:"🐴",a:["Cavalo","Zebra","Burro","Vaca"],c:0,f:"Os cavalos são animais herbívoros.",en:["Horse","Zebra","Donkey","Cow"],fr:["Cheval","Zèbre","Âne","Vache"],es:["Caballo","Cebra","Burro","Vaca"]},
+{e:"🐰",a:["Rato","Esquilo","Coelho","Gato"],c:2,f:"Os coelhos têm orelhas compridas.",en:["Mouse","Squirrel","Rabbit","Cat"],fr:["Souris","Écureuil","Lapin","Chat"],es:["Ratón","Ardilla","Conejo","Gato"]},
+{e:"🐍",a:["Cobra","Lagarto","Crocodilo","Sapo"],c:0,f:"As cobras são répteis.",en:["Snake","Lizard","Crocodile","Toad"],fr:["Serpent","Lézard","Crocodile","Crapaud"],es:["Serpiente","Lagarto","Cocodrilo","Sapo"]},
+{e:"🐳",a:["Tubarão","Golfinho","Baleia","Foca"],c:2,f:"A baleia é um mamífero marinho.",en:["Shark","Dolphin","Whale","Seal"],fr:["Requin","Dauphin","Baleine","Phoque"],es:["Tiburón","Delfín","Ballena","Foca"]},
+{e:"🦩",a:["Cegonha","Garça","Flamingo","Pato"],c:2,f:"A cor do flamingo está relacionada com a sua alimentação.",en:["Stork","Heron","Flamingo","Duck"],fr:["Cigogne","Héron","Flamant rose","Canard"],es:["Cigüeña","Garza","Flamenco","Pato"]},
+{e:"🐝",a:["Formiga","Abelha","Vespa","Mosca"],c:1,f:"As abelhas vivem em colónias organizadas.",en:["Ant","Bee","Wasp","Fly"],fr:["Fourmi","Abeille","Guêpe","Mouche"],es:["Hormiga","Abeja","Avispa","Mosca"]},
+{e:"🦌",a:["Veado","Cavalo","Cabra","Ovelha"],c:0,f:"Muitos veados possuem chifres que crescem novamente.",en:["Deer","Horse","Goat","Sheep"],fr:["Cerf","Cheval","Chèvre","Mouton"],es:["Ciervo","Caballo","Cabra","Oveja"]},
+{e:"🐔",a:["Pato","Peru","Galinha","Ganso"],c:2,f:"A galinha é uma ave doméstica.",en:["Duck","Turkey","Chicken","Goose"],fr:["Canard","Dinde","Poule","Oie"],es:["Pato","Pavo","Gallina","Ganso"]},
+{e:"🦏",a:["Elefante","Hipopótamo","Rinoceronte","Vaca"],c:2,f:"O rinoceronte é conhecido pelo seu chifre.",en:["Elephant","Hippo","Rhino","Cow"],fr:["Éléphant","Hippopotame","Rhinocéros","Vache"],es:["Elefante","Hipopótamo","Rinoceronte","Vaca"]},
+{e:"🐑",a:["Cabra","Ovelha","Vaca","Cavalo"],c:1,f:"As ovelhas possuem lã que pode ser utilizada para fazer tecidos.",en:["Goat","Sheep","Cow","Horse"],fr:["Chèvre","Mouton","Vache","Cheval"],es:["Cabra","Oveja","Vaca","Caballo"]},
+{e:"🐓",a:["Galo","Pato","Águia","Pavão"],c:0,f:"O galo é o macho da galinha.",en:["Rooster","Duck","Eagle","Peacock"],fr:["Coq","Canard","Aigle","Paon"],es:["Gallo","Pato","Águila","Pavo real"]}
+];
+
+const HISTORY_KEY="desafiamais_animais_history_v1";
+const YEAR_MS=365*24*60*60*1000;
+let lang="pt",questions=[],index=0,score=0,stars=0,answered=false;
+let musicOn=false,audioCtx=null,musicTimer=null,musicStep=0;
+
+function getText(key){return translations[lang][key]}
+function changeLanguage(){
+ lang=document.getElementById("language").value;
+ document.getElementById("scoreLabel").textContent=getText("points");
+ document.getElementById("starsLabel").textContent=getText("stars");
+ document.getElementById("roundLabel").textContent=getText("questions");
+ document.getElementById("start").textContent=getText("start");
+ document.getElementById("musicButton").textContent=getText("music")+(musicOn?getText("on"):getText("off"));
+ document.getElementById("question").textContent=getText("intro");
+ if(index<questions.length && questions.length && !answered)showQuestion();
+ document.getElementById("again").textContent=getText("again");
+ document.getElementById("resultTitle").textContent=getText("result");
+}
+
+function loadHistory(){
+ try{
+  const data=JSON.parse(localStorage.getItem(HISTORY_KEY)||"{}");
+  const now=Date.now();
+  const clean={};
+  for(const [key,time] of Object.entries(data)){
+   if(now-time<YEAR_MS)clean[key]=time;
+  }
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(clean));
+  return clean;
+ }catch(e){return {}}
+}
+function saveHistory(history){
+ try{localStorage.setItem(HISTORY_KEY,JSON.stringify(history))}
+ catch(e){}
+}
+function shuffle(array){
+ for(let i=array.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [array[i],array[j]]=[array[j],array[i]];
+ }
+ return array;
+}
+
+function startGame(){
+ const history=loadHistory();
+ const available=shuffle(bank.filter((q,i)=>!history[i]));
+ if(available.length<10){
+  alert(getText("empty"));
+  return;
+ }
+ questions=available.slice(0,10);
+ index=0;score=0;stars=0;answered=false;
+ document.getElementById("score").textContent=0;
+ document.getElementById("stars").textContent="⭐ 0";
+ document.getElementById("round").textContent="0/10";
+ document.getElementById("bar").style.width="0%";
+ document.getElementById("game").classList.remove("hidden");
+ document.getElementById("result").classList.add("hidden");
+ document.getElementById("start").classList.add("hidden");
+ showQuestion();
+}
+
+function showQuestion(){
+ answered=false;
+ const q=questions[index];
+ document.getElementById("animal").textContent=q.e;
+ document.getElementById("question").textContent=getText("question");
+ document.getElementById("feedback").textContent="";
+ document.getElementById("round").textContent=(index+1)+"/10";
+ document.getElementById("bar").style.width=(index/10*100)+"%";
+ const options=document.getElementById("answers");
+ options.innerHTML="";
+ const answers=q[lang==="pt"?"a":lang];
+ const order=shuffle([0,1,2,3]);
+ order.forEach(pos=>{
+  const b=document.createElement("button");
+  b.className="answer";
+  b.textContent=answers[pos];
+  b.onclick=()=>checkAnswer(pos,q,b);
+  options.appendChild(b);
+ });
+}
+
+function checkAnswer(choice,q,button){
+ if(answered)return;
+ answered=true;
+ const correct=choice===q.c;
+ const buttons=document.querySelectorAll(".answer");
+ buttons.forEach((b,i)=>{
+  b.disabled=true;
+  if(b.textContent===q[lang==="pt"?"a":lang][q.c]){
+   b.style.background="#c8f5dc";
+   b.style.borderColor="#20aa72";
+  }
+ });
+ if(correct){
+  score+=10;stars++;
+  document.getElementById("feedback").textContent=getText("correct");
+  tone(660,.16);setTimeout(()=>tone(880,.2),150);
+ }else{
+  document.getElementById("feedback").textContent=getText("wrong");
+  tone(220,.25);
+ }
+ document.getElementById("score").textContent=score;
+ document.getElementById("stars").textContent="⭐ "+stars;
+ document.getElementById("bar").style.width=((index+1)/10*100)+"%";
+ const history=loadHistory();
+ history[bank.indexOf(q)]=Date.now();
+ saveHistory(history);
+ const next=document.createElement("button");
+ next.className="primary";
+ next.textContent=getText("next");
+ next.onclick=()=>{
+  index++;
+  if(index<10)showQuestion();
+  else finishGame();
+ };
+ document.querySelector(".actions").appendChild(next);
+}
+
+function finishGame(){
+ document.getElementById("game").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ document.getElementById("resultText").textContent=
+  getText("finished")+" "+getText("earned")+" "+score+"/100 ⭐ "+stars;
+ document.getElementById("round").textContent="10/10";
+ document.getElementById("bar").style.width="100%";
+ document.getElementById("start").classList.remove("hidden");
+}
+
+function tone(freq,duration){
+ try{
+  const ctx=getAudio();
+  const osc=ctx.createOscillator();
+  const gain=ctx.createGain();
+  osc.type="sine";osc.frequency.value=freq;
+  gain.gain.setValueAtTime(.0001,ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(.08,ctx.currentTime+.02);
+  gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+duration);
+  osc.connect(gain);gain.connect(ctx.destination);
+  osc.start();osc.stop(ctx.currentTime+duration+.03);
+ }catch(e){}
+}
+function getAudio(){
+ if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+ if(audioCtx.state==="suspended")audioCtx.resume();
+ return audioCtx;
+}
+function playMusic(){
+ const melody=[392,440,494,587,494,440,392,330];
+ const bass=[131,147,165,147];
+ const ctx=getAudio();
+ const note=melody[musicStep%melody.length];
+ const low=bass[musicStep%bass.length];
+ function play(freq,duration,volume,type){
+  const o=ctx.createOscillator(),g=ctx
