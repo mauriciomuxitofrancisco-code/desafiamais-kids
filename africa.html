@@ -1,40 +1,231 @@
-<!doctype html>
-<html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Conhece África | DESAFIA+ KIDS</title>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#e8f8e9">
+<title>Conhece África | DESAFIA+ KIDS</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,Arial;background:linear-gradient(135deg,#d1fae5,#fff3c4 55%,#dbeafe);color:#183153}header{background:#ffffffed;padding:13px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;box-shadow:0 3px 15px #16324f18}.brand{font-weight:1000;color:#166534;font-size:1.15rem}.brand span{color:#f97316}button,select{font:inherit;font-weight:800;border:0;border-radius:13px;padding:11px 14px;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.soft{background:white;color:#166534;box-shadow:0 3px 0 #bbf7d0}.mainbtn{background:#16a34a;color:white;box-shadow:0 4px 0 #166534}.gold{background:#f59e0b;color:#422006;box-shadow:0 4px 0 #b45309}main{max-width:850px;margin:18px auto;padding:0 14px}.hero{text-align:center;padding:8px}.hero h1{font-size:clamp(1.8rem,5vw,2.6rem);margin:5px}.mascots{font-size:2.2rem;letter-spacing:5px;animation:bounce 1.7s infinite ease-in-out}@keyframes bounce{50%{transform:translateY(-7px) rotate(2deg)}}.hero p{margin:5px;color:#526579}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:13px 0}.stat{background:#ffffffdf;border-radius:17px;padding:10px;text-align:center}.stat span{font-size:.85rem;color:#64748b}.stat b{display:block;color:#166534;font-size:1.3rem}.bar{height:10px;background:#bbf7d0;border-radius:30px;overflow:hidden;margin:9px 0 14px}.bar div{height:100%;background:linear-gradient(90deg,#16a34a,#f59e0b);width:0}.panel{background:#ffffffed;border-radius:23px;padding:18px;box-shadow:0 12px 30px #16324f18}.paneltop{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.region{font-weight:900;color:#166534}.mascotline{color:#7c3aed;font-weight:800}.visual{text-align:center;font-size:4rem;margin:12px 0 2px;min-height:76px}.question{text-align:center;font-size:1.2rem;font-weight:900;min-height:62px;display:flex;align-items:center;justify-content:center}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.option{background:#eff6ff;color:#1e3a8a;border:2px solid #bfdbfe;box-shadow:0 3px 0 #dbeafe;min-height:58px}.option.correct{background:#dcfce7;border-color:#22c55e;color:#14532d}.option.wrong{background:#fee2e2;border-color:#ef4444;color:#7f1d1d}.feedback{text-align:center;font-weight:900;min-height:28px}.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}.small{font-size:.88rem;color:#64748b;text-align:center;min-height:23px}.whatsapp{display:inline-block;text-decoration:none;color:white;background:#16a34a;border-radius:14px;padding:12px 17px;font-weight:900;margin:9px}.footer{text-align:center;color:#64748b;padding:18px;font-size:.9rem}@media(max-width:520px){.panel{padding:13px}.options{gap:7px}.option{padding:10px 7px;font-size:.9rem}.stat{padding:8px}}
-</style></head><body>
-<header><div class="brand">DESAFIA<span>+</span> KIDS</div><div style="display:flex;gap:7px;flex-wrap:wrap"><select id="language"><option value="pt">Português</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option></select><button class="soft" id="sound">🔊 Sons: ON</button><button class="soft" id="music">🎵 Música: OFF</button></div></header>
-<main><section class="hero"><div class="mascots">🦁 🐘 🤖 🐒</div><h1>🌍 Conhece África</h1><p id="subtitle">Descobre países, capitais, regiões e maravilhas africanas!</p></section>
-<div class="stats"><div class="stat"><span id="levelLabel">Desafio</span><b id="level">1 / 1000</b></div><div class="stat"><span id="scoreLabel">Pontos</span><b id="score">0</b></div><div class="stat"><span id="doneLabel">Concluídos</span><b id="done">0</b></div></div><div class="bar"><div id="progress"></div></div>
-<section class="panel"><div class="paneltop"><span class="region" id="category">🗺️ Geografia africana</span><span class="mascotline" id="mascot">O elefante Kito acredita em ti! 🐘</span></div><div class="visual" id="visual">🌍</div><div class="question" id="question">Vamos explorar África! Preparado?</div><div class="options" id="options"></div><div class="feedback" id="feedback" aria-live="polite"></div><div class="controls"><button class="soft" id="read">🗣️ Ouvir pergunta</button><button class="gold" id="hint">💡 Dica</button><button class="mainbtn" id="next" disabled>Próximo ➜</button></div><div class="small" id="hintText">Escolhe a resposta correta. Cada resposta certa vale 10 pontos.</div></section>
-<div class="controls"><button class="soft" id="home">🏠 Voltar ao menu</button><button class="soft" id="reset">↻ Reiniciar progresso</button></div><div style="text-align:center"><a class="whatsapp" target="_blank" rel="noopener" href="https://wa.me/244938403923?text=Ol%C3%A1%21%20Gostaria%20de%20adquirir%20um%20c%C3%B3digo%20Premium%20do%20DESAFIA%2B%20KIDS%20para%20desbloquear%20os%2013%20jogos%20educativos.%20Pode%20informar-me%20sobre%20o%20pre%C3%A7o%20e%20as%20condi%C3%A7%C3%B5es%3F">💬 WhatsApp — DESAFIA+ KIDS</a></div></main><div class="footer">África é rica em histórias, culturas e maravilhas! ⭐</div>
+:root{--green:#176b45;--dark:#183153;--mint:#b9f4d7;--gold:#ffb000;--white:#fff}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--dark);background:linear-gradient(140deg,#d9f7e7,#fff4c8 55%,#d9edff)}
+header{position:sticky;top:0;z-index:5;background:#ffffffed;backdrop-filter:blur(8px);padding:12px 14px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;box-shadow:0 2px 12px #17324b14}
+button,select{font:inherit}
+.topbtn,.mainbtn,.answer,.smallbtn{border:0;border-radius:16px;padding:12px 16px;font-weight:750;cursor:pointer;box-shadow:0 4px 0 #00000013;transition:transform .12s,filter .12s}
+button:active{transform:translateY(2px);box-shadow:0 2px 0 #00000013}
+.topbtn{background:#fff;color:var(--green);border:1px solid #c8efdc}
+select{border:0;border-radius:14px;background:#f1f3f4;padding:11px;color:#24364b;font-weight:700}
+main{width:min(760px,100%);margin:auto;padding:22px 14px 30px}
+.hero{text-align:center;padding:12px 4px 22px}
+.animals{font-size:42px;letter-spacing:7px}
+h1{font-size:clamp(30px,6vw,43px);margin:6px 0;color:#183653}
+.subtitle{font-size:18px;color:#64748b;margin:0 auto;max-width:560px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.stat{background:#ffffffdf;border-radius:22px;padding:12px 6px;text-align:center;color:#718096}
+.stat strong{display:block;color:var(--green);font-size:27px;line-height:1.2}
+.progress{height:14px;background:#d4eadc;border-radius:99px;overflow:hidden;margin:0 0 20px}
+#bar{height:100%;width:0;background:linear-gradient(90deg,#8ee9bd,#20a75d);transition:width .25s}
+.card{background:#ffffffed;border-radius:28px;padding:22px 20px;box-shadow:0 12px 35px #315b4820}
+.category{font-weight:800;color:var(--green);font-size:18px}
+.encourage{color:#8050c7;font-weight:800;margin:12px 0;font-size:18px}
+#visual{font-size:64px;text-align:center;margin:20px 0 8px}
+#question{text-align:center;font-size:clamp(20px,4.5vw,26px);line-height:1.35;margin:12px 0 20px;min-height:68px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.answer{background:#f0f8f3;color:#24563e;border:2px solid #d5efdf;text-align:left;min-height:58px}
+.answer:hover{filter:brightness(.98)}
+.answer.correct{background:#d9fbe7;border-color:#20a75d;color:#12633b}
+.answer.wrong{background:#ffe5e5;border-color:#e76b6b;color:#9b2222}
+.answer:disabled{cursor:default}
+.feedback{min-height:28px;text-align:center;font-weight:800;margin:14px 0 4px}
+.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.mainbtn{background:#18a45a;color:white;font-size:17px;min-width:130px}
+.hintbtn{background:#ffb000;color:#382500}
+.listenbtn{background:#e9f4ff;color:#1b5a91}
+.smallbtn{background:#fff;color:var(--green);border:1px solid #c9efdc}
+.note{text-align:center;color:#87919c;font-size:14px;margin:16px 0 0}
+.bottom{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:18px 0}
+.footer{text-align:center;color:#87919c;margin:26px 0 0}
+.hidden{display:none!important}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#183153;color:white;padding:10px 16px;border-radius:12px;z-index:10;display:none}
+@media(max-width:480px){main{padding:16px 12px}.card{padding:19px 15px}.answers{grid-template-columns:1fr}.animals{font-size:35px}.stat strong{font-size:24px}.topbtn{padding:10px 12px}}
+</style>
+</head>
+<body>
+<header>
+<select id="language" aria-label="Idioma">
+<option value="pt">Português</option><option value="en">English</option><option value="fr">Français</option>
+</select>
+<button class="topbtn" id="soundToggle">🔊 Sons: ON</button>
+<button class="topbtn" id="musicToggle">🎵 Música: OFF</button>
+</header>
+<main>
+<section class="hero">
+<div class="animals">🦁 🐘 🤖 🐒</div>
+<h1>🌍 Conhece África</h1>
+<p class="subtitle" id="subtitle">Descobre países, capitais, monumentos e maravilhas africanas!</p>
+</section>
+<section class="stats">
+<div class="stat"><span id="labChallenge">Desafio</span><strong id="counter">1 / 1000</strong></div>
+<div class="stat"><span id="labPoints">Pontos</span><strong id="points">0</strong></div>
+<div class="stat"><span id="labDone">Concluídos</span><strong id="done">0</strong></div>
+</section>
+<div class="progress"><div id="bar"></div></div>
+<section class="card">
+<div class="category" id="category">🗺️ Geografia africana</div>
+<div class="encourage" id="encourage">O elefante Kito acredita em ti! 🐘</div>
+<div id="visual">🌍</div>
+<h2 id="question">Vamos explorar África! Preparado?</h2>
+<div class="answers hidden" id="answers"></div>
+<div class="feedback" id="feedback" aria-live="polite"></div>
+<div class="controls">
+<button class="smallbtn listenbtn" id="listen">🗣️ Ouvir pergunta</button>
+<button class="mainbtn hintbtn" id="hint">💡 Dica</button>
+<button class="mainbtn" id="next">Começar ➜</button>
+</div>
+<p class="note" id="note">Escolhe a resposta correta. Cada resposta certa vale 10 pontos.</p>
+</section>
+<div class="bottom">
+<button class="smallbtn" id="home">🏠 Voltar ao menu</button>
+<button class="smallbtn" id="reset">↻ Reiniciar progresso</button>
+</div>
+<div class="bottom"><a href="https://wa.me/244938403923?text=Ol%C3%A1%21%20Gostaria%20de%20saber%20mais%20sobre%20o%20DESAFIA%2B%20KIDS." style="text-decoration:none"><button class="mainbtn">💬 WhatsApp — DESAFIA+ KIDS</button></a></div>
+<p class="footer">África é rica em histórias, culturas e maravilhas! ⭐</p>
+</main>
+<div id="toast"></div>
 <script>
-const $=id=>document.getElementById(id);
+"use strict";
+const TOTAL=1000, STORE="desafiamais_conhece_africa_v3";
 const countries=[
-['Angola','Luanda','África Austral','🇦🇴'],['África do Sul','Pretória','África Austral','🇿🇦'],['Argélia','Argel','Norte de África','🇩🇿'],['Benim','Porto-Novo','África Ocidental','🇧🇯'],['Botswana','Gaborone','África Austral','🇧🇼'],['Burkina Faso','Ouagadougou','África Ocidental','🇧🇫'],['Burundi','Gitega','África Oriental','🇧🇮'],['Cabo Verde','Praia','África Ocidental','🇨🇻'],['Camarões','Yaoundé','África Central','🇨🇲'],['Chade',"N'Djamena",'África Central','🇹🇩'],['Comores','Moroni','África Oriental','🇰🇲'],['Costa do Marfim','Yamoussoukro','África Ocidental','🇨🇮'],['Djibuti','Djibuti','África Oriental','🇩🇯'],['Egito','Cairo','Norte de África','🇪🇬'],['Eritreia','Asmara','África Oriental','🇪🇷'],['Essuatíni','Mbabane','África Austral','🇸🇿'],['Etiópia','Adis Abeba','África Oriental','🇪🇹'],['Gabão','Libreville','África Central','🇬🇦'],['Gâmbia','Banjul','África Ocidental','🇬🇲'],['Gana','Acra','África Ocidental','🇬🇭'],['Guiné','Conacri','África Ocidental','🇬🇳'],['Guiné-Bissau','Bissau','África Ocidental','🇬🇼'],['Guiné Equatorial','Malabo','África Central','🇬🇶'],['Lesoto','Maseru','África Austral','🇱🇸'],['Libéria','Monróvia','África Ocidental','🇱🇷'],['Líbia','Trípoli','Norte de África','🇱🇾'],['Madagáscar','Antananarivo','África Oriental','🇲🇬'],['Malawi','Lilongwe','África Oriental','🇲🇼'],['Mali','Bamako','África Ocidental','🇲🇱'],['Marrocos','Rabat','Norte de África','🇲🇦'],['Maurícia','Port Louis','África Oriental','🇲🇺'],['Mauritânia','Nouakchott','Norte de África','🇲🇷'],['Moçambique','Maputo','África Austral','🇲🇿'],['Namíbia','Windhoek','África Austral','🇳🇦'],['Níger','Niamey','África Ocidental','🇳🇪'],['Nigéria','Abuja','África Ocidental','🇳🇬'],['Quénia','Nairobi','África Oriental','🇰🇪'],['República Centro-Africana','Bangui','África Central','🇨🇫'],['República Democrática do Congo','Kinshasa','África Central','🇨🇩'],['República do Congo','Brazzaville','África Central','🇨🇬'],['Ruanda','Kigali','África Oriental','🇷🇼'],['São Tomé e Príncipe','São Tomé','África Central','🇸🇹'],['Senegal','Dakar','África Ocidental','🇸🇳'],['Serra Leoa','Freetown','África Ocidental','🇸🇱'],['Seychelles','Victoria','África Oriental','🇸🇨'],['Somália','Mogadíscio','África Oriental','🇸🇴'],['Sudão','Cartum','Norte de África','🇸🇩'],['Sudão do Sul','Juba','África Oriental','🇸🇸'],['Tanzânia','Dodoma','África Oriental','🇹🇿'],['Togo','Lomé','África Ocidental','🇹🇬'],['Tunísia','Tunes','Norte de África','🇹🇳'],['Uganda','Kampala','África Oriental','🇺🇬'],['Zâmbia','Lusaka','África Austral','🇿🇲'],['Zimbabwe','Harare','África Austral','🇿🇼'],['Sahara Ocidental','El Aaiún','Norte de África','🏜️']];
-const landmarks=[
-['Deserto do Saara','🏜️','Norte de África'],['Rio Nilo','🌊','Nordeste de África'],['Monte Kilimanjaro','⛰️','Tanzânia'],['Cataratas Vitória','💦','Zâmbia e Zimbabwe'],['Delta do Okavango','🦛','Botswana'],['Serengeti','🦓','Tanzânia e Quénia'],['Floresta da Bacia do Congo','🌳','África Central'],['Lago Vitória','🐟','Tanzânia, Uganda e Quénia'],['Montanhas Atlas','🏔️','Marrocos, Argélia e Tunísia'],['Pirâmides de Gizé','🔺','Egito'],['Vale dos Reis','🏺','Egito'],['Cidade de pedra de Zanzibar','🏘️','Tanzânia'],['Lalibela','⛪','Etiópia'],['Parque Nacional Kruger','🦁','África do Sul'],['Avenida dos Baobás','🌳','Madagáscar'],['Ilha de Gorée','⛵','Senegal'],['Grande Mesquita de Djenné','🕌','Mali'],['Parque Nacional Etosha','🦒','Namíbia'],['Parque Nacional Chobe','🐘','Botswana'],['Ilha de Moçambique','⛵','Moçambique'],['Parque Nacional de Virunga','🦍','República Democrática do Congo'],['Parque Nacional de Bwindi','🦍','Uganda'],['Parque Nacional de Amboseli','🐘','Quénia'],['Parque Nacional de Bazaruto','🐬','Moçambique'],['Parque Nacional de Hwange','🐘','Zimbabwe'],['Lago Malawi','🐠','Malawi'],['Parque Nacional de Nyungwe','🌳','Ruanda'],['Parque Nacional de Loango','🦛','Gabão'],['Parque Nacional de Zakouma','🐘','Chade'],['Parque Nacional de Kafue','🦁','Zâmbia'],['Montes Drakensberg','⛰️','África do Sul'],['Parque Nacional de Tsavo','🦁','Quénia'],['Parque Nacional de Isalo','🪨','Madagáscar'],['Parque Nacional de Tai','🐒','Costa do Marfim'],['Parque Nacional de Souss-Massa','🦩','Marrocos'],['Parque Nacional de Garamba','🦏','República Democrática do Congo'],['Parque Nacional de Gombe','🐒','Tanzânia']];
-const questions=[];
-countries.forEach(c=>{questions.push({q:'Qual é a capital de '+c[0]+'?',a:c[1],wrong:countries.filter(x=>x[1]!==c[1]).map(x=>x[1]),tip:'A capital começa pela letra '+c[1][0]+'.',emoji:c[3],cat:'Capitais africanas'});questions.push({q:'Em que região de África fica '+c[0]+'?',a:c[2],wrong:['Norte de África','África Ocidental','África Central','África Oriental','África Austral'].filter(x=>x!==c[2]),tip:'A região é '+c[2]+'.',emoji:c[3],cat:'Regiões de África'});});
-landmarks.forEach(p=>questions.push({q:'Em que país ou região fica '+p[0]+'?',a:p[2],wrong:landmarks.map(x=>x[2]).filter(x=>x!==p[2]),tip:p[0]+' fica em '+p[2]+'.',emoji:p[1],cat:'Maravilhas africanas'}));
-const total=1000,KEY='desafiamais_africa_progress_v2';let lang='pt',level=1,score=0,done=0,current=null,answered=false,sound=true,music=false,ctx=null,musicLoop=null,musicGain=null;
-const T={pt:{sub:'Descobre países, capitais, regiões e maravilhas africanas!',challenge:'Desafio',points:'Pontos',done:'Concluídos',next:'Próximo ➜',read:'🗣️ Ouvir pergunta',hint:'💡 Dica',correct:'Excelente! Resposta certa! 🌟',wrong:'Boa tentativa! Vamos aprender juntos. 💪',welcome:'O elefante Kito acredita em ti! 🐘',choose:'Escolhe a resposta correta.',sound:'🔊 Sons',music:'🎵 Música'},en:{sub:'Discover African countries, capitals, regions and wonders!',challenge:'Challenge',points:'Points',done:'Completed',next:'Next ➜',read:'🗣️ Hear question',hint:'💡 Hint',correct:'Excellent! Correct answer! 🌟',wrong:'Good try! Let’s learn together. 💪',welcome:'Kito the elephant believes in you! 🐘',choose:'Choose the correct answer.',sound:'🔊 Sounds',music:'🎵 Music'},fr:{sub:'Découvre les pays, capitales, régions et merveilles d’Afrique !',challenge:'Défi',points:'Points',done:'Terminés',next:'Suivant ➜',read:'🗣️ Écouter',hint:'💡 Indice',correct:'Bravo ! Bonne réponse ! 🌟',wrong:'Bien essayé ! Continuons à apprendre. 💪',welcome:'Kito l’éléphant croit en toi ! 🐘',choose:'Choisis la bonne réponse.',sound:'🔊 Sons',music:'🎵 Musique'},es:{sub:'¡Descubre países, capitales, regiones y maravillas de África!',challenge:'Desafío',points:'Puntos',done:'Completados',next:'Siguiente ➜',read:'🗣️ Escuchar',hint:'💡 Pista',correct:'¡Excelente! ¡Respuesta correcta! 🌟',wrong:'¡Buen intento! Sigamos aprendiendo. 💪',welcome:'¡Kito el elefante cree en ti! 🐘',choose:'Elige la respuesta correcta.',sound:'🔊 Sonidos',music:'🎵 Música'}};
-function save(){try{localStorage.setItem(KEY,JSON.stringify({level,score,done}))}catch(e){}}
-function load(){try{let x=JSON.parse(localStorage.getItem(KEY));if(x){level=Math.max(1,Math.min(total,x.level||1));score=x.score||0;done=Math.max(0,Math.min(total,x.done||0))}}catch(e){}}
-function makeQuestion(){let f=questions[Math.floor((level-1)/10)%questions.length],variant=(level-1)%10,question=f.q,answer=f.a,options,tip=f.tip;
-if(variant===1)question='Pista: '+f.tip+' Qual é a resposta?';if(variant===2)question='Desafio de '+f.cat.toLowerCase()+': '+f.q;if(variant===3)question='O Kito quer saber: '+f.q;if(variant===4)question='A resposta começa pela letra “'+answer[0]+'”. Qual é?';if(variant===5)question='Qual é a resposta correta? '+f.q;if(variant===6){question='Verdadeiro ou falso: '+f.q.replace('?',' '+answer+'.');answer='Verdadeiro'}if(variant===7)question='Completa a resposta: '+f.a.slice(0,Math.max(1,Math.floor(f.a.length/2)))+'…';if(variant===8)question='Desafio relâmpago! '+f.q;if(variant===9)question='Última oportunidade deste tema: '+f.q;
-let wrong=f.wrong.filter(x=>x!==f.a),opts=variant===6?['Verdadeiro','Falso']:[f.a,...wrong.sort(()=>Math.random()-.5).slice(0,3)];options=opts.sort(()=>Math.random()-.5);return{f,question,answer,options,tip};}
-function render(){let t=T[lang];$('level').textContent=level+' / '+total;$('score').textContent=score;$('done').textContent=done;$('progress').style.width=(done/total*100)+'%';$('category').textContent='🗺️ '+current.f.cat;$('visual').textContent=current.f.emoji;$('question').textContent=current.question;$('mascot').textContent=t.welcome;$('hintText').textContent=t.choose;$('options').innerHTML='';current.options.forEach(v=>{let b=document.createElement('button');b.className='option';b.textContent=v;b.onclick=()=>answer(v,b);$('options').appendChild(b)});$('feedback').textContent='';$('next').disabled=true}
-function nextQuestion(){current=makeQuestion();answered=false;render()}
-function answer(v,button){if(answered)return;answered=true;let ok=v===current.answer;document.querySelectorAll('.option').forEach(b=>{b.disabled=true;if(b.textContent===current.answer)b.classList.add('correct')});if(!ok)button.classList.add('wrong');if(ok){score+=10;done=Math.max(done,level);$('feedback').textContent=T[lang].correct;play([523,659,784])}else{$('feedback').textContent=T[lang].wrong+' Resposta: '+current.answer;play([180,150])}save();$('score').textContent=score;$('done').textContent=done;$('progress').style.width=(done/total*100)+'%';$('next').disabled=false}
-function play(notes){if(!sound)return;try{audio();notes.forEach((n,i)=>{let o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=n;g.gain.setValueAtTime(.07,ctx.currentTime+i*.12);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.12+.13);o.connect(g);g.connect(ctx.destination);o.start(ctx.currentTime+i*.12);o.stop(ctx.currentTime+i*.12+.14)})}catch(e){}}
-function speak(){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(current.question);u.lang={pt:'pt-PT',en:'en-US',fr:'fr-FR',es:'es-ES'}[lang];u.rate=.9;speechSynthesis.speak(u)}
-function hint(){$('hintText').textContent='💡 '+current.tip;play([740])}
-function setLang(){let t=T[lang];$('subtitle').textContent=t.sub;$('levelLabel').textContent=t.challenge;$('scoreLabel').textContent=t.points;$('doneLabel').textContent=t.done;$('next').textContent=t.next;$('read').textContent=t.read;$('hint').textContent=t.hint;$('sound').textContent=t.sound+': '+(sound?'ON':'OFF');$('music').textContent=t.music+': '+(music?'ON':'OFF');$('mascot').textContent=t.welcome}
-function audio(){ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}
-function drum(time,freq,duration,volume,type='sine'){let o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(freq,time);if(type==='sine')o.frequency.exponentialRampToValueAtTime(Math.max(38,freq*.4),time+duration);g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(volume,time+.01);g.gain.exponentialRampToValueAtTime(.0001,time+duration);o.connect(g);g.connect(musicGain);o.start(time);o.stop(time+duration+.01)}
-function shaker(time,duration,volume){let len=Math.floor(ctx.sampleRate*duration),buf=ctx.createBuffer(1,len,ctx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;let s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=buf;f.type='highpass';f.frequency.value=5000;g.gain.setValueAtTime(volume,time);g.gain.exponentialRampToValueAtTime(.0001,time+duration);s.connect(f);f.connect(g);g.connect(musicGain);s.start(time);s.stop(time+duration)}
-function beat(){if(!music)return;let start=ctx.currentTime+.04,step=60/112/2;for(let i=0;i<8;i++){let t=start+i*step;if(i===0||i===4)drum(t,115,.25,.85);if(i===2||i===6)drum(t,175,.13,.5,'triangle');if(i%2===1)shaker(t,.09,.24);if(i===2||i===6)drum(t,230,.1,.17,'triangle')}let melody=[392,523.25,587.33,523.25,440,523.25,659.25,587.33];melody.forEach((n,i)=>{let t=start+i*step+.015,o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.value=n;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.19);o.connect(g);g.connect(musicGain);o.start(t);o.stop(t+.2)})}
-function toggleMusic(){if(music){music=false;clearInterval(musicLoop);if(musicGain)musicGain.gain.setTargetAtTime(0,ctx.currentTime,.08);setLang();return}try{audio();musicGain=ctx.createGain();musicGain.gain.value=.8;musicGain.connect(ctx.destination);music=true;beat();musicLoop=setInterval(beat,60/112*4*1000);setLang()}catch(e){$('music').textContent='Som indisponível'}}
-$('language').onchange=()=>{lang=$('language').value;setLang()};$('sound').onclick=()=>{sound=!sound;setLang()};$('music').onclick=toggleMusic;$('read').onclick=speak;$('hint').onclick=hint;$('next').onclick=()=>{if(level<total)level++;else{level=1;$('feedback').textContent='🏆 Terminaste os 1.000 desafios! Podes continuar a jogar.'}save();nextQuestion()};$('home').onclick=()=>location.href='index.html';$('reset').onclick=()=>{if(confirm('Queres apagar o progresso deste jogo?')){level=1;score=0;done=0;save();nextQuestion()}};load();lang=$('language').value;setLang();nextQuestion();
-</script></body></html>
+["Angola","Luanda","África Austral","🇦🇴","Quedas de Kalandula"],
+["África do Sul","Pretória","África Austral","🇿🇦","Montanha da Mesa"],
+["Argélia","Argel","Norte de África","🇩🇿","Deserto do Saara"],
+["Benim","Porto-Novo","África Ocidental","🇧🇯","Palácios Reais de Abomey"],
+["Botsuana","Gaborone","África Austral","🇧🇼","Delta do Okavango"],
+["Burquina Faso","Ouagadougou","África Ocidental","🇧🇫","Ruínas de Loropéni"],
+["Burundi","Gitega","África Oriental","🇧🇮","Lago Tanganica"],
+["Cabo Verde","Praia","África Ocidental","🇨🇻","Cidade Velha"],
+["Camarões","Yaoundé","África Central","🇨🇲","Monte Camarões"],
+["Chade","N'Djamena","África Central","🇹🇩","Lagos de Ounianga"],
+["Comores","Moroni","África Oriental","🇰🇲","Monte Karthala"],
+["Congo","Brazzaville","África Central","🇨🇬","Parque Nacional de Odzala"],
+["Costa do Marfim","Yamoussoukro","África Ocidental","🇨🇮","Basílica de Nossa Senhora da Paz"],
+["Djibuti","Djibuti","África Oriental","🇩🇯","Lago Assal"],
+["Egito","Cairo","Norte de África","🇪🇬","Pirâmides de Gizé"],
+["Eritreia","Asmara","África Oriental","🇪🇷","Centro histórico de Asmara"],
+["Essuatíni","Mbabane","África Austral","🇸🇿","Reserva Natural de Mlilwane"],
+["Etiópia","Adis Abeba","África Oriental","🇪🇹","Igrejas escavadas de Lalibela"],
+["Gabão","Libreville","África Central","🇬🇦","Parque Nacional de Loango"],
+["Gâmbia","Banjul","África Ocidental","🇬🇲","Ilha Kunta Kinteh"],
+["Gana","Acra","África Ocidental","🇬🇭","Castelo de Cape Coast"],
+["Guiné","Conacri","África Ocidental","🇬🇳","Fouta Djallon"],
+["Guiné-Bissau","Bissau","África Ocidental","🇬🇼","Arquipélago dos Bijagós"],
+["Guiné Equatorial","Malabo","África Central","🇬🇶","Ilha de Bioko"],
+["Lesoto","Maseru","África Austral","🇱🇸","Cataratas Maletsunyane"],
+["Libéria","Monróvia","África Ocidental","🇱🇷","Parque Nacional Sapo"],
+["Líbia","Trípoli","Norte de África","🇱🇾","Leptis Magna"],
+["Madagáscar","Antananarivo","África Oriental","🇲🇬","Avenida dos Baobás"],
+["Maláui","Lilongwe","África Oriental","🇲🇼","Lago Maláui"],
+["Mali","Bamaco","África Ocidental","🇲🇱","Grande Mesquita de Djenné"],
+["Marrocos","Rabat","Norte de África","🇲🇦","Mesquita Hassan II"],
+["Maurícia","Port Louis","África Oriental","🇲🇺","Terra das Sete Cores"],
+["Mauritânia","Nouakchott","Norte de África","🇲🇷","Estrutura de Richat"],
+["Moçambique","Maputo","África Austral","🇲🇿","Ilha de Moçambique"],
+["Namíbia","Windhoek","África Austral","🇳🇦","Deserto do Namibe"],
+["Níger","Niamey","África Ocidental","🇳🇪","Reserva Natural de Aïr e Ténéré"],
+["Nigéria","Abuja","África Ocidental","🇳🇬","Rocha Zuma"],
+["Quénia","Nairobi","África Oriental","🇰🇪","Monte Quénia"],
+["República Centro-Africana","Bangui","África Central","🇨🇫","Parque Nacional Dzanga-Sangha"],
+["República Democrática do Congo","Kinshasa","África Central","🇨🇩","Parque Nacional de Virunga"],
+["Ruanda","Kigali","África Oriental","🇷🇼","Parque Nacional dos Vulcões"],
+["São Tomé e Príncipe","São Tomé","África Central","🇸🇹","Pico Cão Grande"],
+["Senegal","Dacar","África Ocidental","🇸🇳","Ilha de Gorée"],
+["Seicheles","Victoria","África Oriental","🇸🇨","Vallée de Mai"],
+["Serra Leoa","Freetown","África Ocidental","🇸🇱","Santuário de Tacugama"],
+["Somália","Mogadíscio","África Oriental","🇸🇴","Parque Nacional Lag Badana"],
+["Sudão","Cartum","Norte de África","🇸🇩","Pirâmides de Meroé"],
+["Sudão do Sul","Juba","África Oriental","🇸🇸","Parque Nacional de Boma"],
+["Tanzânia","Dodoma","África Oriental","🇹🇿","Monte Kilimanjaro"],
+["Togo","Lomé","África Ocidental","🇹🇬","Koutammakou"],
+["Tunísia","Tunes","Norte de África","🇹🇳","Anfiteatro de El Jem"],
+["Uganda","Kampala","África Oriental","🇺🇬","Parque Nacional Impenetrável de Bwindi"],
+["Zâmbia","Lusaka","África Austral","🇿🇲","Cataratas Vitória"],
+["Zimbábue","Harare","África Austral","🇿🇼","Grande Zimbábue"]
+];
+const translations={
+pt:{subtitle:"Descobre países, capitais, monumentos e maravilhas africanas!",challenge:"Desafio",points:"Pontos",done:"Concluídos",category:"🗺️ Geografia africana",encourage:"O elefante Kito acredita em ti! 🐘",start:"Começar ➜",next:"Próximo ➜",listen:"🗣️ Ouvir pergunta",hint:"💡 Dica",note:"Escolhe a resposta correta. Cada resposta certa vale 10 pontos.",correct:"Muito bem! Resposta certa! 🎉 +10 pontos",wrong:"Quase! A resposta correta é:",finished:"Parabéns! Concluíste os 1000 desafios! 🏆",intro:"Vamos explorar África! Preparado?",home:"🏠 Voltar ao menu",reset:"↻ Reiniciar progresso",countryCapital:"Qual é a capital de",capitalCountry:"A cidade {a} é capital de que país?",countryRegion:"Em que região de África fica",regionCountry:"Qual destes países fica em",countryPlace:"Que lugar famoso fica em",placeCountry:"Em que país fica",hintText:"A resposta começa com",sound:"🔊 Sons",music:"🎵 Música"},
+en:{subtitle:"Discover African countries, capitals, landmarks and wonders!",challenge:"Challenge",points:"Points",done:"Completed",category:"🗺️ African geography",encourage:"Kito the elephant believes in you! 🐘",start:"Start ➜",next:"Next ➜",listen:"🗣️ Hear question",hint:"💡 Hint",note:"Choose the correct answer. Each correct answer is worth 10 points.",correct:"Great job! Correct answer! 🎉 +10 points",wrong:"Almost! The correct answer is:",finished:"Congratulations! You completed all 1000 challenges! 🏆",intro:"Let's explore Africa! Ready?",home:"🏠 Back to menu",reset:"↻ Reset progress",countryCapital:"What is the capital of",capitalCountry:"The city {a} is the capital of which country?",countryRegion:"In which African region is",regionCountry:"Which of these countries is in",countryPlace:"Which famous place is in",placeCountry:"In which country is",hintText:"The answer starts with",sound:"🔊 Sounds",music:"🎵 Music"},
+fr:{subtitle:"Découvre les pays, capitales, monuments et merveilles d’Afrique !",challenge:"Défi",points:"Points",done:"Terminés",category:"🗺️ Géographie africaine",encourage:"L’éléphant Kito croit en toi ! 🐘",start:"Commencer ➜",next:"Suivant ➜",listen:"🗣️ Écouter",hint:"💡 Indice",note:"Choisis la bonne réponse. Chaque bonne réponse vaut 10 points.",correct:"Bravo ! Bonne réponse ! 🎉 +10 points",wrong:"Presque ! La bonne réponse est :",finished:"Félicitations ! Tu as terminé les 1000 défis ! 🏆",intro:"Explorons l’Afrique ! Prêt ?",home:"🏠 Retour au menu",reset:"↻ Recommencer",countryCapital:"Quelle est la capitale de",capitalCountry:"La ville {a} est la capitale de quel pays ?",countryRegion:"Dans quelle région d’Afrique se trouve",regionCountry:"Lequel de ces pays se trouve en",countryPlace:"Quel lieu célèbre se trouve en",placeCountry:"Dans quel pays se trouve",hintText:"La réponse commence par",sound:"🔊 Sons",music:"🎵 Musique"}
+};
+let lang="pt",index=0,score=0,done=0,current=null,answered=false,sounds=true,music=false,audio=null,musicTimer=null;
+const $=id=>document.getElementById(id);
+function t(key){return translations[lang][key]||translations.pt[key]||key}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function save(){try{localStorage.setItem(STORE,JSON.stringify({index,score,done}))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem(STORE)||"{}");index=Math.max(0,Math.min(TOTAL,Number(d.index)||0));score=Math.max(0,Number(d.score)||0);done=Math.max(0,Number(d.done)||0)}catch(e){index=score=done=0}}
+function updateStats(){$("counter").textContent=(Math.min(index+1,TOTAL))+" / "+TOTAL;$("points").textContent=score;$("done").textContent=done;$("bar").style.width=(done/TOTAL*100)+"%"}
+function buildQuestion(n){
+ const c=countries[n%countries.length],type=Math.floor(n/countries.length)%5;
+ let prompt,answer,visual="🌍",pool;
+ if(type===0){prompt=t("countryCapital")+" "+c[0]+"?";answer=c[1];visual=c[3]}
+ else if(type===1){prompt=t("countryRegion")+" "+c[0]+"?";answer=c[2];visual=c[3]}
+ else if(type===2){prompt=t("countryPlace")+" "+c[0]+"?";answer=c[4];visual="🏛️"}
+ else if(type===3){prompt=t("capitalCountry").replace("{a}",c[1]);answer=c[0];visual="🏙️"}
+ else {prompt=t("placeCountry")+" "+c[4]+"?";answer=c[0];visual="🗺️"}
+ if(type===0)pool=countries.map(x=>x[1]);else if(type===1)pool=[...new Set(countries.map(x=>x[2]))];else if(type===2)pool=countries.map(x=>x[4]);else pool=countries.map(x=>x[0]);
+ const distractors=shuffle(pool.filter(x=>x!==answer)).slice(0,3);
+ return {prompt,answer,options:shuffle([answer,...distractors]),visual,hint:answer};
+}
+function showQuestion(){
+ if(index>=TOTAL){finish();return}
+ current=buildQuestion(index);answered=false;
+ $("category").textContent=t("category");$("encourage").textContent=t("encourage");
+ $("visual").textContent=current.visual;$("question").textContent=current.prompt;
+ $("answers").innerHTML="";$("answers").classList.remove("hidden");
+ current.options.forEach((option,i)=>{const b=document.createElement("button");b.className="answer";b.textContent=String.fromCharCode(65+i)+") "+option;b.addEventListener("click",()=>choose(option,b));$("answers").appendChild(b)});
+ $("feedback").textContent="";$("next").textContent=t("next");$("next").disabled=true;$("hint").disabled=false;
+ updateStats();
+}
+function choose(option,button){
+ if(answered)return;answered=true;
+ const buttons=[...$("answers").querySelectorAll("button")];
+ buttons.forEach(b=>{b.disabled=true;if(b.textContent.slice(3)===current.answer)b.classList.add("correct")});
+ if(option===current.answer){score+=10;$("feedback").textContent=t("correct");if(sounds)beep(true)}
+ else{$("feedback").textContent=t("wrong")+" "+current.answer;if(sounds)beep(false);button.classList.add("wrong")}
+ done++;index++;save();updateStats();$("next").disabled=false;
+}
+function finish(){$("answers").classList.add("hidden");$("visual").textContent="🏆";$("question").textContent=t("finished");$("feedback").textContent="Pontuação: "+score;$("next").textContent=t("reset");$("next").disabled=false;$("next").onclick=resetGame;save();updateStats()}
+function next(){if(index>=TOTAL){finish();return}if(!current||answered){showQuestion()}else toast("Escolhe uma resposta antes de continuar!")}
+function resetGame(){if(!confirm("Queres reiniciar todo o progresso deste jogo?"))return;index=score=done=0;save();$("next").onclick=null;showIntro()}
+function showIntro(){$("answers").classList.add("hidden");$("visual").textContent="🌍";$("question").textContent=t("intro");$("feedback").textContent="";$("next").textContent=t("start");$("next").disabled=false;$("next").onclick=()=>{ $("next").onclick=null;showQuestion()};$("hint").disabled=true;updateStats()}
+function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
+function hint(){if(!current||answered)return;const first=current.answer.trim().charAt(0);$("feedback").textContent=t("hintText")+" \""+first+"\"."}
+function beep(ok){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();const o=audio.createOscillator(),g=audio.createGain();o.type="sine";o.frequency.value=ok?740:220;g.gain.value=.07;o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.16)}catch(e){}}
+function speak(){if(!current)return;if(!("speechSynthesis"in window)){toast("A leitura de voz não está disponível neste navegador.");return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(current.prompt);u.lang=lang==="pt"?"pt-PT":lang==="fr"?"fr-FR":"en-US";speechSynthesis.speak(u)}
+function startMusic(){
+ try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume();music=true;$("musicToggle").textContent=t("music")+": ON";
+ const beat=()=>{if(!music)return;const now=audio.currentTime;
+  [[95,.12,.09],[190,.045,.06],[285,.035,.05]].forEach((v,i)=>{const o=audio.createOscillator(),g=audio.createGain();o.type=i===0?"sine":"triangle";o.frequency.value=v[0];g.gain.setValueAtTime(v[1],now);g.gain.exponentialRampToValueAtTime(.001,now+v[2]);o.connect(g);g.connect(audio.destination);o.start(now);o.stop(now+v[2])});
+  const noise=audio.createBufferSource(),buffer=audio.createBuffer(1,audio.sampleRate*.055,audio.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*(1-i/data.length);noise.buffer=buffer;const ng=audio.createGain();ng.gain.value=.045;noise.connect(ng);ng.connect(audio.destination);noise.start(now+.12);
+  musicTimer=setTimeout(beat,360)};
+ beat();
+ }catch(e){music=false;toast("Não foi possível iniciar a música neste navegador.")}
+}
+function stopMusic(){music=false;if(musicTimer)clearTimeout(musicTimer);$("musicToggle").textContent=t("music")+": OFF"}
+function applyLanguage(){
+ $("subtitle").textContent=t("subtitle");$("labChallenge").textContent=t("challenge");$("labPoints").textContent=t("points");$("labDone").textContent=t("done");
+ $("category").textContent=t("category");$("encourage").textContent=t("encourage");$("listen").textContent=t("listen");$("hint").textContent=t("hint");$("note").textContent=t("note");$("home").textContent=t("home");$("reset").textContent=t("reset");
+ $("soundToggle").textContent=t("sound")+": "+(sounds?"ON":"OFF");$("musicToggle").textContent=t("music")+": "+(music?"ON":"OFF");
+ if(current&&!answered)showQuestion();else if(!current)showIntro();
+}
+$("next").addEventListener("click",next);
+$("hint").addEventListener("click",hint);
+$("listen").addEventListener("click",speak);
+$("soundToggle").addEventListener("click",()=>{sounds=!sounds;$("soundToggle").textContent=t("sound")+": "+(sounds?"ON":"OFF")});
+$("musicToggle").addEventListener("click",()=>music?stopMusic():startMusic());
+$("language").addEventListener("change",e=>{lang=e.target.value;applyLanguage()});
+$("reset").addEventListener("click",resetGame);
+$("home").addEventListener("click",()=>{current=null;showIntro();window.scrollTo({top:0,behavior:"smooth"})});
+load();applyLanguage();
+</script>
+</body>
+</html>
