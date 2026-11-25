@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#6955e8">
 <title>DESAFIA+ KIDS</title>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"Trebuchet MS",Arial,sans-serif;background:#f3f0ff;color:#30275c}
@@ -34,7 +35,7 @@ select,input{background:white;border:2px solid #ded7ff;border-radius:15px;paddin
 .game p{font-size:12px;color:#756b91;min-height:29px;margin-top:5px}
 .tag{display:inline-block;margin-top:9px;padding:6px 11px;border-radius:20px;font-size:11px;font-weight:900}
 .free{background:#baf1ce;color:#14683a}
-.premium{background:#ffe08b;color:#825300}
+.locked-tag{background:#ffe08b;color:#825300}
 .unlocked{background:#baf1ce;color:#14683a}
 .game button{width:100%;border:0;border-radius:13px;padding:11px 5px;margin-top:10px;background:#7158e8;color:white;font-weight:900;font-size:13px}
 .game button.lock{background:#51447d}
@@ -42,8 +43,8 @@ select,input{background:white;border:2px solid #ded7ff;border-radius:15px;paddin
 .info .lockemoji{font-size:43px}
 .info h2{margin:8px 0;font-size:21px}
 .info p{font-size:14px;line-height:1.5}
-.info button{border:0;border-radius:25px;padding:14px 22px;margin-top:15px;background:#ff795e;color:white;font-size:15px;font-weight:900}
-.whatsapp{background:#20a85a!important;color:white!important}
+.info button{border:0;border-radius:25px;padding:14px 22px;margin-top:15px;background:#ff795e;color:white;font-size:15px;font-weight:900;width:100%;max-width:300px}
+.info .whatsapp{background:#20a85a;color:white}
 footer{margin-top:25px;background:#5142a3;color:white;text-align:center;padding:25px 15px;border-radius:25px 25px 0 0;font-size:13px}
 .modal{display:none;position:fixed;inset:0;background:#21164dcc;z-index:1000;align-items:center;justify-content:center;padding:18px}
 .modal.show{display:flex}
@@ -54,14 +55,17 @@ footer{margin-top:25px;background:#5142a3;color:white;text-align:center;padding:
 .modal-actions{display:grid;gap:9px;margin-top:12px}
 .modal-actions button{border:0;border-radius:14px;padding:14px;font-weight:900;font-size:15px;background:#7158e8;color:white}
 .modal-actions .cancel{background:#eeeaf9;color:#51447d}
-#activationMessage{font-size:13px;min-height:20px;margin-top:10px;text-align:center;color:#c0392b;overflow-wrap:anywhere}
+#activationMessage{font-size:13px;min-height:20px;margin-top:10px;text-align:center;color:#c0392b;overflow-wrap:anywhere;white-space:pre-line}
+button:disabled{opacity:.65;cursor:not-allowed}
 @media(min-width:650px){
  .games{grid-template-columns:repeat(3,1fr)}
  .hero,.section,.info{max-width:850px;margin-left:auto;margin-right:auto}
 }
 </style>
 </head>
+
 <body>
+
 <header>
  <div class="logo">🌈 DESAFIA<span>+</span> KIDS</div>
  <p id="subtitle">O lugar onde aprender é uma aventura!</p>
@@ -75,58 +79,70 @@ footer{margin-top:25px;background:#5142a3;color:white;text-align:center;padding:
   <option value="es">🇪🇸 Español</option>
  </select>
 </div>
+
 <section class="hero">
  <div class="mascot">🦁🎈</div>
  <h1 id="welcome">Olá, pequeno explorador!</h1>
  <p id="description">Prepara-te para brincar, aprender e conquistar muitas estrelas!</p>
  <button class="mainbtn" id="start" onclick="document.getElementById('games').scrollIntoView({behavior:'smooth'})">🚀 VAMOS JOGAR!</button>
 </section>
+
 <section class="section" id="games">
  <h2 id="gamesTitle">🎮 Escolhe a tua aventura!</h2>
  <p class="intro" id="gamesIntro">Temos 15 aventuras à tua espera!</p>
  <div class="games" id="gameList"></div>
 </section>
+
 <section class="info">
  <div class="lockemoji">🔐⭐</div>
- <h2 id="premiumTitle">Queres desbloquear mais aventuras?</h2>
- <p id="premiumText">Pede aos teus pais ou encarregados para contactar o administrador e conhecer o acesso premium.</p>
- <button id="contact" class="whatsapp" onclick="contactAdmin()">📱 WHATSAPP — ADQUIRIR ACESSO</button>
+ <h2 id="infoTitle">Queres desbloquear mais aventuras?</h2>
+ <p id="infoText">Pede ao teu encarregado para contactar o administrador e adquirir um código de acesso.</p>
+ <button id="haveCodeButton" onclick="openActivation()">🔑 JÁ TENHO CÓDIGO</button>
+ <br>
+ <button id="contactButton" class="whatsapp" onclick="contactAdmin()">📱 PEDIR CÓDIGO NO WHATSAPP</button>
 </section>
+
 <footer>
  <strong>🌈 DESAFIA+ KIDS</strong>
  <p id="footerText" style="margin-top:8px">Aprender pode ser muito divertido!</p>
  <p style="margin-top:12px">© 2026 DESAFIA+ KIDS</p>
 </footer>
+
 <div class="modal" id="activationModal">
  <div class="modal-box">
-  <h2 id="modalTitle">🔐 Ativar jogos Premium</h2>
-  <p id="modalDescription">Introduz o nome do encarregado e o código Premium para desbloquear os 13 jogos.</p>
+  <h2 id="modalTitle">🔐 Ativar acesso aos jogos</h2>
+  <p id="modalDescription">Introduz o nome do encarregado e o código recebido para desbloquear os 13 jogos.</p>
   <input id="guardianName" type="text" maxlength="100" autocomplete="name" placeholder="Nome do encarregado">
-  <input id="premiumCode" type="text" autocomplete="off" placeholder="Código Premium">
+  <input id="accessCode" type="text" autocomplete="off" placeholder="Introduz o teu código">
   <div class="modal-actions">
-   <button id="activateButton" onclick="activatePremium()">🔓 VALIDAR E DESBLOQUEAR OS 13 JOGOS</button>
+   <button id="activateButton" onclick="activateAccess()">🔓 VALIDAR CÓDIGO E DESBLOQUEAR</button>
    <button class="cancel" id="cancelButton" onclick="closeActivation()">Cancelar</button>
   </div>
   <div id="activationMessage" role="status"></div>
  </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+/* LIGAÇÃO AO SUPABASE */
 const SUPABASE_URL="https://ounjndogaogngxchuijj.supabase.co";
 const SUPABASE_KEY="sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const ACTIVATION_KEY="desafiamais_premium_activated";
-let premiumUnlocked=localStorage.getItem(ACTIVATION_KEY)==="true";
+/* CONFIGURAÇÕES */
+const ACTIVATION_KEY="desafiamais_access_activated";
+let accessUnlocked=false;
 let lang="pt";
-let selectedGame=null;
 let activating=false;
+
+/* OS 15 JOGOS */
 const games=[
  ["➕",["Matemática divertida","Math Fun","Mathématiques amusantes","Matemáticas divertidas"],["Contas e números","Numbers and sums","Calculs et nombres","Cuentas y números"],"matematica.html"],
  ["🐘",["Mundo dos animais","Animal World","Monde des animaux","Mundo animal"],["Descobre os animais","Discover animals","Découvre les animaux","Descubre los animales"],"animais.html"],
  ["🌍",["Quiz de cultura geral","General Knowledge Quiz","Quiz de culture générale","Quiz de cultura general"],["Testa os teus conhecimentos","Test your knowledge","Teste tes connaissances","Pon a prueba tus conocimientos"],"cultura.html"],
  ["🇦🇴",["Explorador de Angola","Angola Explorer","Explorateur d'Angola","Explorador de Angola"],["Conhece o nosso país","Discover our country","Découvre notre pays","Conoce nuestro país"],"angola.html"],
- ["🔤",["Mestre das palavras","Word Master","Maître des mots","Maestro de palabras"],["Letras e palavras","Letters and words","Lettres et mots","Letras y palabras"],"palavras.html"],
+ ["🔤",["Mestre das palavras","Word Master","Maître des mots","Maestro de las palabras"],["Letras e palavras","Letters and words","Lettres et mots","Letras y palabras"],"palavras.html"],
  ["🧠",["Desafio da memória","Memory Challenge","Défi mémoire","Reto de memoria"],["Treina a memória","Train your memory","Entraîne ta mémoire","Entrena tu memoria"],"memoria.html"],
  ["🚩",["Descobre as bandeiras","Discover the Flags","Découvre les drapeaux","Descubre las banderas"],["Bandeiras do mundo","Flags of the world","Drapeaux du monde","Banderas del mundo"],"bandeiras.html"],
  ["🔬",["Pequeno cientista","Little Scientist","Petit scientifique","Pequeño científico"],["Descobre a ciência","Discover science","Découvre la science","Descubre la ciencia"],"ciencia.html"],
@@ -135,113 +151,219 @@ const games=[
  ["🧩",["Puzzle divertido","Fun Puzzle","Puzzle amusant","Rompecabezas"],["Monta as peças","Put the pieces together","Assemble les pièces","Une las piezas"],"puzzle.html"],
  ["🌍",["Conhece África","Discover Africa","Découvre l'Afrique","Conoce África"],["Explora o continente","Explore the continent","Explore le continent","Explora el continente"],"africa.html"],
  ["✅",["Verdadeiro ou falso","True or False","Vrai ou faux","Verdadero o falso"],["Escolhe a resposta","Choose the answer","Choisis la réponse","Elige la respuesta"],"verdadeiro-falso.html"],
- ["🗺️",["Desafio da geografia","Geography Challenge","Défi géographique","Reto de geografía"],["Descobre o mundo","Discover the world","Découvre le monde","Descubre el mundo"],"geografia.html"],
+ ["🗺️",["Desafio da geografia","Geography Challenge","Défi géographique","Reto geográfico"],["Descobre o mundo","Discover the world","Découvre le monde","Descubre el mundo"],"geografia.html"],
  ["💡",["Mestre da lógica","Logic Master","Maître de la logique","Maestro de la lógica"],["Usa o raciocínio","Use your reasoning","Utilise ton raisonnement","Usa tu razonamiento"],"logica.html"]
 ];
+
+/* TEXTOS NOS QUATRO IDIOMAS */
 const words={
- pt:["O lugar onde aprender é uma aventura!","Olá, pequeno explorador!","Prepara-te para brincar, aprender e conquistar muitas estrelas!","🚀 VAMOS JOGAR!","🎮 Escolhe a tua aventura!","Temos 15 aventuras à tua espera!","GRÁTIS","PREMIUM","JOGAR","🔒 BLOQUEADO","Queres desbloquear mais aventuras?","Pede aos teus pais ou encarregados para contactar o administrador e conhecer o acesso premium.","📱 WHATSAPP — ADQUIRIR ACESSO","Aprender pode ser muito divertido!","Nome do encarregado","Código Premium","🔐 Ativar os 13 jogos Premium","Introduz o nome do encarregado e o código Premium para desbloquear todos os 13 jogos.","🔓 VALIDAR E DESBLOQUEAR OS 13","Cancelar","A validar o código...","Os 13 jogos Premium foram desbloqueados!","Não foi possível validar.\nConfirma o nome e o código.","JOGAR","DESBLOQUEADO"],
- en:["Where learning is an adventure!","Hello, little explorer!","Get ready to play, learn and earn stars!","🚀 LET'S PLAY!","🎮 Choose your adventure!","We have 15 adventures waiting for you!","FREE","PREMIUM","PLAY","🔒 LOCKED","Want to unlock more adventures?","Ask your parents or guardians to contact the administrator about premium access.","📱 WHATSAPP — GET ACCESS","Learning can be fun!","Guardian's name","Premium code","🔐 Activate all 13 Premium games","Enter the guardian's name and Premium code to unlock all 13 games.","🔓 VALIDATE AND UNLOCK ALL 13","Cancel","Validating code...","All 13 Premium games are unlocked!","Unable to validate.\nCheck the name and code.","PLAY","UNLOCKED"],
- fr:["L'endroit où apprendre est une aventure !","Bonjour, petit explorateur !","Prépare-toi à jouer, apprendre et gagner des étoiles !","🚀 JOUONS !","🎮 Choisis ton aventure !","15 aventures t'attendent !","GRATUIT","PREMIUM","JOUER","🔒 VERROUILLÉ","Tu veux débloquer plus d'aventures ?","Demande à tes parents de contacter l'administrateur pour l'accès premium.","📱 WHATSAPP — OBTENIR L'ACCÈS","Apprendre peut être amusant !","Nom du responsable","Code Premium","🔐 Activer les 13 jeux Premium","Saisis le nom du responsable et le code Premium pour débloquer les 13 jeux.","🔓 VALIDER ET DÉBLOQUER LES 13","Annuler","Validation du code...","Les 13 jeux Premium sont débloqués !","Validation impossible.\nVérifie le nom et le code.","JOUER","DÉBLOQUÉ"],
- es:["¡El lugar donde aprender es una aventura!","¡Hola, pequeño explorador!","¡Prepárate para jugar, aprender y ganar estrellas!","🚀 ¡A JUGAR!","🎮 ¡Elige tu aventura!","¡Tenemos 15 aventuras esperándote!","GRATIS","PREMIUM","JUGAR","🔒 BLOQUEADO","¿Quieres desbloquear más aventuras?","Pide a tus padres que contacten con el administrador para obtener acceso premium.","📱 WHATSAPP — OBTENER ACCESO","¡Aprender puede ser divertido!","Nombre del encargado","Código Premium","🔐 Activar los 13 juegos Premium","Introduce el nombre del encargado y el código Premium para desbloquear los 13 juegos.","🔓 VALIDAR Y DESBLOQUEAR LOS 13","Cancelar","Validando código...","¡Los 13 juegos Premium están desbloqueados!","No se pudo validar.\nComprueba el nombre y el código.","JUGAR","DESBLOQUEADO"]
+ pt:[
+  "O lugar onde aprender é uma aventura!","Olá, pequeno explorador!","Prepara-te para brincar, aprender e conquistar muitas estrelas!","🚀 VAMOS JOGAR!","🎮 Escolhe a tua aventura!","Temos 15 aventuras à tua espera!",
+  "GRÁTIS","COM ACESSO","JOGAR","🔒 BLOQUEADO","Queres desbloquear mais aventuras?","Pede ao teu encarregado para contactar o administrador e adquirir um código de acesso.",
+  "📱 PEDIR CÓDIGO NO WHATSAPP","Aprender pode ser muito divertido!","Nome do encarregado","Introduz o teu código","🔐 Ativar acesso aos jogos",
+  "Introduz o nome do encarregado e o código recebido para desbloquear os 13 jogos.","🔓 VALIDAR CÓDIGO E DESBLOQUEAR","Cancelar","A validar o código...",
+  "Acesso ativado! Os 13 jogos estão desbloqueados.","Não foi possível validar. Confirma o nome e o código.","JOGAR","DESBLOQUEADO","🔑 JÁ TENHO CÓDIGO"
+ ],
+ en:[
+  "Where learning is an adventure!","Hello, little explorer!","Get ready to play, learn and earn stars!","🚀 LET'S PLAY!","🎮 Choose your adventure!","We have 15 adventures waiting for you!",
+  "FREE","ACCESS GRANTED","PLAY","🔒 LOCKED","Want to unlock more adventures?","Ask your parent or guardian to contact the administrator and get an access code.",
+  "📱 REQUEST CODE ON WHATSAPP","Learning can be fun!","Guardian's name","Enter your code","🔐 Activate game access",
+  "Enter the guardian's name and the code received to unlock all 13 games.","🔓 VALIDATE CODE AND UNLOCK","Cancel","Validating code...",
+  "Access activated! All 13 games are unlocked.","Unable to validate. Check the name and code.","PLAY","UNLOCKED","🔑 I ALREADY HAVE A CODE"
+ ],
+ fr:[
+  "L'endroit où apprendre est une aventure !","Bonjour, petit explorateur !","Prépare-toi à jouer, apprendre et gagner des étoiles !","🚀 JOUONS !","🎮 Choisis ton aventure !","15 aventures t'attendent !",
+  "GRATUIT","ACCÈS ACTIVÉ","JOUER","🔒 VERROUILLÉ","Tu veux débloquer plus d'aventures ?","Demande à ton responsable de contacter l'administrateur pour obtenir un code d'accès.",
+  "📱 DEMANDER UN CODE SUR WHATSAPP","Apprendre peut être amusant !","Nom du responsable","Saisis ton code","🔐 Activer l'accès aux jeux",
+  "Saisis le nom du responsable et le code reçu pour débloquer les 13 jeux.","🔓 VALIDER LE CODE ET DÉBLOQUER","Annuler","Validation du code...",
+  "Accès activé ! Les 13 jeux sont débloqués.","Validation impossible. Vérifie le nom et le code.","JOUER","DÉBLOQUÉ","🔑 J'AI DÉJÀ UN CODE"
+ ],
+ es:[
+  "¡El lugar donde aprender es una aventura!","¡Hola, pequeño explorador!","¡Prepárate para jugar, aprender y ganar estrellas!","🚀 ¡A JUGAR!","🎮 ¡Elige tu aventura!","¡Tenemos 15 aventuras esperándote!",
+  "GRATIS","ACCESO ACTIVADO","JUGAR","🔒 BLOQUEADO","¿Quieres desbloquear más aventuras?","Pide a tu encargado que contacte con el administrador para obtener un código de acceso.",
+  "📱 PEDIR CÓDIGO POR WHATSAPP","¡Aprender puede ser divertido!","Nombre del encargado","Introduce tu código","🔐 Activar acceso a los juegos",
+  "Introduce el nombre del encargado y el código recibido para desbloquear los 13 juegos.","🔓 VALIDAR CÓDIGO Y DESBLOQUEAR","Cancelar","Validando código...",
+  "¡Acceso activado! Los 13 juegos están desbloqueados.","No se pudo validar. Comprueba el nombre y el código.","JUGAR","DESBLOQUEADO","🔑 YA TENGO CÓDIGO"
+ ]
 };
+
+/* MOSTRAR OS JOGOS */
 function renderGames(){
  const w=words[lang];
  const li=["pt","en","fr","es"].indexOf(lang);
+
  document.getElementById("gameList").innerHTML=games.map((g,i)=>{
   const free=i<2;
-  const canPlay=free||premiumUnlocked;
-  // O texto DESBLOQUEADO está na posição 24 do array de traduções.
-  const tagText=free?w[6]:(premiumUnlocked?w[24]:w[7]);
+  const canPlay=free||accessUnlocked;
+  const tagText=free?w[6]:(accessUnlocked?w[24]:w[9]);
   const buttonText=canPlay?"🎮 "+w[23]:w[9];
+
   return `<article class="game">
    <div class="emoji">${g[0]}</div>
    <h3>${g[1][li]}</h3>
    <p>${g[2][li]}</p>
-   <span class="tag ${free?"free":(premiumUnlocked?"unlocked":"premium")}">${tagText}</span>
+   <span class="tag ${free?"free":(accessUnlocked?"unlocked":"locked-tag")}">${tagText}</span>
    <button class="${canPlay?"":"lock"}" onclick="gameAction(${i})">${buttonText}</button>
   </article>`;
  }).join("");
 }
+
+/* MUDAR IDIOMA */
 function changeLanguage(){
  lang=document.getElementById("language").value;
  document.documentElement.lang=lang;
  const w=words[lang];
+
  const ids=["subtitle","welcome","description","start","gamesTitle","gamesIntro"];
  ids.forEach((id,i)=>document.getElementById(id).textContent=w[i]);
- document.getElementById("premiumTitle").textContent=w[10];
- document.getElementById("premiumText").textContent=w[11];
- document.getElementById("contact").textContent=w[12];
+
+ document.getElementById("infoTitle").textContent=w[10];
+ document.getElementById("infoText").textContent=w[11];
+ document.getElementById("contactButton").textContent=w[12];
  document.getElementById("footerText").textContent=w[13];
  document.getElementById("guardianName").placeholder=w[14];
- document.getElementById("premiumCode").placeholder=w[15];
+ document.getElementById("accessCode").placeholder=w[15];
  document.getElementById("modalTitle").textContent=w[16];
  document.getElementById("modalDescription").textContent=w[17];
  document.getElementById("activateButton").textContent=w[18];
  document.getElementById("cancelButton").textContent=w[19];
+ document.getElementById("haveCodeButton").textContent=w[25];
+
  renderGames();
 }
+
+/* CLIQUE NOS JOGOS */
 function gameAction(i){
  if(i===0||i===1){
   location.href=games[i][3];
   return;
  }
- if(premiumUnlocked){
+
+ if(accessUnlocked){
   location.href=games[i][3];
   return;
  }
- selectedGame=i;
+
+ contactAdmin(i);
+}
+
+/* WHATSAPP DO ADMINISTRADOR */
+function contactAdmin(gameIndex=null){
+ const numero="244938403923";
+ let mensagem="Olá! Gostaria de adquirir um código de acesso do DESAFIA+ KIDS para desbloquear os 13 jogos educativos. Pode informar-me sobre o preço e as condições?";
+
+ if(gameIndex!==null){
+  mensagem="Olá! Tenho interesse no jogo "+games[gameIndex][1][0]+" do DESAFIA+ KIDS. Gostaria de adquirir um código de acesso para desbloquear os 13 jogos. Pode informar-me sobre o preço e as condições?";
+ }
+
+ window.open("https://wa.me/"+numero+"?text="+encodeURIComponent(mensagem),"_blank");
+}
+
+/* ABRIR FORMULÁRIO PARA QUEM JÁ TEM CÓDIGO */
+function openActivation(){
  document.getElementById("activationMessage").textContent="";
+ document.getElementById("activationMessage").style.color="#c0392b";
  document.getElementById("activationModal").classList.add("show");
 }
+
+/* FECHAR FORMULÁRIO */
 function closeActivation(){
  if(activating)return;
  document.getElementById("activationModal").classList.remove("show");
- selectedGame=null;
 }
-async function activatePremium(){
- if(activating||selectedGame===null)return;
+
+/* CONFIRMAR ACESSO GUARDADO NO SUPABASE */
+async function refreshAccess(){
+ try{
+  const sessionResult=await supabaseClient.auth.getSession();
+  if(sessionResult.error)throw sessionResult.error;
+
+  if(!sessionResult.data.session){
+   accessUnlocked=false;
+   localStorage.removeItem(ACTIVATION_KEY);
+   renderGames();
+   return;
+  }
+
+  const result=await supabaseClient.rpc("check_premium_access");
+  if(result.error)throw result.error;
+
+  accessUnlocked=result.data===true;
+
+  if(accessUnlocked){
+   localStorage.setItem(ACTIVATION_KEY,"true");
+  }else{
+   localStorage.removeItem(ACTIVATION_KEY);
+  }
+
+  renderGames();
+ }catch(error){
+  console.error("Erro ao confirmar acesso:",error);
+  accessUnlocked=false;
+  localStorage.removeItem(ACTIVATION_KEY);
+  renderGames();
+ }
+}
+
+/* VALIDAR CÓDIGO E ATIVAR OS 13 JOGOS */
+async function activateAccess(){
+ if(activating)return;
+
  const name=document.getElementById("guardianName").value.trim();
- const code=document.getElementById("premiumCode").value.trim();
+ const code=document.getElementById("accessCode").value.trim();
  const message=document.getElementById("activationMessage");
- const w=words[lang];
- if(name.length<2){
-  message.textContent=w[22];
-  return;
- }
- if(code.length<10){
-  message.textContent=w[22];
-  return;
- }
- activating=true;
  const button=document.getElementById("activateButton");
+ const w=words[lang];
+
+ if(name.length<2){
+  message.textContent=lang==="pt"?"Introduz o nome completo do encarregado.":"Enter the guardian's name.";
+  return;
+ }
+
+ if(code.length<10){
+  message.textContent=lang==="pt"?"Introduz um código válido.":"Enter a valid code.";
+  return;
+ }
+
+ activating=true;
  button.disabled=true;
  button.textContent=w[20];
  message.style.color="#756b91";
  message.textContent=w[20];
+
  try{
-  let {data:{session},error:sessionError}=await supabaseClient.auth.getSession();
-  if(sessionError)throw sessionError;
-  if(!session){
+  const sessionResult=await supabaseClient.auth.getSession();
+  if(sessionResult.error)throw sessionResult.error;
+
+  if(!sessionResult.data.session){
    const signIn=await supabaseClient.auth.signInAnonymously();
    if(signIn.error)throw signIn.error;
   }
+
   const result=await supabaseClient.rpc("redeem_premium_code",{
    p_code:code,
    p_customer_name:name
   });
+
   if(result.error)throw result.error;
-  // Uma ativação desbloqueia os 13 jogos Premium neste navegador.
-  premiumUnlocked=true;
+
+  accessUnlocked=true;
   localStorage.setItem(ACTIVATION_KEY,"true");
   renderGames();
+
   message.style.color="#168044";
   message.textContent=w[21];
-  const destination=games[selectedGame][3];
+
+  document.getElementById("guardianName").value="";
+  document.getElementById("accessCode").value="";
+
   setTimeout(()=>{
-   location.href=destination;
-  },900);
+   document.getElementById("activationModal").classList.remove("show");
+   message.textContent="";
+  },1800);
+
  }catch(error){
-  console.error("Erro na ativação Premium:",error);
+  console.error("Erro na ativação:",error);
   message.style.color="#c0392b";
   message.textContent=error.message||w[22];
  }finally{
@@ -250,14 +372,11 @@ async function activatePremium(){
   button.textContent=w[18];
  }
 }
-function contactAdmin(){
- const numero="244938403923";
- const mensagem=encodeURIComponent(
-  "Olá! Gostaria de adquirir um código Premium do DESAFIA+ KIDS para desbloquear os 13 jogos educativos. Pode informar-me sobre o preço e as condições?"
- );
- window.open("https://wa.me/"+numero+"?text="+mensagem,"_blank");
-}
+
+/* INICIAR SITE */
 renderGames();
+refreshAccess();
 </script>
+
 </body>
-</html>
+ </html>
