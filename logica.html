@@ -115,6 +115,40 @@ function speak(){
  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(current.q);
  u.lang={pt:"pt-PT",en:"en-GB",fr:"fr-FR",es:"es-ES"}[lang];u.rate=.88;speechSynthesis.speak(u)}catch(e){}
 }
+function challenge(index){
+ const n=Math.floor(index/8)+1, type=index%8;
+ const pick=a=>a[Math.floor(Math.random()*a.length)];
+ const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+ const numberOpts=(correct,spread=12)=>shuffle([...new Set([correct,correct+1,Math.max(0,correct-1),correct+spread])]).slice(0,4).map(String);
+ let q='',visual='',correct='',opts=[],hint='';
+ if(type===0){
+  const step=(n%4)+2,start=(n%17)+1,a=start+step*2,b=a+step;
+  q=tr('sequence');visual=`${start}  ·  ${start+step}  ·  ${a}  ·  ?`;correct=String(b);opts=numberOpts(b,step+3);hint=lang==='pt'?`A sequência aumenta sempre ${step}.`:lang==='en'?`The sequence increases by ${step} each time.`:lang==='fr'?`La suite augmente de ${step} à chaque fois.`:`La secuencia aumenta ${step} cada vez.`;
+ }else if(type===1){
+  const pool=lang==='pt'?['🍎','🍌','🍇','🍓','🚗','🍊']:lang==='en'?['🍎','🍌','🍇','🍓','🚗','🍊']:['🍎','🍌','🍇','🍓','🚗','🍊'];
+  const odd=pool[4],same=pool.filter(x=>x!==odd);visual=[...same.slice(0,3),odd].join('   ');q=tr('odd');correct=odd;opts=shuffle([odd,'⭐','🌙','🌳']);hint=lang==='pt'?'Três elementos são frutas; procura o que não pertence ao grupo.':lang==='en'?'Three items are fruit; find the one that does not belong.':lang==='fr'?'Trois éléments sont des fruits ; trouve l’intrus.':'Tres elementos son frutas; encuentra el diferente.';
+ }else if(type===2){
+  const a=(n%19)+3,b=(n%13)+2,op=n%3;
+  const expr=op===0?`${a} + ${b}`:op===1?`${a+b} − ${b}`:`${a} × 2`;
+  const ans=op===0?a+b:op===1?a: a*2;
+  q=tr('math');visual=expr+' = ?';correct=String(ans);opts=numberOpts(ans,7);hint=lang==='pt'?'Resolve a operação apresentada.':lang==='en'?'Work out the calculation shown.':lang==='fr'?'Calcule l’opération affichée.':'Resuelve la operación mostrada.';
+ }else if(type===3){
+  const a=SHAPES[n%SHAPES.length],b=SHAPES[(n+2)%SHAPES.length];visual=`${a}  ${b}  ${a}  ${b}  ?`;q=tr('pattern');correct=a;opts=shuffle([a,b,SHAPES[(n+3)%10],SHAPES[(n+5)%10]]);hint=lang==='pt'?'Observa: as duas formas alternam.':lang==='en'?'Notice how the two shapes alternate.':lang==='fr'?'Observe l’alternance des deux formes.':'Observa cómo se alternan las dos figuras.';
+ }else if(type===4){
+  const a=n+12,b=n+7,c=n+19;visual=`${a}     ${b}     ${c}`;q=tr('order');correct=String(c);opts=numberOpts(c,5);hint=lang==='pt'?'Compara os números e escolhe o maior.':lang==='en'?'Compare the numbers and choose the largest.':lang==='fr'?'Compare les nombres et choisis le plus grand.':'Compara los números y elige el mayor.';
+ }else if(type===5){
+  const count=(n%8)+3,emoji=EMOJIS[n%EMOJIS.length];visual=Array(count).fill(emoji).join(' ');q=tr('count');correct=String(count);opts=numberOpts(count,4);hint=lang==='pt'?'Conta todos os símbolos apresentados.':lang==='en'?'Count all the symbols shown.':lang==='fr'?'Compte tous les symboles affichés.':'Cuenta todos los símbolos mostrados.';
+ }else if(type===6){
+  const a=SHAPES[n%SHAPES.length],b=SHAPES[(n+1)%SHAPES.length],c=SHAPES[(n+2)%SHAPES.length];visual=`${a}  ${b}  ${c}  ${a}  ${b}  ?`;q=tr('shape');correct=c;opts=shuffle([c,a,b,SHAPES[(n+4)%10]]);hint=lang==='pt'?'O grupo de três formas repete-se.':lang==='en'?'The group of three shapes repeats.':lang==='fr'?'Le groupe de trois formes se répète.':'El grupo de tres figuras se repite.';
+ }else{
+  const yes=n%2===0;const left=WORDS[lang][n%WORDS[lang].length],right=WORDS[lang][(n+1)%WORDS[lang].length];
+  q=tr('logic')+' '+left+' '+tr('and')+' '+right+'; '+tr('then');
+  visual=yes?(lang==='pt'?'Todos os gatos são animais. Um gato é um animal.':lang==='en'?'All cats are animals. A cat is an animal.':lang==='fr'?'Tous les chats sont des animaux. Un chat est un animal.':'Todos los gatos son animales. Un gato es un animal.'):(lang==='pt'?'Todos os peixes são aves. Um peixe é uma ave.':lang==='en'?'All fish are birds. A fish is a bird.':lang==='fr'?'Tous les poissons sont des oiseaux. Un poisson est un oiseau.':'Todos los peces son aves. Un pez es un ave.');
+  correct=yes?tr('yes'):tr('no');opts=shuffle([tr('yes'),tr('no'),lang==='pt'?'Talvez':lang==='en'?'Maybe':lang==='fr'?'Peut-être':'Quizás',lang==='pt'?'Não sei':lang==='en'?'I do not know':lang==='fr'?'Je ne sais pas':'No sé']);hint=lang==='pt'?'Verifica se a conclusão é verdadeira de acordo com a frase.':lang==='en'?'Check whether the conclusion follows from the statement.':lang==='fr'?'Vérifie si la conclusion découle de l’énoncé.':'Comprueba si la conclusión se deduce del enunciado.';
+ }
+ return {q,visual,correct,opts,hint};
+}
+
 function render(){
  if(saved.index>=1000){finish();return}
  current=challenge(saved.index);answered=false;
