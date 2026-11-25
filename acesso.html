@@ -24,6 +24,7 @@ button:disabled{opacity:.55}
 .status{background:#f0efff;border-radius:10px;padding:12px;margin-top:14px;white-space:pre-wrap;overflow-wrap:anywhere;color:#39345f}
 .small{font-size:12px}.notice{border-left:4px solid #f0c34e;padding-left:12px}
 .back{color:#5142c8;text-decoration:none;font-weight:700}
+#sessionInfo{font-size:12px;margin-top:12px}
 @media(max-width:480px){body{padding:10px}.head,.card{padding:17px}}
 </style>
 </head>
@@ -44,19 +45,20 @@ button:disabled{opacity:.55}
   <div id="activationPane">
     <h2>Ativar Premium</h2>
     <label for="guardianName">Nome do encarregado de educação</label>
-    <input id="guardianName" type="text" autocomplete="name" maxlength="80" placeholder="Nome do responsável">
+    <input id="guardianName" type="text" autocomplete="name" maxlength="100" placeholder="Nome do responsável">
     <label for="premiumCode">Código Premium</label>
-    <input id="premiumCode" type="text" autocomplete="off" maxlength="80" placeholder="Ex.: DK-XXXXXXXX" autocapitalize="characters">
+    <input id="premiumCode" type="text" autocomplete="off" maxlength="100" placeholder="Introduz o teu código Premium" autocapitalize="characters">
     <button id="activateButton" type="button">Ativar os 13 jogos</button>
   </div>
 
-  <div id="accountPane" hidden>
-    <h2>Acesso neste dispositivo</h2>
-    <p id="accountInfo">A verificar a tua sessão…</p>
+  <div id="accountPane">
+    <h2>Estado do acesso</h2>
+    <p id="accountInfo">A verificar este navegador…</p>
     <button id="checkAccess" class="secondary" type="button">Verificar acesso Premium</button>
   </div>
 
-  <div id="status" class="status" aria-live="polite">Introduz o nome e o código Premium para começar.</div>
+  <p id="sessionInfo">A preparar a sessão segura…</p>
+  <div id="status" class="status" aria-live="polite">A iniciar…</div>
 </section>
 
 <p class="small" style="text-align:center">
@@ -73,13 +75,7 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St
 const db = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY,
-  {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true
-    }
-  }
+  { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }
 );
 
 const $ = id => document.getElementById(id);
@@ -94,13 +90,9 @@ function say(message) {
 function getDeviceId() {
   let id = localStorage.getItem(DEVICE_STORAGE_KEY);
   if (!id) {
-    if (window.crypto && typeof window.crypto.randomUUID === "function") {
-      id = window.crypto.randomUUID();
-    } else {
-      id = "DK-" + Date.now().toString(36) + "-" +
-        Math.random().toString(36).slice(2) +
-        Math.random().toString(36).slice(2);
-    }
+    id = (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : "DK-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
     localStorage.setItem(DEVICE_STORAGE_KEY, id);
   }
   return id;
@@ -124,10 +116,6 @@ function getDeviceLabel() {
   return device + " - " + browser;
 }
 
-/*
- * Cada navegador sem sessão recebe uma identidade anónima Supabase.
- * Se já existir uma sessão, ela é preservada para não desligar clientes atuais.
- */
 async function ensureCustomerSession() {
   const { data: current, error: currentError } = await db.auth.getSession();
   if (currentError) throw currentError;
@@ -148,45 +136,47 @@ async function registerCurrentDevice() {
     return false;
   }
 
-  say("A verificar o dispositivo autorizado…");
   const { data, error } = await db.rpc("register_premium_device", {
     p_device_id: deviceId,
     p_device_label: getDeviceLabel()
   });
 
   if (error) {
-    say("Não foi possível registar o dispositivo: " + error.message);
+    say("Erro ao verificar o dispositivo: " + error.message);
     return false;
   }
-
   if (data !== true) {
-    say("Acesso bloqueado: esta conta Premium já está associada a outro dispositivo. Contacta o administrador para autorizar a transferência.");
+    say("Acesso bloqueado: esta conta Premium está associada a outro dispositivo. O administrador terá de autorizar a transferência.");
     return false;
   }
   return true;
 }
 
 async function checkAccess(showSuccess = true) {
-  if (deviceCheckRunning) return;
+  if (deviceCheckRunning) return false;
   deviceCheckRunning = true;
-
   try {
     const { data, error } = await db.rpc("check_premium_access");
     if (error) {
-      say("Não foi possível verificar o acesso: " + error.message);
-      return;
+      say("Erro ao consultar o acesso: " + error.message);
+      return false;
     }
+
     if (data !== true) {
-      say("Ainda não existe um acesso Premium ativo nesta conta. Introduz o teu código Premium para ativar.");
-      return;
+      $("accountInfo").textContent = "Esta sessão ainda não tem um acesso Premium ativo.";
+      say("Ainda não existe acesso Premium ativo nesta sessão. Se já usaste este código antes, não o voltes a ativar: será necessário corrigir o registo existente no Supabase.");
+      return false;
     }
 
+    $("accountInfo").textContent = "Acesso Premium encontrado. A confirmar o dispositivo…";
     const allowed = await registerCurrentDevice();
-    if (!allowed) return;
+    if (!allowed) return false;
 
+    $("accountInfo").textContent = "Acesso Premium ativo neste dispositivo.";
     say(showSuccess
-      ? "Bem-vindo de volta! O teu acesso Premium está ativo neste dispositivo para os 13 jogos."
-      : "Acesso Premium ativo. Este dispositivo está autorizado para os 13 jogos.");
+      ? "Bem-vindo de volta! Os 13 jogos Premium estão autorizados neste dispositivo."
+      : "Acesso Premium ativo. Os 13 jogos estão autorizados.");
+    return true;
   } finally {
     deviceCheckRunning = false;
   }
@@ -202,79 +192,76 @@ async function activatePremium() {
     say("Preenche o nome do encarregado de educação e o código Premium.");
     return;
   }
+  if (name.length < 2) {
+    say("O nome do encarregado deve ter pelo menos 2 caracteres.");
+    return;
+  }
 
   activationRunning = true;
   $("activateButton").disabled = true;
 
   try {
-    say("A preparar a identidade segura deste cliente…");
+    say("A preparar a identidade segura deste navegador…");
     await ensureCustomerSession();
 
+    // Evita tentar resgatar novamente um código numa sessão que já tem acesso.
+    const alreadyActive = await checkAccess(false);
+    if (alreadyActive) return;
+
     say("A validar o código Premium…");
-    /*
-     * Esta chamada utiliza a versão SQL com dois argumentos:
-     * p_code e p_customer_name.
-     */
     const { data, error } = await db.rpc("redeem_premium_code", {
       p_code: code,
       p_customer_name: name
     });
 
     if (error) {
-      say("Não foi possível ativar o código: " + error.message +
-        "\nSe aparecer um erro de função inexistente ou de permissões, será necessário ajustar a função SQL/RLS antes de continuar.");
+      const msg = error.message || String(error);
+      if (/já possui acesso registado/i.test(msg)) {
+        say("O Supabase confirmou que esta sessão já tem um registo Premium. O código não foi alterado. É necessário corrigir ou transferir o registo existente no Supabase; não cries outro código.");
+      } else {
+        say("Não foi possível ativar: " + msg);
+      }
       return;
     }
 
-    if (typeof data === "string" && data.trim()) {
-      say(data);
-    } else {
-      say("Código aceite. A confirmar o acesso Premium…");
-    }
-
-    $("activationPane").hidden = true;
-    $("accountPane").hidden = false;
+    say(typeof data === "string" && data.trim() ? data : "Código aceite. A confirmar o acesso…");
     await checkAccess(false);
   } catch (error) {
-    say("Não foi possível iniciar a ativação: " + (error.message || String(error)));
+    say("Erro ao iniciar a ativação: " + (error.message || String(error)));
   } finally {
     activationRunning = false;
     $("activateButton").disabled = false;
   }
 }
 
-async function loadExistingSession() {
-  const { data, error } = await db.auth.getSession();
-  if (error) {
-    say("Não foi possível consultar a sessão: " + error.message);
-    return;
-  }
-
-  if (data.session && data.session.user) {
-    $("activationPane").hidden = true;
-    $("accountPane").hidden = false;
-    const user = data.session.user;
-    $("accountInfo").textContent = user.is_anonymous
-      ? "Identidade de cliente reconhecida neste navegador."
+async function initializePage() {
+  try {
+    const user = await ensureCustomerSession();
+    $("sessionInfo").textContent = user.is_anonymous
+      ? "Identidade segura deste navegador reconhecida."
       : "Sessão existente reconhecida.";
+    $("accountInfo").textContent = "A verificar se esta sessão tem Premium…";
     await checkAccess(true);
+  } catch (error) {
+    $("sessionInfo").textContent = "Não foi possível iniciar a sessão.";
+    say("Erro de autenticação Supabase: " + (error.message || String(error)));
   }
 }
 
 $("activateButton").addEventListener("click", activatePremium);
 $("checkAccess").addEventListener("click", () => checkAccess(true));
 
+// Não esconder o formulário quando o Supabase comunica uma sessão.
+// O formulário permanece visível para permitir ativação e diagnóstico.
 db.auth.onAuthStateChange((_event, session) => {
   if (session && session.user) {
-    $("activationPane").hidden = true;
-    $("accountPane").hidden = false;
-    $("accountInfo").textContent = session.user.is_anonymous
-      ? "Identidade de cliente reconhecida neste navegador."
+    $("sessionInfo").textContent = session.user.is_anonymous
+      ? "Identidade segura deste navegador reconhecida."
       : "Sessão existente reconhecida.";
   }
 });
 
-loadExistingSession();
+initializePage();
 </script>
 </body>
 </html>
