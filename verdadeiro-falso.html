@@ -31,7 +31,7 @@ main{max-width:850px;margin:18px auto;padding:0 14px}
 .category{font-weight:900;color:#1d4ed8}.mascotline{font-weight:800;color:#7c3aed}
 .question{font-size:clamp(1.1rem,3.4vw,1.45rem);font-weight:900;text-align:center;line-height:1.45;margin:20px auto;max-width:680px;min-height:95px;display:flex;align-items:center;justify-content:center}
 .statement{background:linear-gradient(135deg,#eff6ff,#fdf2f8);border:2px dashed #93c5fd;border-radius:19px;padding:18px 14px;width:100%}
-.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.choices{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0;visibility:visible!important;opacity:1!important;min-height:58px}.choices .choice{display:block!important;visibility:visible!important;opacity:1!important;width:100%;min-height:58px}
 .choice{min-height:58px}.feedback{text-align:center;font-weight:900;min-height:30px;margin:8px}
 .explain{text-align:center;color:#475569;min-height:42px;font-size:.95rem}
 .controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:13px 0}
@@ -62,8 +62,8 @@ main{max-width:850px;margin:18px auto;padding:0 14px}
   <div class="top"><span class="category" id="category">🧠 Conhecimento geral</span><span class="mascotline" id="mascot">A raposa Lili está pronta! 🦊</span></div>
   <div class="question"><div class="statement" id="question">A Terra é um planeta do Sistema Solar.</div></div>
   <div class="choices">
-   <button class="choice yes" id="trueBtn">✅ Verdadeiro</button>
-   <button class="choice no" id="falseBtn">❌ Falso</button>
+   <button type="button" class="choice yes" id="trueBtn">✅ Verdadeiro</button>
+   <button type="button" class="choice no" id="falseBtn">❌ Falso</button>
   </div>
   <div class="feedback" id="feedback" aria-live="polite"></div>
   <div class="explain" id="explanation"></div>
