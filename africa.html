@@ -184,6 +184,11 @@ function showQuestion(){
  current.options.forEach((option,i)=>{const b=document.createElement("button");b.className="answer";b.textContent=String.fromCharCode(65+i)+") "+option;b.addEventListener("click",()=>choose(option,b));$("answers").appendChild(b)});
  $("feedback").textContent="";$("next").textContent=t("next");$("next").disabled=true;$("hint").disabled=false;
  updateStats();
+ // Lê automaticamente cada nova pergunta; o botão "Ouvir pergunta" continua disponível.
+ if("speechSynthesis" in window){
+   window.speechSynthesis.cancel();
+   setTimeout(()=>speak(),300);
+ }
 }
 function choose(option,button){
  if(answered)return;answered=true;
@@ -200,7 +205,7 @@ function showIntro(){$("answers").classList.add("hidden");$("visual").textConten
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function hint(){if(!current||answered)return;const first=current.answer.trim().charAt(0);$("feedback").textContent=t("hintText")+" \""+first+"\"."}
 function beep(ok){try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();const o=audio.createOscillator(),g=audio.createGain();o.type="sine";o.frequency.value=ok?740:220;g.gain.value=.07;o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+.16)}catch(e){}}
-function speak(){if(!current)return;if(!("speechSynthesis"in window)){toast("A leitura de voz não está disponível neste navegador.");return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(current.prompt);u.lang=lang==="pt"?"pt-PT":lang==="fr"?"fr-FR":"en-US";speechSynthesis.speak(u)}
+function speak(){if(!current)return;if(!("speechSynthesis"in window)){toast("A leitura de voz não está disponível neste navegador.");return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(current.prompt);u.lang=lang==="pt"?"pt-PT":lang==="fr"?"fr-FR":"en-US";u.rate=0.92;u.pitch=1;speechSynthesis.speak(u)}
 function startMusic(){
  try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume();music=true;$("musicToggle").textContent=t("music")+": ON";
  const beat=()=>{if(!music)return;const now=audio.currentTime;
