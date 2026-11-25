@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desafio da Geografia | DESAFIA+ KIDS</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,sans-serif;color:#183153;background:linear-gradient(135deg,#dbeafe,#dcfce7 52%,#fef3c7);min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap;padding:13px 17px;background:#ffffffdf;box-shadow:0 3px 15px #17255418}.brand{font-weight:1000;color:#1d4ed8;font-size:1.15rem}.brand span{color:#f97316}
+button,select{font:inherit;font-weight:800;border:0;border-radius:14px;padding:11px 14px;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+.soft{background:#fff;color:#1e40af;box-shadow:0 3px 0 #bfdbfe}.primary{background:#2563eb;color:white;box-shadow:0 4px 0 #1e40af}.gold{background:#f59e0b;color:#422006;box-shadow:0 4px 0 #b45309}
+main{max-width:880px;margin:18px auto;padding:0 14px}.hero{text-align:center;padding:8px}.hero h1{font-size:clamp(1.8rem,5vw,2.6rem);margin:5px}.hero p{color:#64748b;margin:5px}.mascots{font-size:2.25rem;letter-spacing:5px;animation:bob 1.7s infinite ease-in-out}@keyframes bob{50%{transform:translateY(-7px) rotate(2deg)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:13px 0}.stat{background:#ffffffdf;border-radius:17px;padding:10px;text-align:center}.stat span{font-size:.85rem;color:#64748b}.stat b{display:block;color:#1d4ed8;font-size:1.3rem}.bar{height:10px;background:#bfdbfe;border-radius:20px;overflow:hidden;margin:9px 0 14px}.bar div{height:100%;background:linear-gradient(90deg,#22c55e,#3b82f6);width:0;transition:width .25s}
+.panel{background:#ffffffed;border-radius:24px;padding:18px;box-shadow:0 12px 32px #17255418}.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.category{font-weight:900;color:#1d4ed8}.mascotline{font-weight:800;color:#7c3aed}.visual{text-align:center;font-size:clamp(3rem,10vw,5rem);margin:12px 0 4px;min-height:78px;animation:float 2s infinite ease-in-out}@keyframes float{50%{transform:translateY(-5px)}}.question{font-size:clamp(1.08rem,3.3vw,1.4rem);font-weight:900;text-align:center;line-height:1.45;margin:12px auto;max-width:700px;min-height:76px;display:flex;align-items:center;justify-content:center}.statement{background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:2px dashed #93c5fd;border-radius:19px;padding:17px 14px;width:100%}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.option{background:#eff6ff;color:#1e3a8a;border:2px solid #bfdbfe;box-shadow:0 3px 0 #dbeafe;min-height:58px}.option.correct{background:#dcfce7;border-color:#22c55e;color:#14532d}.option.wrong{background:#fee2e2;border-color:#ef4444;color:#7f1d1d}.feedback{text-align:center;font-weight:900;min-height:29px;margin:8px}.explain{text-align:center;color:#475569;min-height:42px;font-size:.95rem}.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:13px 0}.small{text-align:center;color:#64748b;font-size:.88rem;min-height:23px}.whatsapp{display:inline-block;background:#16a34a;color:white;text-decoration:none;padding:12px 18px;border-radius:14px;font-weight:900;margin:8px}.footer{text-align:center;padding:18px;color:#64748b;font-size:.9rem}
+@media(max-width:520px){.panel{padding:13px}.stat{padding:8px}.option{padding:10px 7px;font-size:.93rem}}
+</style></head>
+<body>
+<header><div class="brand">DESAFIA<span>+</span> KIDS</div><div style="display:flex;gap:7px;flex-wrap:wrap">
+<select id="lang" aria-label="Idioma"><option value="pt">Português</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option></select>
+<button class="soft" id="soundBtn">🔊 Sons: ON</button><button class="soft" id="musicBtn">🎵 Música: OFF</button></div></header>
+<main>
+<section class="hero"><div class="mascots">🦁 🧭 🤖 🐵</div><h1>🌍 <span id="title">Desafio da Geografia</span></h1><p id="subtitle">Explora países, capitais, continentes, oceanos e maravilhas do mundo!</p></section>
+<div class="stats"><div class="stat"><span id="levelLabel">Desafio</span><b id="level">1 / 1000</b></div><div class="stat"><span id="scoreLabel">Pontos</span><b id="score">0</b></div><div class="stat"><span id="doneLabel">Concluídos</span><b id="done">0</b></div></div>
+<div class="bar"><div id="progress"></div></div>
+<section class="panel">
+<div class="top"><span class="category" id="category">🗺️ Países e capitais</span><span class="mascotline" id="mascot">O leão Simba será o teu guia! 🦁</span></div>
+<div class="visual" id="visual">🌍</div>
+<div class="question"><div class="statement" id="question">Qual é a capital de Angola?</div></div>
+<div class="options" id="options"></div><div class="feedback" id="feedback" aria-live="polite"></div><div class="explain" id="explanation"></div>
+<div class="controls"><button class="soft" id="readBtn">🗣️ Ouvir pergunta</button><button class="gold" id="hintBtn">💡 Dica</button><button class="primary" id="nextBtn" disabled>Próximo ➜</button></div>
+<div class="small" id="instruction">Cada resposta certa vale 10 pontos. Podes continuar a tentar nos desafios seguintes.</div>
+</section>
+<div class="controls"><button class="soft" id="homeBtn">🏠 Voltar ao menu</button><button class="soft" id="resetBtn">↻ Reiniciar progresso</button></div>
+<div style="text-align:center"><a class="whatsapp" target="_blank" rel="noopener" href="https://wa.me/244938403923?text=Ol%C3%A1%21%20Gostaria%20de%20adquirir%20um%20c%C3%B3digo%20Premium%20do%20DESAFIA%2B%20KIDS%20para%20desbloquear%20os%2013%20jogos%20educativos.%20Pode%20informar-me%20sobre%20o%20pre%C3%A7o%20e%20as%20condi%C3%A7%C3%B5es%3F">💬 WhatsApp — DESAFIA+ KIDS</a></div>
+</main><div class="footer">O mundo é grande. A tua curiosidade também! ⭐</div>
+<script>
+const $=id=>document.getElementById(id);
+// País, capital, continente e emoji/bandeira. Os 100 temas geram 10 formatos cada.
+const places=[
+['Angola','Luanda','África','🇦🇴'],['África do Sul','Pretória','África','🇿🇦'],['Argélia','Argel','África','🇩🇿'],['Benim','Porto-Novo','África','🇧🇯'],['Botswana','Gaborone','África','🇧🇼'],['Burkina Faso','Ouagadougou','África','🇧🇫'],['Burundi','Gitega','África','🇧🇮'],['Cabo Verde','Praia','África','🇨🇻'],['Camarões','Yaoundé','África','🇨🇲'],['Chade',"N'Djamena",'África','🇹🇩'],['Comores','Moroni','África','🇰🇲'],['Costa do Marfim','Yamoussoukro','África','🇨🇮'],['Djibuti','Djibuti','África','🇩🇯'],['Egito','Cairo','África','🇪🇬'],['Eritreia','Asmara','África','🇪🇷'],['Essuatíni','Mbabane','África','🇸🇿'],['Etiópia','Adis Abeba','África','🇪🇹'],['Gabão','Libreville','África','🇬🇦'],['Gâmbia','Banjul','África','🇬🇲'],['Gana','Acra','África','🇬🇭'],['Guiné','Conacri','África','🇬🇳'],['Guiné-Bissau','Bissau','África','🇬🇼'],['Guiné Equatorial','Malabo','África','🇬🇶'],['Lesoto','Maseru','África','🇱🇸'],['Libéria','Monróvia','África','🇱🇷'],['Líbia','Trípoli','África','🇱🇾'],['Madagáscar','Antananarivo','África','🇲🇬'],['Malawi','Lilongwe','África','🇲🇼'],['Mali','Bamako','África','🇲🇱'],['Marrocos','Rabat','África','🇲🇦'],['Maurícia','Port Louis','África','🇲🇺'],['Mauritânia','Nouakchott','África','🇲🇷'],['Moçambique','Maputo','África','🇲🇿'],['Namíbia','Windhoek','África','🇳🇦'],['Níger','Niamey','África','🇳🇪'],['Nigéria','Abuja','África','🇳🇬'],['Quénia','Nairobi','África','🇰🇪'],['República Centro-Africana','Bangui','África','🇨🇫'],['República Democrática do Congo','Kinshasa','África','🇨🇩'],['República do Congo','Brazzaville','África','🇨🇬'],['Ruanda','Kigali','África','🇷🇼'],['São Tomé e Príncipe','São Tomé','África','🇸🇹'],['Senegal','Dakar','África','🇸🇳'],['Serra Leoa','Freetown','África','🇸🇱'],['Seychelles','Victoria','África','🇸🇨'],['Somália','Mogadíscio','África','🇸🇴'],['Sudão','Cartum','África','🇸🇩'],['Sudão do Sul','Juba','África','🇸🇸'],['Tanzânia','Dodoma','África','🇹🇿'],['Togo','Lomé','África','🇹🇬'],['Tunísia','Tunes','África','🇹🇳'],['Uganda','Kampala','África','🇺🇬'],['Zâmbia','Lusaka','África','🇿🇲'],['Zimbabwe','Harare','África','🇿🇼'],
+['Brasil','Brasília','América do Sul','🇧🇷'],['Argentina','Buenos Aires','América do Sul','🇦🇷'],['Chile','Santiago','América do Sul','🇨🇱'],['Colômbia','Bogotá','América do Sul','🇨🇴'],['Peru','Lima','América do Sul','🇵🇪'],['Uruguai','Montevidéu','América do Sul','🇺🇾'],['Equador','Quito','América do Sul','🇪🇨'],['Venezuela','Caracas','América do Sul','🇻🇪'],['Bolívia','Sucre','América do Sul','🇧🇴'],['Paraguai','Assunção','América do Sul','🇵🇾'],
+['Canadá','Ottawa','América do Norte','🇨🇦'],['Estados Unidos','Washington, D.C.','América do Norte','🇺🇸'],['México','Cidade do México','América do Norte','🇲🇽'],['Cuba','Havana','América do Norte','🇨🇺'],['Jamaica','Kingston','América do Norte','🇯🇲'],['Costa Rica','San José','América do Norte','🇨🇷'],['Panamá','Cidade do Panamá','América do Norte','🇵🇦'],['Guatemala','Cidade da Guatemala','América do Norte','🇬🇹'],['Honduras','Tegucigalpa','América do Norte','🇭🇳'],['Nicarágua','Manágua','América do Norte','🇳🇮'],
+['Portugal','Lisboa','Europa','🇵🇹'],['Espanha','Madrid','Europa','🇪🇸'],['França','Paris','Europa','🇫🇷'],['Alemanha','Berlim','Europa','🇩🇪'],['Itália','Roma','Europa','🇮🇹'],['Reino Unido','Londres','Europa','🇬🇧'],['Irlanda','Dublin','Europa','🇮🇪'],['Noruega','Oslo','Europa','🇳🇴'],['Suécia','Estocolmo','Europa','🇸🇪'],['Finlândia','Helsínquia','Europa','🇫🇮'],['Grécia','Atenas','Europa','🇬🇷'],['Polónia','Varsóvia','Europa','🇵🇱'],['Ucrânia','Quieve','Europa','🇺🇦'],['Suíça','Berna','Europa','🇨🇭'],['Países Baixos','Amesterdão','Europa','🇳🇱'],
+['China','Pequim','Ásia','🇨🇳'],['Japão','Tóquio','Ásia','🇯🇵'],['Índia','Nova Deli','Ásia','🇮🇳'],['Coreia do Sul','Seul','Ásia','🇰🇷'],['Tailândia','Banguecoque','Ásia','🇹🇭'],['Indonésia','Jacarta','Ásia','🇮🇩'],['Arábia Saudita','Riade','Ásia','🇸🇦'],['Turquia','Ancara','Ásia','🇹🇷'],['Nepal','Catmandu','Ásia','🇳🇵'],['Vietname','Hanói','Ásia','🇻🇳'],
+['Austrália','Camberra','Oceânia','🇦🇺'],['Nova Zelândia','Wellington','Oceânia','🇳🇿'],['Fiji','Suva','Oceânia','🇫🇯'],['Papua-Nova Guiné','Port Moresby','Oceânia','🇵🇬'],['Samoa','Apia','Oceânia','🇼🇸']
+];
+const landmarks=[
+['Deserto do Saara','África','🏜️'],['Rio Nilo','África','🌊'],['Monte Kilimanjaro','Tanzânia','⛰️'],['Cataratas Vitória','Zâmbia e Zimbabwe','💦'],['Pirâmides de Gizé','Egito','🔺'],['Floresta Amazónica','América do Sul','🌳'],['Monte Everest','Nepal e China','🏔️'],['Grande Muralha','China','🧱'],['Torre Eiffel','França','🗼'],['Estátua da Liberdade','Estados Unidos','🗽'],['Grande Barreira de Coral','Austrália','🪸'],['Lago Vitória','África Oriental','🐟'],['Delta do Okavango','Botswana','🦛'],['Serengeti','Tanzânia e Quénia','🦓'],['Montanhas Atlas','Norte de África','🏔️'],['Monte Fuji','Japão','🗻'],['Machu Picchu','Peru','🏛️'],['Taj Mahal','Índia','🕌'],['Coliseu','Itália','🏟️'],['Canais de Veneza','Itália','🛶'],['Ilha de Madagáscar','Oceano Índico','🏝️'],['Deserto do Namibe','Angola e Namíbia','🏜️'],['Parque Nacional Kruger','África do Sul','🦁'],['Delta do Níger','Nigéria','🌿'],['Lago Tanganica','África Oriental','🌊'],['Montes Drakensberg','África Austral','⛰️'],['Ilha de Moçambique','Moçambique','⛵'],['Stone Town','Tanzânia','🏘️'],['Vale dos Reis','Egito','🏺'],['Parque Nacional de Virunga','República Democrática do Congo','🦍']
+];
+const continents=['África','América do Norte','América do Sul','Antártida','Ásia','Europa','Oceânia'];
+const oceans=['Pacífico','Atlântico','Índico','Ártico','Antártico'];
+const TOTAL=1000,KEY='desafiamais_geografia_progress_v1';
+const T={
+pt:{sub:'Explora países, capitais, continentes, oceanos e maravilhas do mundo!',level:'Desafio',score:'Pontos',done:'Concluídos',next:'Próximo ➜',read:'🗣️ Ouvir pergunta',hint:'💡 Dica',correct:'Excelente! Resposta certa! 🌟',wrong:'Boa tentativa! Continua a explorar! 💪',welcome:'O leão Simba será o teu guia! 🦁',instruction:'Cada resposta certa vale 10 pontos. Podes continuar a tentar nos desafios seguintes.',sound:'🔊 Sons',music:'🎵 Música',home:'🏠 Voltar ao menu',reset:'↻ Reiniciar progresso',true:'Verdadeiro',false:'Falso'},
+en:{sub:'Explore countries, capitals, continents, oceans and world wonders!',level:'Challenge',score:'Points',done:'Completed',next:'Next ➜',read:'🗣️ Hear question',hint:'💡 Hint',correct:'Excellent! Correct answer! 🌟',wrong:'Good try! Keep exploring! 💪',welcome:'Simba the lion is your guide! 🦁',instruction:'Each correct answer earns 10 points.',sound:'🔊 Sounds',music:'🎵 Music',home:'🏠 Back to menu',reset:'↻ Reset progress',true:'True',false:'False'},
+fr:{sub:'Explore les pays, capitales, continents, océans et merveilles !',level:'Défi',score:'Points',done:'Terminés',next:'Suivant ➜',read:'🗣️ Écouter',hint:'💡 Indice',correct:'Excellent ! Bonne réponse ! 🌟',wrong:'Bien essayé ! Continue à explorer ! 💪',welcome:'Simba le lion sera ton guide ! 🦁',instruction:'Chaque bonne réponse vaut 10 points.',sound:'🔊 Sons',music:'🎵 Musique',home:'🏠 Retour au menu',reset:'↻ Réinitialiser',true:'Vrai',false:'Faux'},
+es:{sub:'¡Explora países, capitales, continentes, océanos y maravillas!',level:'Desafío',score:'Puntos',done:'Completados',next:'Siguiente ➜',read:'🗣️ Escuchar',hint:'💡 Pista',correct:'¡Excelente! ¡Respuesta correcta! 🌟',wrong:'¡Buen intento! ¡Sigue explorando! 💪',welcome:'¡El león Simba será tu guía! 🦁',instruction:'Cada respuesta correcta vale 10 puntos.',sound:'🔊 Sonidos',music:'🎵 Música',home:'🏠 Volver al menú',reset:'↻ Reiniciar',true:'Verdadero',false:'Falso'}
+};
+let lang='pt',level=1,score=0,done=0,current=null,answered=false,sound=true,music=false,ctx=null,musicTimer=null;
+function save(){localStorage.setItem(KEY,JSON.stringify({level,score,done}))}
+function load(){try{let x=JSON.parse(localStorage.getItem(KEY));if(x){level=Math.max(1,Math.min(TOTAL,x.level||1));score=x.score||0;done=x.done||0}}catch(e){}}
+function shuffle(a){let b=[...new Set(a)];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function chooseWrong(correct,arr,n=3){return shuffle(arr.filter(x=>x!==correct)).slice(0,n)}
+function makeChallenge(){
+ const topic=Math.floor((level-1)/10)%100,variant=(level-1)%10;
+ let q='',a='',wrong=[],emoji='🌍',category='Geografia',hint='';
+ if(topic<places.length){
+  const p=places[topic],allNames=places.map(x=>x[0]),allCaps=places.map(x=>x[1]);
+  emoji=p[3];category='Países e capitais';
+  switch(variant){
+   case 0:q='Qual é a capital de '+p[0]+'?';a=p[1];wrong=chooseWrong(a,allCaps);hint='A capital começa pela letra '+p[1][0]+'.';break;
+   case 1:q=p[1]+' é a capital de que país?';a=p[0];wrong=chooseWrong(a,allNames);hint='O nome do país começa por '+p[0][0]+'.';break;
+   case 2:q=p[0]+' fica em que continente?';a=p[2];wrong=chooseWrong(a,continents);hint='O continente correto é '+p[2]+'.';break;
+   case 3:q='Verdadeiro ou falso: '+p[1]+' é a capital de '+p[0]+'.';a='Verdadeiro';wrong=['Falso'];hint='Lembra-te da capital deste país.';break;
+   case 4:q='Verdadeiro ou falso: '+p[0]+' fica na Europa.';a=p[2]==='Europa'?'Verdadeiro':'Falso';wrong=[a==='Verdadeiro'?'Falso':'Verdadeiro'];hint='Este país pertence ao continente '+p[2]+'.';break;
+   case 5:q='Qual é a primeira letra da capital de '+p[0]+'?';a=p[1][0].toUpperCase();wrong=chooseWrong(a,'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''));hint='A capital é '+p[1]+'.';break;
+   case 6:q='Qual destas opções é o nome de um país?';a=p[0];wrong=chooseWrong(a,allCaps);hint:'';
+    break;
+   case 7:q='Escolhe a capital correta: '+p[0]+'.';a=p[1];wrong=chooseWrong(a,allCaps);hint='A capital tem '+p[1].length+' caracteres.';break;
+   case 8:q='O mapa mostra a bandeira de que país?';a=p[0];wrong=chooseWrong(a,allNames);hint='Observa as cores da bandeira '+p[3]+'.';break;
+   case 9:q='Completa: '+p[0]+' — capital: ______.';a=p[1];wrong=chooseWrong(a,allCaps);hint='A resposta começa por '+p[1][0]+'.';break;
+  }
+ }else{
+  const l=landmarks[(topic-places.length)%landmarks.length];emoji=l[2];category='Lugares e maravilhas';
+  switch(variant){
+   case 0:q='Onde fica '+l[0]+'?';a=l[1];wrong=chooseWrong(a,landmarks.map(x=>x[1]));hint='A resposta é '+l[1]+'.';break;
+   case 1:q='Verdadeiro ou falso: '+l[0]+' está relacionado com '+l[1]+'.';a='Verdadeiro';wrong=['Falso'];hint:'';
+    break;
+   case 2:q='Qual destes é um lugar geográfico conhecido?';a=l[0];wrong=chooseWrong(a,landmarks.map(x=>x[0]));hint='O lugar procurado é '+l[0]+'.';break;
+   case 3:q='Que ícone representa melhor '+l[0]+'?';a=l[2];wrong=chooseWrong(a,landmarks.map(x=>x[2]));hint='Pensa na paisagem ou no monumento.';break;
+   case 4:q='Verdadeiro ou falso: '+l[0]+' fica na Europa.';a=/França|Itália/.test(l[1])?'Verdadeiro':'Falso';wrong=[a==='Verdadeiro'?'Falso':'Verdadeiro'];hint='Localiza '+l[0]+' no mapa.';break;
+   case 5:q='A que continente está associado '+l[0]+'?';a=/África|Tanzânia|Zâmbia|Zimbabwe|Botswana|Egito|Namíbia|Moçambique|Quénia|Congo|Nigéria/.test(l[1])?'África':/China|Nepal|Índia|Japão/.test(l[1])?'Ásia':/França|Itália/.test(l[1])?'Europa':/Austrália/.test(l[1])?'Oceânia':'América do Sul';wrong=chooseWrong(a,continents);hint='O local está associado a '+l[1]+'.';break;
+   case 6:q='Completa o nome deste lugar: '+l[0].slice(0,Math.max(2,Math.floor(l[0].length/2)))+'…';a=l[0];wrong=chooseWrong(a,landmarks.map(x=>x[0]));hint='É um lugar famoso: '+l[0]+'.';break;
+   case 7:q='Qual é a localização indicada para '+l[0]+'?';a=l[1];wrong=chooseWrong(a,landmarks.map(x=>x[1]));hint='A localização é '+l[1]+'.';break;
+   case 8:q='Verdadeiro ou falso: '+l[0]+' é uma maravilha ou lugar conhecido.';a='Verdadeiro';wrong=['Falso'];hint='É um dos lugares geográficos apresentados neste jogo.';break;
+   case 9:q='Desafio relâmpago: identifica '+l[0]+'.';a=l[1];wrong=chooseWrong(a,landmarks.map(x=>x[1]));hint='Fica em '+l[1]+'.';break;
+  }
+ }
+ let opts=[a,...wrong].filter(Boolean);if(opts.length<2)opts=[a,'Outra resposta'];opts=shuffle(opts).slice(0,4);
+ return {q,a,opts,emoji,category,hint};
+}
+function render(){const t=T[lang];$('level').textContent=level+' / '+TOTAL;$('score').textContent=score;$('done').textContent=done;$('progress').style.width=(done/TOTAL*100)+'%';$('category').textContent='🗺️ '+current.category;$('visual').textContent=current.emoji;$('question').textContent=current.q;$('mascot').textContent=t.welcome;$('options').innerHTML='';current.opts.forEach(v=>{let b=document.createElement('button');b.className='option';b.textContent=v;b.onclick=()=>answer(v,b);$('options').appendChild(b)});$('feedback').textContent='';$('explanation').textContent='';$('nextBtn').disabled=true}
+function answer(v,btn){if(answered)return;answered=true;let ok=v===current.a;document.querySelectorAll('.option').forEach(b=>{b.disabled=true;if(b.textContent===current.a)b.classList.add('correct')});if(!ok)btn.classList.add('wrong');if(ok){score+=10;done=Math.max(done,level);$('feedback').textContent=T[lang].correct;play([523,659,784,1047])}else{$('feedback').textContent=T[lang].wrong+' Resposta correta: '+current.a;play([180,145])}$('explanation').textContent=current.hint?('💡 '+current.hint):'';$('score').textContent=score;$('done').textContent=done;$('progress').style.width=(done/TOTAL*100)+'%';$('nextBtn').disabled=false;save()}
+function play(notes){if(!sound)return;try{ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();notes.forEach((n,i)=>{let o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=n;g.gain.setValueAtTime(.07,ctx.currentTime+i*.1);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.1+.13);o.connect(g);g.connect(ctx.destination);o.start(ctx.currentTime+i*.1);o.stop(ctx.currentTime+i*.1+.14)})}catch(e){}}
+function speak(){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(current.q);u
