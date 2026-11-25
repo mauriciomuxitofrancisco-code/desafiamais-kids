@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verdadeiro ou Falso | DESAFIA+ KIDS</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,sans-serif;color:#1e293b;background:linear-gradient(135deg,#dbeafe,#fce7f3 52%,#fef3c7);min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;gap:9px;flex-wrap:wrap;padding:13px 17px;background:#ffffffdf;box-shadow:0 3px 15px #17255418}.brand{font-weight:1000;color:#1d4ed8;font-size:1.15rem}.brand span{color:#f97316}
+button,select{font:inherit;font-weight:800;border:0;border-radius:14px;padding:11px 14px;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+.soft{background:#fff;color:#1e40af;box-shadow:0 3px 0 #bfdbfe}.primary{background:#2563eb;color:#fff;box-shadow:0 4px 0 #1e40af}.yes{background:#16a34a;color:white;box-shadow:0 4px 0 #166534}.no{background:#ef4444;color:white;box-shadow:0 4px 0 #991b1b}.gold{background:#f59e0b;color:#422006;box-shadow:0 4px 0 #b45309}
+main{max-width:850px;margin:18px auto;padding:0 14px}.hero{text-align:center;padding:8px}.hero h1{font-size:clamp(1.8rem,5vw,2.6rem);margin:5px}.hero p{color:#64748b;margin:5px}.mascots{font-size:2.25rem;letter-spacing:5px;animation:bob 1.7s infinite ease-in-out}@keyframes bob{50%{transform:translateY(-7px) rotate(2deg)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:13px 0}.stat{background:#ffffffdf;border-radius:17px;padding:10px;text-align:center}.stat span{font-size:.85rem;color:#64748b}.stat b{display:block;color:#1d4ed8;font-size:1.3rem}.bar{height:10px;background:#bfdbfe;border-radius:20px;overflow:hidden;margin:9px 0 14px}.bar div{height:100%;background:linear-gradient(90deg,#22c55e,#3b82f6);width:0;transition:width .25s}
+.panel{background:#ffffffed;border-radius:24px;padding:18px;box-shadow:0 12px 32px #17255418}.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.category{font-weight:900;color:#1d4ed8}.mascotline{font-weight:800;color:#7c3aed}.question{font-size:clamp(1.1rem,3.4vw,1.45rem);font-weight:900;text-align:center;line-height:1.45;margin:20px auto;max-width:680px;min-height:95px;display:flex;align-items:center;justify-content:center}.statement{background:linear-gradient(135deg,#eff6ff,#fdf2f8);border:2px dashed #93c5fd;border-radius:19px;padding:18px 14px}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.choice{background:#eff6ff;color:#1e3a8a;border:2px solid #bfdbfe;box-shadow:0 3px 0 #dbeafe;min-height:58px}.choice.correct{background:#dcfce7;border-color:#22c55e;color:#14532d}.choice.wrong{background:#fee2e2;border-color:#ef4444;color:#7f1d1d}.feedback{text-align:center;font-weight:900;min-height:30px;margin:8px}.explain{text-align:center;color:#475569;min-height:42px;font-size:.95rem}.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:13px 0}.small{text-align:center;color:#64748b;font-size:.88rem;min-height:23px}.whatsapp{display:inline-block;background:#16a34a;color:#fff;text-decoration:none;padding:12px 18px;border-radius:14px;font-weight:900;margin:8px}.footer{text-align:center;padding:18px;color:#64748b;font-size:.9rem}
+@media(max-width:520px){.panel{padding:13px}.stat{padding:8px}.choice{padding:10px 7px;font-size:.94rem}}
+</style></head>
+<body>
+<header><div class="brand">DESAFIA<span>+</span> KIDS</div><div style="display:flex;gap:7px;flex-wrap:wrap">
+<select id="lang" aria-label="Idioma"><option value="pt">Português</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option></select>
+<button class="soft" id="soundBtn">🔊 Sons: ON</button><button class="soft" id="musicBtn">🎵 Música: OFF</button></div></header>
+<main>
+<section class="hero"><div class="mascots">🦊 🦁 🤖 🐵</div><h1>✅❌ <span id="title">Verdadeiro ou Falso</span></h1><p id="subtitle">Lê com atenção, pensa e escolhe a resposta certa!</p></section>
+<div class="stats"><div class="stat"><span id="levelLabel">Desafio</span><b id="level">1 / 1000</b></div><div class="stat"><span id="scoreLabel">Pontos</span><b id="score">0</b></div><div class="stat"><span id="doneLabel">Concluídos</span><b id="done">0</b></div></div>
+<div class="bar"><div id="progress"></div></div>
+<section class="panel">
+<div class="top"><span class="category" id="category">🧠 Conhecimento geral</span><span class="mascotline" id="mascot">A raposa Lili está pronta! 🦊</span></div>
+<div class="question"><div class="statement" id="question">A Terra gira à volta do Sol.</div></div>
+<div class="choices" id="choices"></div>
+<div class="feedback" id="feedback" aria-live="polite"></div><div class="explain" id="explanation"></div>
+<div class="controls"><button class="soft" id="readBtn">🗣️ Ouvir pergunta</button><button class="gold" id="hintBtn">💡 Dica</button><button class="primary" id="nextBtn" disabled>Próximo ➜</button></div>
+<div class="small" id="instruction">Podes tentar novamente em cada novo desafio. Cada resposta certa vale 10 pontos.</div>
+</section>
+<div class="controls"><button class="soft" id="homeBtn">🏠 Voltar ao menu</button><button class="soft" id="resetBtn">↻ Reiniciar progresso</button></div>
+<div style="text-align:center"><a class="whatsapp" target="_blank" rel="noopener" href="https://wa.me/244938403923?text=Ol%C3%A1%21%20Gostaria%20de%20adquirir%20um%20c%C3%B3digo%20Premium%20do%20DESAFIA%2B%20KIDS%20para%20desbloquear%20os%2013%20jogos%20educativos.%20Pode%20informar-me%20sobre%20o%20pre%C3%A7o%20e%20as%20condi%C3%A7%C3%B5es%3F">💬 WhatsApp — DESAFIA+ KIDS</a></div>
+</main><div class="footer">Aprender a pensar também é uma aventura! ⭐</div>
+<script>
+const $=id=>document.getElementById(id);
+// Cada item contém uma afirmação correta, uma afirmação incorreta e uma explicação curta.
+const facts=[
+['A Terra é um planeta do Sistema Solar.','A Terra é uma estrela.','A Terra é um planeta que orbita o Sol.','🌍','Ciência'],
+['O Sol é uma estrela.','O Sol é um planeta.','O Sol produz luz e calor e é uma estrela.','☀️','Espaço'],
+['A Lua é o satélite natural da Terra.','A Lua é uma estrela que tem luz própria.','A Lua orbita a Terra e reflete a luz solar.','🌙','Espaço'],
+['A água pode existir nos estados sólido, líquido e gasoso.','A água só existe no estado líquido.','Gelo, água líquida e vapor são estados da água.','💧','Ciência'],
+['As plantas precisam de luz para fazer fotossíntese.','As plantas alimentam-se de pedras.','Na fotossíntese, as plantas usam luz, água e dióxido de carbono.','🌱','Natureza'],
+['O coração bombeia sangue pelo corpo.','O coração serve apenas para respirar.','O coração faz parte do sistema circulatório.','❤️','Corpo humano'],
+['Os pulmões ajudam-nos a respirar.','Os pulmões digerem os alimentos.','Os pulmões participam nas trocas de oxigénio e dióxido de carbono.','🫁','Corpo humano'],
+['Os seres humanos têm normalmente dois olhos.','Os seres humanos têm normalmente cinco olhos.','A maioria das pessoas tem dois olhos.','👀','Corpo humano'],
+['As abelhas ajudam na polinização de muitas plantas.','As abelhas são mamíferos.','Ao visitar flores, muitas abelhas transportam pólen.','🐝','Animais'],
+['As baleias são mamíferos.','As baleias são peixes.','As baleias respiram ar e amamentam as crias.','🐋','Animais'],
+['Os golfinhos respiram ar à superfície.','Os golfinhos respiram debaixo de água por guelras.','Os golfinhos são mamíferos e sobem à superfície para respirar.','🐬','Animais'],
+['Os morcegos são mamíferos.','Os morcegos são aves com penas.','Os morcegos têm pelo e alimentam as crias com leite.','🦇','Animais'],
+['A girafa tem um pescoço comprido.','A girafa é o animal mais baixo da savana.','O pescoço comprido ajuda a girafa a alcançar folhas altas.','🦒','Animais'],
+['O polvo tem oito braços.','O polvo tem duas asas.','Os polvos são moluscos com oito braços.','🐙','Animais'],
+['Os pinguins são aves.','Os pinguins são mamíferos voadores.','Os pinguins são aves, mas não voam.','🐧','Animais'],
+['A maioria das aranhas tem oito patas.','As aranhas têm seis patas.','As aranhas são aracnídeos e geralmente têm oito patas.','🕷️','Animais'],
+['As borboletas começam a vida como lagartas.','As borboletas nascem de ovos de galinha.','As borboletas passam por metamorfose.','🦋','Animais'],
+['Os camelos conseguem sobreviver em ambientes áridos.','Os camelos vivem apenas no fundo do mar.','Os camelos têm adaptações para viver em regiões secas.','🐪','Animais'],
+['Os elefantes são herbívoros.','Os elefantes alimentam-se principalmente de carne.','Os elefantes comem plantas, folhas, cascas e frutos.','🐘','Animais'],
+['O leão é um mamífero.','O leão é um inseto.','O leão é um mamífero da família dos felídeos.','🦁','Animais'],
+['Angola fica em África.','Angola fica na Europa.','Angola é um país da costa sudoeste de África.','🇦🇴','Geografia'],
+['A capital de Angola é Luanda.','A capital de Angola é Paris.','Luanda é a capital de Angola.','🏙️','Geografia'],
+['O deserto do Saara fica em África.','O deserto do Saara fica na Antártida.','O Saara ocupa uma vasta área do norte de África.','🏜️','Geografia'],
+['O rio Nilo atravessa o nordeste de África.','O rio Nilo fica na América do Sul.','O Nilo é um dos grandes rios africanos.','🌊','Geografia'],
+['O monte Kilimanjaro fica na Tanzânia.','O monte Kilimanjaro fica em Portugal.','O Kilimanjaro é a montanha mais alta de África.','⛰️','Geografia'],
+['O Egito fica no nordeste de África.','O Egito fica na Oceânia.','O Egito está principalmente no nordeste africano.','🇪🇬','Geografia'],
+['O oceano Atlântico banha a costa oeste de África.','O oceano Atlântico fica apenas no interior da Ásia.','O Atlântico está a oeste do continente africano.','🌊','Geografia'],
+['Madagáscar é uma ilha ao largo da costa sudeste de África.','Madagáscar é uma cidade no Canadá.','Madagáscar é um grande país insular do oceano Índico.','🏝️','Geografia'],
+['O Quénia fica na África Oriental.','O Quénia fica na América Central.','O Quénia é um país da África Oriental.','🇰🇪','Geografia'],
+['O deserto do Namibe fica no sudoeste de África.','O deserto do Namibe fica no Ártico.','O Namibe estende-se pela costa atlântica do sudoeste africano.','🏜️','Geografia'],
+['Um triângulo tem três lados.','Um triângulo tem cinco lados.','A palavra triângulo refere-se a uma figura com três lados.','🔺','Matemática'],
+['Um quadrado tem quatro lados iguais.','Um quadrado tem três lados.','Um quadrado tem quatro lados do mesmo comprimento.','🟦','Matemática'],
+['Cinco mais cinco é igual a dez.','Cinco mais cinco é igual a doze.','5 + 5 = 10.','➕','Matemática'],
+['Dez menos quatro é igual a seis.','Dez menos quatro é igual a nove.','10 − 4 = 6.','➖','Matemática'],
+['Três vezes quatro é igual a doze.','Três vezes quatro é igual a sete.','3 × 4 = 12.','✖️','Matemática'],
+['Metade de dez é cinco.','Metade de dez é oito.','10 dividido por 2 é 5.','½','Matemática'],
+['O número 100 é maior do que 99.','O número 100 é menor do que 9.','100 vem depois de 99 na contagem.','💯','Matemática'],
+['Uma semana tem sete dias.','Uma semana tem dez dias.','Os sete dias da semana são segunda a domingo.','📅','Tempo'],
+['Um ano comum tem 12 meses.','Um ano comum tem 15 meses.','O calendário gregoriano tem doze meses por ano.','🗓️','Tempo'],
+['Um dia tem 24 horas.','Um dia tem 30 horas.','O dia civil tem 24 horas.','⏰','Tempo'],
+['O gelo é água no estado sólido.','O gelo é água no estado gasoso.','Quando a água congela, forma gelo.','🧊','Ciência'],
+['O vapor de água é água no estado gasoso.','O vapor de água é sempre pedra líquida.','A água pode evaporar e passar ao estado gasoso.','♨️','Ciência'],
+['O som propaga-se através de vibrações.','O som propaga-se apenas no vazio.','O som precisa de um meio material para se propagar.','🔊','Ciência'],
+['A luz viaja mais depressa do que o som no ar.','O som chega sempre antes da luz de um relâmpago.','Vemos o relâmpago antes de ouvir o trovão.','⚡','Ciência'],
+['A Terra tem um satélite natural conhecido como Lua.','A Terra tem três Luas naturais grandes.','A Lua é o único satélite natural permanente da Terra.','🌕','Espaço'],
+['Marte é conhecido como planeta vermelho.','Marte é conhecido como planeta azul por causa dos oceanos.','A aparência avermelhada de Marte deve-se a óxidos de ferro.','🔴','Espaço'],
+['Júpiter é o maior planeta do Sistema Solar.','Júpiter é o menor planeta do Sistema Solar.','Júpiter é um gigante gasoso e o maior planeta.','🪐','Espaço'],
+['Saturno tem anéis muito visíveis.','Saturno não tem anéis.','Os anéis de Saturno são compostos sobretudo por partículas de gelo e rocha.','🪐','Espaço'],
+['A Terra tem continentes e oceanos.','A Terra é inteiramente feita de queijo.','A superfície terrestre inclui massas continentais e oceanos.','🌎','Geografia'],
+['A Antártida é o continente mais frio.','A Antártida é o continente mais quente.','A Antártida tem temperaturas muito baixas e grandes camadas de gelo.','🧊','Geografia'],
+['O oceano Pacífico é o maior oceano da Terra.','O oceano Pacífico é o menor oceano da Terra.','O Pacífico é o maior e mais profundo oceano.','🌊','Geografia'],
+['O Monte Everest fica na cordilheira dos Himalaias.','O Monte Everest fica no deserto do Saara.','O Everest situa-se na região dos Himalaias, na fronteira Nepal-China.','🏔️','Geografia'],
+['O Brasil fica na América do Sul.','O Brasil fica em África.','O Brasil é o maior país da América do Sul em área.','🇧🇷','Geografia'],
+['O Japão é um país insular da Ásia.','O Japão é um país sem ilhas na África.','O Japão é um arquipélago no leste da Ásia.','🇯🇵','Geografia'],
+['A França fica principalmente na Europa.','A França fica principalmente na Antártida.','A França metropolitana está na Europa Ocidental.','🇫🇷','Geografia'],
+['O português é a língua oficial de Angola.','O japonês é a única língua oficial de Angola.','O português é a língua oficial usada na administração de Angola.','🗣️','Cultura'],
+['A bandeira de Angola tem as cores vermelho, preto e amarelo.','A bandeira de Angola é toda azul.','A bandeira angolana inclui vermelho e preto, com emblema amarelo.','🇦🇴','Cultura'],
+['A capoeira é uma expressão cultural afro-brasileira.','A capoeira é um desporto originário da Antártida.','A capoeira combina elementos de luta, dança e música.','🥋','Cultura'],
+['O tambor é um instrumento de percussão.','O tambor é um instrumento de sopro.','O som do tambor é produzido pela vibração de uma membrana ou superfície.','🥁','Música'],
+['O piano tem teclas.','O piano é tocado apenas com os pés.','O piano é um instrumento musical de teclado.','🎹','Música'],
+['O futebol é jogado normalmente por duas equipas.','O futebol é jogado por uma só equipa sem adversário.','No futebol de associação, duas equipas competem entre si.','⚽','Desporto'],
+['No basquetebol, os jogadores tentam marcar pontos no cesto adversário.','No basquetebol, os pontos são marcados chutando para uma baliza.','O objetivo é introduzir a bola no cesto da equipa adversária.','🏀','Desporto'],
+['A natação é praticada na água.','A natação é praticada apenas no espaço.','A natação é uma atividade desportiva aquática.','🏊','Desporto'],
+['O capacete pode ajudar a proteger a cabeça ao andar de bicicleta.','O capacete serve para aumentar o risco de ferimentos.','Usar capacete adequado reduz o risco de lesões na cabeça.','🚴','Segurança'],
+['Lavar as mãos ajuda a reduzir a transmissão de micróbios.','Lavar as mãos espalha sempre mais micróbios.','A higiene das mãos é uma medida importante de prevenção.','🧼','Saúde'],
+['Escovar os dentes ajuda a manter a saúde oral.','Escovar os dentes estraga sempre os dentes.','A escovagem remove placa e ajuda a prevenir cáries.','🪥','Saúde'],
+['Dormir é importante para a saúde.','O corpo humano não precisa de dormir.','O sono ajuda o corpo e o cérebro a recuperar.','😴','Saúde'],
+['A água é importante para o funcionamento do corpo.','O corpo humano não precisa de água.','A água participa em muitas funções essenciais do organismo.','🚰','Saúde'],
+['As frutas e os legumes fazem parte de uma alimentação equilibrada.','Uma alimentação saudável deve conter apenas doces.','Frutas e legumes fornecem fibras, vitaminas e minerais.','🥦','Alimentação'],
+['A cenoura é uma raiz.','A cenoura é um peixe.','A parte comestível da cenoura é uma raiz.','🥕','Alimentação'],
+['O tomate é um fruto do ponto de vista botânico.','O tomate cresce debaixo da terra como uma batata.','Botanicamente, o tomate desenvolve-se a partir da flor e contém sementes.','🍅','Alimentação'],
+['O milho é um cereal.','O milho é um mineral metálico.','O milho é uma planta cerealífera.','🌽','Alimentação'],
+['As árvores absorvem dióxido de carbono durante a fotossíntese.','As árvores produzem plástico durante a fotossíntese.','Na fotossíntese, as plantas usam dióxido de carbono e libertam oxigénio.','🌳','Ambiente'],
+['A reciclagem pode ajudar a reduzir o lixo enviado para aterros.','Reciclar significa deitar todo o lixo no rio.','A reciclagem permite transformar materiais usados em novos produtos.','♻️','Ambiente'],
+['A energia solar vem da luz do Sol.','A energia solar vem da luz das estrelas debaixo do mar.','Painéis solares podem converter luz solar em eletricidade.','🔆','Ambiente'],
+['O vento pode ser usado para produzir eletricidade.','O vento é feito de madeira sólida.','Aerogeradores aproveitam a energia do vento.','🌬️','Ambiente'],
+['Um arco-íris pode aparecer quando a luz é refratada e refletida em gotas de água.','Um arco-íris é uma corda colorida no céu.','Gotas de água dispersam a luz solar em diferentes cores.','🌈','Natureza'],
+['O trovão é o som associado a um relâmpago.','O trovão é uma luz que nasce no solo.','O relâmpago aquece o ar rapidamente e produz o som do trovão.','⛈️','Natureza'],
+['A neve é formada por cristais de gelo.','A neve é feita de areia quente.','Os flocos de neve formam-se quando o vapor de água congela na atmosfera.','❄️','Natureza'],
+['Os vulcões podem expelir lava.','Os vulcões expelem apenas gelado.','A lava é rocha fundida que chega à superfície.','🌋','Natureza'],
+['Os fósseis podem preservar vestígios de seres vivos antigos.','Os fósseis são sempre brinquedos modernos.','Fósseis são restos ou marcas preservadas de organismos do passado.','🦴','Ciência'],
+['Os dinossauros não avianos foram extintos há cerca de 66 milhões de anos.','Os dinossauros não avianos vivem hoje nas cidades.','A extinção em massa no fim do Cretácico eliminou os dinossauros não avianos.','🦖','Ciência'],
+['As tartarugas são répteis.','As tartarugas são anfíbios com penas.','As tartarugas pertencem ao grupo dos répteis.','🐢','Animais'],
+['As rãs são anfíbios.','As rãs são mamíferos com asas.','As rãs passam parte do ciclo de vida na água e parte em terra.','🐸','Animais'],
+['A galinha é uma ave.','A galinha é um mamífero marinho.','As galinhas têm penas, bico e põem ovos.','🐔','Animais'],
+['O crocodilo é um réptil.','O crocodilo é um inseto.','Os crocodilos são répteis semiaquáticos.','🐊','Animais'],
+['O coala é um marsupial.','O coala é um peixe.','As fêmeas dos coalas têm uma bolsa onde a cria se desenvolve.','🐨','Animais'],
+['O canguru é um marsupial.','O canguru é uma ave que nada.','Os cangurus são mamíferos marsupiais da Austrália.','🦘','Animais'],
+['A água do mar contém sais dissolvidos.','A água do mar é sempre água destilada pura.','Os sais dissolvidos tornam a água do mar salgada.','🧂','Ciência'],
+['O íman atrai materiais como o ferro.','O íman atrai qualquer material de madeira.','O ferro é um material ferromagnético.','🧲','Ciência'],
+['A eletricidade pode alimentar lâmpadas.','A eletricidade é uma espécie de alimento sólido.','A corrente elétrica pode fazer funcionar muitos aparelhos.','💡','Ciência'],
+['Uma bússola pode ajudar a encontrar direções.','Uma bússola mede a temperatura do forno.','A agulha da bússola alinha-se aproximadamente com o campo magnético terrestre.','🧭','Ciência'],
+['O número 
