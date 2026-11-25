@@ -85,38 +85,126 @@ es:["manzanas","estrellas","libros","pelotas","flores","peces","estrellas de mar
 };
 const SHAPES=["🔴","🔵","🟡","🟢","🟣","🟠","⭐","🔺","🟦","❤️"];
 const EMOJIS=["🍎","🍌","🍇","🍓","🍊","🥝","🍐","🍉","🥕","🌽"];
-const stateKey="desafiamais_logica_v1";
-let saved={};try{saved=JSON.parse(localStorage.getItem(stateKey)||"{}")}catch(e){saved={}}
-saved.score=Number(saved.score)||0;saved.index=Math.min(1000,Math.max(0,Number(saved.index)||0));
+const stateKey="desafiamais_logica_v2";
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(stateKey)||localStorage.getItem("desafiamais_logica_v1")||"{}")}catch(e){saved={}}
+saved.score=Math.max(0,Number(saved.score)||0);
+saved.index=Math.min(1000,Math.max(0,Number(saved.index)||0));
 let lang="pt",sound=true,music=false,musicTimer=null,audioCtx=null,current=null,answered=false;
 const $=id=>document.getElementById(id), tr=k=>I[lang][k]||I.pt[k]||k;
-function save(){localStorage.setItem(stateKey,JSON.stringify(saved));updateStats()}
-function updateStats(){$("savedScore").textContent=saved.score;$("savedLevel").textContent=Math.floor(saved.index/50)+1;$("savedDone").textContent=saved.index+"/1000"}
-function rand(seed,n){return (seed*9301+49297)%233280%n}
-function challenge(n){
- const type=n%8, a=2+(n*7)%18, b=2+(n*3)%9, c=1+(n*5)%7, langWords=WORDS[lang];
- let q="",visual="",hint="",correct="",opts=[];
- const unique=(arr)=>[...new Set(arr)];
- if(type===0){let step=1+(n%6),start=1+(n*11)%30,ans=start+step*4;visual=[0,1,2,3].map(i=>start+i*step).join("  ·  ")+"  ·  ?";q=tr("sequence");hint=lang==="en"?"The numbers increase by the same amount.":lang==="fr"?"Les nombres augmentent toujours de la même quantité.":lang==="es"?"Los números aumentan siempre la misma cantidad.":"Os números aumentam sempre pela mesma quantidade.";correct=String(ans);opts=[ans,ans+step,ans-1,ans+2*step].map(String)}
- else if(type===1){let base=n%EMOJIS.length;let arr=[EMOJIS[base],EMOJIS[base],EMOJIS[(base+1)%10],EMOJIS[base],EMOJIS[base]];visual=arr.join("  ");q=tr("odd");hint=lang==="en"?"Look for the picture that appears only once.":lang==="fr"?"Cherche l’image qui apparaît une seule fois.":lang==="es"?"Busca la imagen que aparece una sola vez.":"Procura a imagem que aparece apenas uma vez.";correct=arr[2];opts=unique([correct,EMOJIS[(base+2)%10],EMOJIS[(base+3)%10],EMOJIS[(base+4)%10]])}
- else if(type===2){let x=a+b; q=tr("math");visual=`${a} + ${b} = ?`;hint=lang==="en"?"Add the two numbers together.":lang==="fr"?"Additionne les deux nombres.":lang==="es"?"Suma los dos números.":"Junta as duas quantidades.";correct=String(x);opts=[x,x+1,x-1,x+2].map(String)}
- else if(type===3){let s=SHAPES[n%SHAPES.length],t=SHAPES[(n+1)%SHAPES.length];visual=`${s} ${t} ${s} ${t} ${s} ?`;q=tr("pattern");hint=lang==="en"?"The two pictures take turns.":lang==="fr"?"Les deux images alternent.":lang==="es"?"Las dos imágenes se alternan.":"As duas imagens aparecem alternadamente.";correct=t;opts=unique([t,s,SHAPES[(n+2)%10],SHAPES[(n+3)%10]])}
- else if(type===4){let x=a+b+c,y=x+2+(n%8);q=tr("order");visual=`${x}   ·   ${y}   ·   ${x-1}   ·   ${y-2}`;hint=lang==="en"?"Compare the values one by one.":lang==="fr"?"Compare les nombres un par un.":lang==="es"?"Compara los números uno por uno.":"Compara os números um a um.";correct=String(y);opts=unique([y,x,y+1,y-1]).map(String)}
- else if(type===5){let count=3+(n%8),emoji=EMOJIS[(n+3)%10];q=tr("count");visual=Array(count).fill(emoji).join(" ");hint=lang==="en"?"Count each picture once.":lang==="fr"?"Compte chaque image une fois.":lang==="es"?"Cuenta cada dibujo una vez.":"Conta cada desenho uma vez.";correct=String(count);opts=[count,count+1,count-1,count+2].map(String)}
- else if(type===6){let s=SHAPES[n%SHAPES.length],t=SHAPES[(n+2)%SHAPES.length];visual=`${s} ${s} ${t}   ${s} ${s} ${t}   ${s} ${s} ?`;q=tr("shape");hint=lang==="en"?"Repeat the group of three symbols.":lang==="fr"?"Répète le groupe de trois symboles.":lang==="es"?"Repite el grupo de tres símbolos.":"Repete o grupo de três símbolos.";correct=t;opts=unique([t,s,SHAPES[(n+4)%10],SHAPES[(n+5)%10]])}
- else {let subject=lang==="en"?"cats":lang==="fr"?"chats":lang==="es"?"gatos":"gatos",property=lang==="en"?"animals":lang==="fr"?"animaux":lang==="es"?"animales":"animais";q=`${tr("logic")} ${subject} ${tr("and")} ${property}, ${tr("then")}`;visual="🐱  ➜  🐾";hint=lang==="en"?"A cat belongs to the group of animals.":lang==="fr"?"Un chat fait partie du groupe des animaux.":lang==="es"?"Un gato pertenece al grupo de los animales.":"Um gato pertence ao grupo dos animais.";correct=tr("yes");opts=unique([tr("yes"),tr("no"),lang==="en"?"Maybe":lang==="fr"?"Peut-être":lang==="es"?"Quizás":"Talvez",lang==="en"?"Unknown":lang==="fr"?"Inconnu":lang==="es"?"No se sabe":"Não se sabe"])}
- // Always four distinct choices; pad safely if translated duplicate strings.
- let pool=[...opts];while(pool.length<4)pool.push(String((n+pool.length+17)%40));pool=unique(pool);while(pool.length<4)pool.push(String(n+pool.length+100));pool=pool.slice(0,4);
- // deterministic shuffle
- let shuffled=pool.map((v,i)=>({v,k:(n*17+i*31+7)%97})).sort((x,y)=>x.k-y.k).map(x=>x.v);
- return {n,q,visual,hint,correct,opts:shuffled};
+function save(){try{localStorage.setItem(stateKey,JSON.stringify(saved))}catch(e){}updateStats()}
+function updateStats(){
+ $("savedScore").textContent=saved.score;
+ $("savedLevel").textContent=Math.min(20,Math.floor(saved.index/50)+1);
+ $("savedDone").textContent=saved.index+"/1000";
 }
-function playTone(freq,duration=.16,type="sine"){if(!sound)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.08,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration)}catch(e){}}
-function speak(){if(!current)return; if(!("speechSynthesis"in window))return; speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(current.q);u.lang={pt:"pt-PT",en:"en-GB",fr:"fr-FR",es:"es-ES"}[lang];u.rate=.88;speechSynthesis.speak(u)}
-function render(){if(saved.index>=1000){finish();return}current=challenge(saved.index);answered=false;$("intro").classList.add("hidden");$("finish").classList.add("hidden");$("game").classList.remove("hidden");$("challengeLabel").textContent=`${tr("challenge")} ${saved.index+1} ${tr("of")} 1000`;$("levelLabel").textContent=`${tr("level")} ${Math.floor(saved.index/50)+1}`;$("progressBar").style.width=(saved.index/1000*100)+"%";$("visual").textContent=current.visual;$("question").textContent=current.q;$("feedback").textContent="";$("hint").style.display="none";$("hint").textContent="";$("nextBtn").classList.add("hidden");$("answers").innerHTML="";current.opts.forEach(opt=>{let btn=document.createElement("button");btn.className="answer";btn.textContent=opt;btn.addEventListener("click",()=>answer(opt,btn));$("answers").appendChild(btn)});setTimeout(speak,350)}
-function answer(opt,btn){if(answered)return;answered=true;let good=opt===current.correct;document.querySelectorAll(".answer").forEach(b=>{b.disabled=true;if(b.textContent===current.correct)b.classList.add("correct")});if(!good)btn.classList.add("wrong");$("feedback").textContent=good?tr("correct"):tr("wrong");if(good){saved.score+=10;playTone(660);setTimeout(()=>playTone(880),110)}else playTone(190,.25,"triangle");saved.index++;save();$("nextBtn").classList.remove("hidden");$("progressBar").style.width=(saved.index/1000*100)+"%";if(saved.index>=1000)$("nextBtn").textContent=tr("continue")}
-function finish(){$("game").classList.add("hidden");$("intro").classList.add("hidden");$("finish").classList.remove("hidden");$("finishText").textContent=tr("done");}
-function showHome(){if("speechSynthesis"in window)speechSynthesis.cancel();$("game").classList.add("hidden");$("finish").classList.add("hidden");$("intro").classList.remove("hidden");updateStats()}
-function start(){if(saved.index>=1000)saved.index=0;render()}
-function setLanguage(v){lang=v;document.documentElement.lang=v;document.querySelectorAll("[data-i]").forEach(el=>{let k=el.dataset.i;if(I[lang][k])el.textContent=I[lang][k]});$("musicBtn").querySelector("span").textContent=music?tr("musicOn"):tr("music");$("soundBtn").querySelector("span").textContent=sound?tr("sound"):tr("soundOff");updateStats();if(!$("game").classList.contains("hidden"))render()}
-function toggleMusic(){music=!music;if(music){musicTimer=setInterval(()=>{playTone([262,330,392,330][Math.floor(Math.random()*4)],.28)},650)}else{clearInterval(musicTimer)}$("musicBtn").querySelector("span").textContent=music?tr("
+function playTone(freq,duration=.16,type="sine",force=false){
+ if(!sound&&!force)return;
+ try{
+  audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended")audioCtx.resume();
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type=type;o.frequency.value=freq;
+  g.gain.setValueAtTime(.055,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
+  o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration);
+ }catch(e){}
+}
+function speak(){
+ if(!current||!("speechSynthesis"in window))return;
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(current.q);
+ u.lang={pt:"pt-PT",en:"en-GB",fr:"fr-FR",es:"es-ES"}[lang];u.rate=.88;speechSynthesis.speak(u)}catch(e){}
+}
+function render(){
+ if(saved.index>=1000){finish();return}
+ current=challenge(saved.index);answered=false;
+ $("intro").classList.add("hidden");$("finish").classList.add("hidden");$("game").classList.remove("hidden");
+ $("challengeLabel").textContent=`${tr("challenge")} ${saved.index+1} ${tr("of")} 1000`;
+ $("levelLabel").textContent=`${tr("level")} ${Math.floor(saved.index/50)+1}`;
+ $("progressBar").style.width=(saved.index/1000*100)+"%";
+ $("visual").textContent=current.visual;$("question").textContent=current.q;
+ $("feedback").textContent="";$("hint").style.display="none";$("hint").textContent="";
+ $("nextBtn").classList.add("hidden");$("nextBtn").textContent=tr("next");
+ $("answers").innerHTML="";
+ current.opts.forEach(opt=>{
+  const btn=document.createElement("button");btn.className="answer";btn.textContent=opt;
+  btn.addEventListener("click",()=>answer(opt,btn));$("answers").appendChild(btn);
+ });
+}
+function answer(opt,btn){
+ if(answered)return;answered=true;
+ const good=opt===current.correct;
+ document.querySelectorAll(".answer").forEach(b=>{
+  b.disabled=true;if(b.textContent===current.correct)b.classList.add("correct");
+ });
+ if(!good)btn.classList.add("wrong");
+ $("feedback").textContent=good?tr("correct"):tr("wrong")+" "+current.correct;
+ if(good){saved.score+=10;playTone(660);setTimeout(()=>playTone(880),110)}
+ else playTone(190,.25,"triangle");
+ saved.index++;save();
+ $("nextBtn").classList.remove("hidden");
+ $("progressBar").style.width=(saved.index/1000*100)+"%";
+ if(saved.index>=1000)$("nextBtn").textContent=tr("continue");
+}
+function finish(){
+ $("game").classList.add("hidden");$("intro").classList.add("hidden");$("finish").classList.remove("hidden");
+ $("finishText").textContent=tr("done");updateStats();
+}
+function showHome(){
+ if("speechSynthesis"in window)speechSynthesis.cancel();
+ $("game").classList.add("hidden");$("finish").classList.add("hidden");$("intro").classList.remove("hidden");updateStats();
+}
+function start(){if(saved.index>=1000){saved.index=0;save()}render()}
+function nextChallenge(){if(saved.index>=1000){finish();return}render()}
+function setLanguage(v){
+ lang=I[v]?v:"pt";document.documentElement.lang=lang;
+ document.querySelectorAll("[data-i]").forEach(el=>{
+  const k=el.dataset.i;if(I[lang][k])el.textContent=I[lang][k];
+ });
+ $("musicBtn").querySelector("span").textContent=music?tr("musicOn"):tr("music");
+ $("soundBtn").querySelector("span").textContent=sound?tr("sound"):tr("soundOff");
+ updateStats();
+ if(!$("game").classList.contains("hidden"))render();
+}
+function toggleMusic(){
+ music=!music;
+ if(music){
+  const notes=[262,330,392,330,294,349,440,349];let i=0;
+  musicTimer=setInterval(()=>{playTone(notes[i++%notes.length],.24,"sine",true)},520);
+ }else{clearInterval(musicTimer);musicTimer=null}
+ $("musicBtn").querySelector("span").textContent=music?tr("musicOn"):tr("music");
+}
+function toggleSound(){
+ sound=!sound;
+ $("soundBtn").querySelector("span").textContent=sound?tr("sound"):tr("soundOff");
+}
+function showHint(){
+ if(!current)return;
+ $("hint").textContent="💡 "+current.hint;
+ $("hint").style.display="block";
+}
+function resetProgress(){
+ const msg=lang==="en"?"Reset all progress and points?":lang==="fr"?"Réinitialiser toute la progression et les points ?":lang==="es"?"¿Reiniciar todo el progreso y los puntos?":"Queres apagar todo o progresso e os pontos?";
+ if(!confirm(msg))return;
+ saved={score:0,index:0};save();showHome();
+}
+$("startBtn").addEventListener("click",start);
+$("nextBtn").addEventListener("click",nextChallenge);
+$("continueBtn").addEventListener("click",()=>{saved.index=0;save();render()});
+$("homeBtn").addEventListener("click",showHome);
+$("hintBtn").addEventListener("click",showHint);
+$("readBtn").addEventListener("click",speak);
+$("againBtn").addEventListener("click",speak);
+$("language").addEventListener("change",e=>setLanguage(e.target.value));
+$("musicBtn").addEventListener("click",toggleMusic);
+$("soundBtn").addEventListener("click",toggleSound);
+$("whatsapp").href="https://wa.me/244938403923?text="+encodeURIComponent("Olá! Gostaria de saber mais sobre o DESAFIA+ KIDS.");
+// Botão para reiniciar o progresso, disponível no ecrã inicial.
+const resetBtn=document.createElement("button");
+resetBtn.className="soft small";resetBtn.textContent="↻ Reiniciar progresso";
+resetBtn.addEventListener("click",resetProgress);
+$("intro").appendChild(resetBtn);
+updateStats();
+</script>
+</body>
+</html>
