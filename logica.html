@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6c4ce3">
+<title>Mestre da Lógica | DESAFIA+ KIDS</title>
+<style>
+:root{--purple:#6846d9;--pink:#ff6b9d;--blue:#49b9e9;--yellow:#ffd45c;--ink:#26304b;--paper:#fff;--bg:#f1edff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 5%,#fff 0 8%,transparent 35%),linear-gradient(135deg,#f3edff,#e7f8ff);min-height:100vh}
+header{background:linear-gradient(100deg,#6745d7,#9862e8);color:white;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 4px 18px #4c36a533}
+.brand{font-weight:900;font-size:1.15rem}.brand small{display:block;font-weight:600;opacity:.85;font-size:.72rem;letter-spacing:1px}
+button,select{font:inherit}button{border:0;border-radius:15px;padding:11px 15px;font-weight:800;cursor:pointer;transition:transform .15s,filter .15s}button:active{transform:scale(.97)}button:focus-visible,select:focus-visible{outline:3px solid #ffbd35;outline-offset:3px}
+.light{background:white;color:var(--purple)}.primary{background:var(--purple);color:white}.soft{background:#eee9ff;color:var(--purple)}.yellow{background:var(--yellow);color:#5a4210}.small{padding:8px 11px;font-size:.88rem}
+main{max-width:980px;margin:20px auto;padding:0 14px 40px}.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.stat{background:#ffffffd9;border:1px solid #e8e0ff;border-radius:17px;padding:12px;text-align:center;box-shadow:0 5px 18px #5b49a00c}.stat b{display:block;font-size:1.35rem;color:var(--purple)}.stat span{font-size:.78rem;color:#6d7290}
+.card{background:white;border-radius:26px;padding:clamp(17px,4vw,30px);box-shadow:0 12px 35px #5740a018;border:1px solid #eee9ff}
+.hero{text-align:center;overflow:hidden;position:relative}.mascot{font-size:clamp(4rem,12vw,7rem);display:inline-block;animation:bob 2.2s ease-in-out infinite;filter:drop-shadow(0 8px 3px #4937a022)}@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+h1{font-size:clamp(1.7rem,5vw,2.5rem);margin:4px 0;color:var(--purple)}.subtitle{color:#747895;margin:4px 0 18px}
+.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.controls select{border:1px solid #ded7f6;border-radius:12px;padding:10px;background:white;color:var(--ink)}
+.game{margin-top:16px}.question-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;color:#777b98;font-size:.9rem}.progress{height:10px;background:#eeeafb;border-radius:20px;overflow:hidden;margin:10px 0 20px}.progress>div{height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));width:0%;transition:width .3s}
+.question{font-size:clamp(1.2rem,3.8vw,1.75rem);font-weight:850;line-height:1.35;text-align:center;margin:22px 0}.visual{font-size:clamp(1.7rem,5vw,2.5rem);text-align:center;letter-spacing:5px;min-height:55px}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:20px 0}.answer{background:#f4f1ff;color:#41366f;border:2px solid transparent;min-height:58px;font-size:1rem}.answer:hover{border-color:#b7a4ff;filter:brightness(.99)}.answer.correct{background:#d9f8e8;border-color:#43bd80;color:#176c43}.answer.wrong{background:#ffe2e9;border-color:#f27791;color:#9c2d4b}.answer:disabled{cursor:default}
+.feedback{min-height:34px;text-align:center;font-weight:800;margin:8px 0}.hint{background:#fff7d9;border:1px solid #ffe49a;border-radius:14px;padding:12px;margin:12px 0;color:#70571b;display:none}.bottom-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:15px}
+footer{text-align:center;color:#8a8da5;font-size:.8rem;padding:18px}.hidden{display:none!important}
+.whatsapp{position:fixed;right:16px;bottom:16px;background:#20bd68;color:white;border-radius:50px;padding:13px 17px;box-shadow:0 7px 22px #168d4a55;z-index:5;text-decoration:none;font-weight:900}
+@media(max-width:520px){.answers{grid-template-columns:1fr}.stats{gap:7px}.stat{padding:10px 5px}.stat b{font-size:1.15rem}header{padding:12px}.controls{width:100%}.controls select{flex:1;min-width:120px}}
+</style>
+</head>
+<body>
+<header><div class="brand">🚀 DESAFIA+ KIDS <small>APRENDER É UMA AVENTURA!</small></div><button class="light small" id="homeBtn">⌂ <span data-i="menu">Menu</span></button></header>
+<main>
+<div class="topline">
+  <div class="controls">
+    <select id="language" aria-label="Idioma"><option value="pt">🇦🇴 Português</option><option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option><option value="es">🇪🇸 Español</option></select>
+    <button class="soft small" id="musicBtn">♫ <span data-i="music">Música: desligada</span></button>
+    <button class="soft small" id="soundBtn">🔊 <span data-i="sound">Sons ligados</span></button>
+  </div>
+  <div class="controls"><button class="soft small" id="readBtn">🔈 <span data-i="repeat">Ouvir pergunta</span></button></div>
+</div>
+<section class="card hero" id="intro">
+  <div class="mascot" aria-hidden="true">🦉</div>
+  <h1 data-i="title">Mestre da Lógica</h1>
+  <p class="subtitle" data-i="intro">Treina o teu cérebro com desafios divertidos!</p>
+  <div class="stats">
+    <div class="stat"><b id="savedScore">0</b><span data-i="points">Pontos totais</span></div>
+    <div class="stat"><b id="savedLevel">1</b><span data-i="level">Nível</span></div>
+    <div class="stat"><b id="savedDone">0/1000</b><span data-i="completed">Desafios concluídos</span></div>
+  </div>
+  <button class="primary" id="startBtn" data-i="start">Começar a jogar ▶</button>
+  <p class="subtitle" style="margin-top:15px;font-size:.85rem" data-i="autosave">O teu progresso fica guardado neste dispositivo.</p>
+</section>
+<section class="card game hidden" id="game">
+  <div class="question-head"><b id="challengeLabel">Desafio 1 de 1000</b><span id="levelLabel">Nível 1</span></div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <div class="visual" id="visual" aria-hidden="true"></div>
+  <div class="question" id="question"></div>
+  <div class="answers" id="answers"></div>
+  <div class="feedback" id="feedback" aria-live="polite"></div>
+  <div class="hint" id="hint"></div>
+  <div class="bottom-actions">
+    <button class="soft small" id="hintBtn">💡 <span data-i="hintBtn">Dica</span></button>
+    <button class="soft small" id="againBtn">🔁 <span data-i="repeat">Ouvir pergunta</span></button>
+    <button class="primary hidden" id="nextBtn" data-i="next">Próximo desafio ➜</button>
+  </div>
+</section>
+<section class="card hidden" id="finish" style="text-align:center;margin-top:16px">
+  <div class="mascot">🏆</div><h1 data-i="finishTitle">Excelente trabalho!</h1><p id="finishText"></p><button class="primary" id="continueBtn" data-i="continue">Continuar</button>
+</section>
+</main>
+<footer>DESAFIA+ KIDS · <span data-i="footer">Pensar, descobrir e aprender!</span></footer>
+<a class="whatsapp" id="whatsapp" target="_blank" rel="noopener">☏ WhatsApp</a>
+<script>
+const I={
+pt:{menu:"Menu",music:"Música: desligada",musicOn:"Música: ligada",sound:"Sons ligados",soundOff:"Sons desligados",repeat:"Ouvir pergunta",title:"Mestre da Lógica",intro:"Treina o teu cérebro com desafios divertidos!",points:"Pontos totais",level:"Nível",completed:"Desafios concluídos",start:"Começar a jogar ▶",autosave:"O teu progresso fica guardado neste dispositivo.",hintBtn:"Dica",next:"Próximo desafio ➜",finishTitle:"Excelente trabalho!",continue:"Continuar",footer:"Pensar, descobrir e aprender!",challenge:"Desafio",of:"de",correct:"Muito bem! Resposta certa! ⭐",wrong:"Quase! Continua a tentar!",hint:"Dica",choose:"Escolhe a resposta correta.",done:"Já completaste os 1.000 desafios! És um mestre da lógica!",home:"Queres regressar ao menu principal?",sequence:"Que número vem a seguir?",odd:"Qual é o elemento diferente?",math:"Qual é o resultado?",pattern:"O que completa o padrão?",order:"Qual é o maior número?",count:"Quantos elementos existem?",shape:"Que forma vem a seguir?",logic:"Se todos os",and:"são",then:"então qual afirmação é verdadeira?",yes:"Sim",no:"Não"},
+en:{menu:"Menu",music:"Music: off",musicOn:"Music: on",sound:"Sounds on",soundOff:"Sounds off",repeat:"Read question",title:"Logic Master",intro:"Train your brain with fun challenges!",points:"Total points",level:"Level",completed:"Challenges completed",start:"Start playing ▶",autosave:"Your progress is saved on this device.",hintBtn:"Hint",next:"Next challenge ➜",finishTitle:"Excellent work!",continue:"Continue",footer:"Think, discover and learn!",challenge:"Challenge",of:"of",correct:"Well done! Correct answer! ⭐",wrong:"Almost! Keep trying!",hint:"Hint",choose:"Choose the correct answer.",done:"You completed all 1,000 challenges! You are a logic master!",home:"Return to the main menu?",sequence:"Which number comes next?",odd:"Which item is different?",math:"What is the result?",pattern:"What completes the pattern?",order:"Which number is greatest?",count:"How many items are there?",shape:"Which shape comes next?",logic:"If all",and:"are",then:"which statement is true?",yes:"Yes",no:"No"},
+fr:{menu:"Menu",music:"Musique : arrêt",musicOn:"Musique : marche",sound:"Sons activés",soundOff:"Sons désactivés",repeat:"Lire la question",title:"Maître de la logique",intro:"Entraîne ton cerveau avec des défis amusants !",points:"Points totaux",level:"Niveau",completed:"Défis terminés",start:"Commencer ▶",autosave:"Ta progression est enregistrée sur cet appareil.",hintBtn:"Indice",next:"Défi suivant ➜",finishTitle:"Excellent travail !",continue:"Continuer",footer:"Penser, découvrir et apprendre !",challenge:"Défi",of:"sur",correct:"Bravo ! Bonne réponse ! ⭐",wrong:"Presque ! Continue !",hint:"Indice",choose:"Choisis la bonne réponse.",done:"Tu as terminé les 1 000 défis !",home:"Retourner au menu principal ?",sequence:"Quel nombre vient ensuite ?",odd:"Quel élément est différent ?",math:"Quel est le résultat ?",pattern:"Que faut-il pour compléter le motif ?",order:"Quel est le plus grand nombre ?",count:"Combien d’éléments y a-t-il ?",shape:"Quelle forme vient ensuite ?",logic:"Si tous les",and:"sont",then:"quelle affirmation est vraie ?",yes:"Oui",no:"Non"},
+es:{menu:"Menú",music:"Música: apagada",musicOn:"Música: encendida",sound:"Sonidos activados",soundOff:"Sonidos desactivados",repeat:"Leer pregunta",title:"Maestro de la lógica",intro:"¡Entrena tu cerebro con retos divertidos!",points:"Puntos totales",level:"Nivel",completed:"Retos completados",start:"Empezar a jugar ▶",autosave:"Tu progreso se guarda en este dispositivo.",hintBtn:"Pista",next:"Siguiente reto ➜",finishTitle:"¡Excelente trabajo!",continue:"Continuar",footer:"¡Pensar, descubrir y aprender!",challenge:"Reto",of:"de",correct:"¡Muy bien! ¡Respuesta correcta! ⭐",wrong:"¡Casi! ¡Sigue intentando!",hint:"Pista",choose:"Elige la respuesta correcta.",done:"¡Has completado los 1.000 retos!",home:"¿Volver al menú principal?",sequence:"¿Qué número sigue?",odd:"¿Qué elemento es diferente?",math:"¿Cuál es el resultado?",pattern:"¿Qué completa el patrón?",order:"¿Cuál es el número mayor?",count:"¿Cuántos elementos hay?",shape:"¿Qué figura sigue?",logic:"Si todos los",and:"son",then:"¿qué afirmación es verdadera?",yes:"Sí",no:"No"}
+};
+const WORDS={
+pt:["maçãs","estrelas","livros","bolas","flores","peixes","estrelas-do-mar","pássaros"],
+en:["apples","stars","books","balls","flowers","fish","starfish","birds"],
+fr:["pommes","étoiles","livres","ballons","fleurs","poissons","étoiles de mer","oiseaux"],
+es:["manzanas","estrellas","libros","pelotas","flores","peces","estrellas de mar","pájaros"]
+};
+const SHAPES=["🔴","🔵","🟡","🟢","🟣","🟠","⭐","🔺","🟦","❤️"];
+const EMOJIS=["🍎","🍌","🍇","🍓","🍊","🥝","🍐","🍉","🥕","🌽"];
+const stateKey="desafiamais_logica_v1";
+let saved={};try{saved=JSON.parse(localStorage.getItem(stateKey)||"{}")}catch(e){saved={}}
+saved.score=Number(saved.score)||0;saved.index=Math.min(1000,Math.max(0,Number(saved.index)||0));
+let lang="pt",sound=true,music=false,musicTimer=null,audioCtx=null,current=null,answered=false;
+const $=id=>document.getElementById(id), tr=k=>I[lang][k]||I.pt[k]||k;
+function save(){localStorage.setItem(stateKey,JSON.stringify(saved));updateStats()}
+function updateStats(){$("savedScore").textContent=saved.score;$("savedLevel").textContent=Math.floor(saved.index/50)+1;$("savedDone").textContent=saved.index+"/1000"}
+function rand(seed,n){return (seed*9301+49297)%233280%n}
+function challenge(n){
+ const type=n%8, a=2+(n*7)%18, b=2+(n*3)%9, c=1+(n*5)%7, langWords=WORDS[lang];
+ let q="",visual="",hint="",correct="",opts=[];
+ const unique=(arr)=>[...new Set(arr)];
+ if(type===0){let step=1+(n%6),start=1+(n*11)%30,ans=start+step*4;visual=[0,1,2,3].map(i=>start+i*step).join("  ·  ")+"  ·  ?";q=tr("sequence");hint=lang==="en"?"The numbers increase by the same amount.":lang==="fr"?"Les nombres augmentent toujours de la même quantité.":lang==="es"?"Los números aumentan siempre la misma cantidad.":"Os números aumentam sempre pela mesma quantidade.";correct=String(ans);opts=[ans,ans+step,ans-1,ans+2*step].map(String)}
+ else if(type===1){let base=n%EMOJIS.length;let arr=[EMOJIS[base],EMOJIS[base],EMOJIS[(base+1)%10],EMOJIS[base],EMOJIS[base]];visual=arr.join("  ");q=tr("odd");hint=lang==="en"?"Look for the picture that appears only once.":lang==="fr"?"Cherche l’image qui apparaît une seule fois.":lang==="es"?"Busca la imagen que aparece una sola vez.":"Procura a imagem que aparece apenas uma vez.";correct=arr[2];opts=unique([correct,EMOJIS[(base+2)%10],EMOJIS[(base+3)%10],EMOJIS[(base+4)%10]])}
+ else if(type===2){let x=a+b; q=tr("math");visual=`${a} + ${b} = ?`;hint=lang==="en"?"Add the two numbers together.":lang==="fr"?"Additionne les deux nombres.":lang==="es"?"Suma los dos números.":"Junta as duas quantidades.";correct=String(x);opts=[x,x+1,x-1,x+2].map(String)}
+ else if(type===3){let s=SHAPES[n%SHAPES.length],t=SHAPES[(n+1)%SHAPES.length];visual=`${s} ${t} ${s} ${t} ${s} ?`;q=tr("pattern");hint=lang==="en"?"The two pictures take turns.":lang==="fr"?"Les deux images alternent.":lang==="es"?"Las dos imágenes se alternan.":"As duas imagens aparecem alternadamente.";correct=t;opts=unique([t,s,SHAPES[(n+2)%10],SHAPES[(n+3)%10]])}
+ else if(type===4){let x=a+b+c,y=x+2+(n%8);q=tr("order");visual=`${x}   ·   ${y}   ·   ${x-1}   ·   ${y-2}`;hint=lang==="en"?"Compare the values one by one.":lang==="fr"?"Compare les nombres un par un.":lang==="es"?"Compara los números uno por uno.":"Compara os números um a um.";correct=String(y);opts=unique([y,x,y+1,y-1]).map(String)}
+ else if(type===5){let count=3+(n%8),emoji=EMOJIS[(n+3)%10];q=tr("count");visual=Array(count).fill(emoji).join(" ");hint=lang==="en"?"Count each picture once.":lang==="fr"?"Compte chaque image une fois.":lang==="es"?"Cuenta cada dibujo una vez.":"Conta cada desenho uma vez.";correct=String(count);opts=[count,count+1,count-1,count+2].map(String)}
+ else if(type===6){let s=SHAPES[n%SHAPES.length],t=SHAPES[(n+2)%SHAPES.length];visual=`${s} ${s} ${t}   ${s} ${s} ${t}   ${s} ${s} ?`;q=tr("shape");hint=lang==="en"?"Repeat the group of three symbols.":lang==="fr"?"Répète le groupe de trois symboles.":lang==="es"?"Repite el grupo de tres símbolos.":"Repete o grupo de três símbolos.";correct=t;opts=unique([t,s,SHAPES[(n+4)%10],SHAPES[(n+5)%10]])}
+ else {let subject=lang==="en"?"cats":lang==="fr"?"chats":lang==="es"?"gatos":"gatos",property=lang==="en"?"animals":lang==="fr"?"animaux":lang==="es"?"animales":"animais";q=`${tr("logic")} ${subject} ${tr("and")} ${property}, ${tr("then")}`;visual="🐱  ➜  🐾";hint=lang==="en"?"A cat belongs to the group of animals.":lang==="fr"?"Un chat fait partie du groupe des animaux.":lang==="es"?"Un gato pertenece al grupo de los animales.":"Um gato pertence ao grupo dos animais.";correct=tr("yes");opts=unique([tr("yes"),tr("no"),lang==="en"?"Maybe":lang==="fr"?"Peut-être":lang==="es"?"Quizás":"Talvez",lang==="en"?"Unknown":lang==="fr"?"Inconnu":lang==="es"?"No se sabe":"Não se sabe"])}
+ // Always four distinct choices; pad safely if translated duplicate strings.
+ let pool=[...opts];while(pool.length<4)pool.push(String((n+pool.length+17)%40));pool=unique(pool);while(pool.length<4)pool.push(String(n+pool.length+100));pool=pool.slice(0,4);
+ // deterministic shuffle
+ let shuffled=pool.map((v,i)=>({v,k:(n*17+i*31+7)%97})).sort((x,y)=>x.k-y.k).map(x=>x.v);
+ return {n,q,visual,hint,correct,opts:shuffled};
+}
+function playTone(freq,duration=.16,type="sine"){if(!sound)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.08,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration)}catch(e){}}
+function speak(){if(!current)return; if(!("speechSynthesis"in window))return; speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(current.q);u.lang={pt:"pt-PT",en:"en-GB",fr:"fr-FR",es:"es-ES"}[lang];u.rate=.88;speechSynthesis.speak(u)}
+function render(){if(saved.index>=1000){finish();return}current=challenge(saved.index);answered=false;$("intro").classList.add("hidden");$("finish").classList.add("hidden");$("game").classList.remove("hidden");$("challengeLabel").textContent=`${tr("challenge")} ${saved.index+1} ${tr("of")} 1000`;$("levelLabel").textContent=`${tr("level")} ${Math.floor(saved.index/50)+1}`;$("progressBar").style.width=(saved.index/1000*100)+"%";$("visual").textContent=current.visual;$("question").textContent=current.q;$("feedback").textContent="";$("hint").style.display="none";$("hint").textContent="";$("nextBtn").classList.add("hidden");$("answers").innerHTML="";current.opts.forEach(opt=>{let btn=document.createElement("button");btn.className="answer";btn.textContent=opt;btn.addEventListener("click",()=>answer(opt,btn));$("answers").appendChild(btn)});setTimeout(speak,350)}
+function answer(opt,btn){if(answered)return;answered=true;let good=opt===current.correct;document.querySelectorAll(".answer").forEach(b=>{b.disabled=true;if(b.textContent===current.correct)b.classList.add("correct")});if(!good)btn.classList.add("wrong");$("feedback").textContent=good?tr("correct"):tr("wrong");if(good){saved.score+=10;playTone(660);setTimeout(()=>playTone(880),110)}else playTone(190,.25,"triangle");saved.index++;save();$("nextBtn").classList.remove("hidden");$("progressBar").style.width=(saved.index/1000*100)+"%";if(saved.index>=1000)$("nextBtn").textContent=tr("continue")}
+function finish(){$("game").classList.add("hidden");$("intro").classList.add("hidden");$("finish").classList.remove("hidden");$("finishText").textContent=tr("done");}
+function showHome(){if("speechSynthesis"in window)speechSynthesis.cancel();$("game").classList.add("hidden");$("finish").classList.add("hidden");$("intro").classList.remove("hidden");updateStats()}
+function start(){if(saved.index>=1000)saved.index=0;render()}
+function setLanguage(v){lang=v;document.documentElement.lang=v;document.querySelectorAll("[data-i]").forEach(el=>{let k=el.dataset.i;if(I[lang][k])el.textContent=I[lang][k]});$("musicBtn").querySelector("span").textContent=music?tr("musicOn"):tr("music");$("soundBtn").querySelector("span").textContent=sound?tr("sound"):tr("soundOff");updateStats();if(!$("game").classList.contains("hidden"))render()}
+function toggleMusic(){music=!music;if(music){musicTimer=setInterval(()=>{playTone([262,330,392,330][Math.floor(Math.random()*4)],.28)},650)}else{clearInterval(musicTimer)}$("musicBtn").querySelector("span").textContent=music?tr("
