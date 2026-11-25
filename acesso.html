@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -13,8 +12,7 @@
 body{margin:0;padding:18px;min-height:100vh;display:grid;place-items:center}
 .wrap{width:100%;max-width:540px}
 .head,.card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 8px 28px #29205b12;margin-bottom:15px}
-.head{text-align:center}
-.logo{font-size:42px}
+.head{text-align:center}.logo{font-size:42px}
 h1{color:#5142c8;font-size:25px;margin:8px 0}
 h2{font-size:19px;margin:0 0 10px}
 p{color:#65627a;line-height:1.5}
@@ -24,482 +22,259 @@ button,.linkbtn{display:block;width:100%;padding:13px;border:0;border-radius:11p
 button.secondary,.linkbtn.secondary{background:#e9e7ff;color:#4034a8}
 button:disabled{opacity:.55}
 .status{background:#f0efff;border-radius:10px;padding:12px;margin-top:14px;white-space:pre-wrap;overflow-wrap:anywhere;color:#39345f}
-.small{font-size:12px}
-.hidden{display:none}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
-.tabs button{margin:0}
-.tabs button.active{background:#3930a7}
-.notice{border-left:4px solid #f0c34e;padding-left:12px}
+.small{font-size:12px}.notice{border-left:4px solid #f0c34e;padding-left:12px}
 .back{color:#5142c8;text-decoration:none;font-weight:700}
 @media(max-width:480px){body{padding:10px}.head,.card{padding:17px}}
 </style>
 </head>
 <body>
 <main class="wrap">
-
 <header class="head">
-<div class="logo">🎮⭐</div>
-<h1>DESAFIA+ KIDS</h1>
-<p>Acesso simples e seguro aos 13 jogos Premium.</p>
+  <div class="logo">🎮⭐</div>
+  <h1>DESAFIA+ KIDS</h1>
+  <p>Acesso simples aos 13 jogos Premium.</p>
 </header>
 
 <section class="card">
+  <div class="notice">
+    <p class="small"><strong>Como funciona:</strong> introduz o nome do encarregado e o código Premium. O site cria automaticamente uma identidade segura neste navegador, sem pedir e-mail ou palavra-passe. O acesso fica associado a este cliente e ao dispositivo autorizado.</p>
+    <p class="small"><strong>Importante:</strong> não apagues os dados do navegador nem mudes de telemóvel sem contactar o administrador para transferir o acesso.</p>
+  </div>
 
-<div class="notice">
-<p class="small"><strong>Como funciona:</strong> na primeira ativação, confirma o e-mail com um código enviado para a tua caixa de entrada. Depois, a conta fica associada ao primeiro dispositivo autorizado. Outro dispositivo não poderá utilizar a mesma conta Premium.</p>
-</div>
+  <div id="activationPane">
+    <h2>Ativar Premium</h2>
+    <label for="guardianName">Nome do encarregado de educação</label>
+    <input id="guardianName" type="text" autocomplete="name" maxlength="80" placeholder="Nome do responsável">
+    <label for="premiumCode">Código Premium</label>
+    <input id="premiumCode" type="text" autocomplete="off" maxlength="80" placeholder="Ex.: DK-XXXXXXXX" autocapitalize="characters">
+    <button id="activateButton" type="button">Ativar os 13 jogos</button>
+  </div>
 
-<div class="tabs">
-<button id="tabActivate" class="active" type="button">Ativar Premium</button>
-<button id="tabReturn" class="secondary" type="button">Já tenho acesso</button>
-</div>
+  <div id="accountPane" hidden>
+    <h2>Acesso neste dispositivo</h2>
+    <p id="accountInfo">A verificar a tua sessão…</p>
+    <button id="checkAccess" class="secondary" type="button">Verificar acesso Premium</button>
+  </div>
 
-<div id="activatePane">
-<h2>Criar conta e ativar código</h2>
-
-<label for="guardianName">Nome do encarregado de educação</label>
-<input id="guardianName" type="text" autocomplete="name" maxlength="80" placeholder="Nome do responsável">
-
-<label for="activationEmail">E-mail do encarregado de educação</label>
-<input id="activationEmail" type="email" autocomplete="email" placeholder="email@exemplo.com">
-
-<label for="premiumCode">Código Premium</label>
-<input id="premiumCode" type="text" autocomplete="off" placeholder="Ex.: DK-XXXXXXXX" autocapitalize="characters">
-
-<button id="sendActivationOtp">Enviar código para o meu e-mail</button>
-</div>
-
-<div id="returnPane" class="hidden">
-<h2>Entrar na minha conta</h2>
-
-<label for="returnEmail">E-mail do encarregado de educação</label>
-<input id="returnEmail" type="email" autocomplete="email" placeholder="E-mail utilizado na ativação">
-
-<button id="sendLoginOtp">Enviar código de entrada</button>
-</div>
-
-<div id="otpPane" class="hidden">
-<h2>Confirmar e-mail</h2>
-<p>Abre o e-mail que recebeste e introduz aqui o código de confirmação.</p>
-
-<label for="emailOtp">Código recebido por e-mail</label>
-<input id="emailOtp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Código de confirmação">
-
-<button id="verifyOtp">Confirmar e continuar</button>
-<button id="resendOtp" class="secondary">Enviar outro código</button>
-</div>
-
-<div id="signedIn" class="hidden">
-<p id="accountInfo"></p>
-<button id="checkAccess" class="secondary">Verificar acesso Premium</button>
-<button id="logout" class="secondary">Terminar sessão neste dispositivo</button>
-</div>
-
-<div id="status" class="status" aria-live="polite">
-Para começar, introduz o teu e-mail e o código Premium.
-</div>
-
+  <div id="status" class="status" aria-live="polite">Introduz o nome e o código Premium para começar.</div>
 </section>
 
 <p class="small" style="text-align:center">
-<a class="back" href="./index.html">← Voltar aos jogos</a>
+  <a class="back" href="./index.html">← Voltar aos jogos</a>
 </p>
-
 </main>
 
 <script>
 "use strict";
 
-const SUPABASE_URL="https://ounjndogaogngxchuijj.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
+const SUPABASE_URL = "https://ounjndogaogngxchuijj.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_voz1vqH-h4F80QhV0mYVkA_aDanB9St";
 
-const db=window.supabase.createClient(
+const db = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY,
   {
-    auth:{
-      persistSession:true,
-      autoRefreshToken:true,
-      detectSessionInUrl:true
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
     }
   }
 );
 
-const $=id=>document.getElementById(id);
+const $ = id => document.getElementById(id);
+const DEVICE_STORAGE_KEY = "desafiamais_kids_device_id_v1";
+let deviceCheckRunning = false;
+let activationRunning = false;
 
-let pending={
-  mode:null,
-  email:null,
-  code:null,
-  name:null
-};
-
-let deviceCheckRunning=false;
-
-const DEVICE_STORAGE_KEY="desafiamais_kids_device_id_v1";
-
-function say(message){
-  $("status").textContent=message;
+function say(message) {
+  $("status").textContent = message;
 }
 
-function getDeviceId(){
-  try{
-    let id=localStorage.getItem(DEVICE_STORAGE_KEY);
-
-    if(!id){
-      if(window.crypto && typeof crypto.randomUUID==="function"){
-        id=crypto.randomUUID();
-      }else{
-        id="DK-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
-      }
-
-      localStorage.setItem(DEVICE_STORAGE_KEY,id);
+function getDeviceId() {
+  let id = localStorage.getItem(DEVICE_STORAGE_KEY);
+  if (!id) {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      id = window.crypto.randomUUID();
+    } else {
+      id = "DK-" + Date.now().toString(36) + "-" +
+        Math.random().toString(36).slice(2) +
+        Math.random().toString(36).slice(2);
     }
-
-    return id;
-  }catch(error){
-    throw new Error("Não foi possível guardar o identificador deste dispositivo no navegador.");
+    localStorage.setItem(DEVICE_STORAGE_KEY, id);
   }
+  return id;
 }
 
-function getDeviceLabel(){
-  const ua=navigator.userAgent||"";
-  let device="Dispositivo desconhecido";
+function getDeviceLabel() {
+  const ua = navigator.userAgent || "";
+  let device = "Dispositivo";
+  if (/Android/i.test(ua)) device = "Android";
+  else if (/iPhone/i.test(ua)) device = "iPhone";
+  else if (/iPad/i.test(ua)) device = "iPad";
+  else if (/Windows/i.test(ua)) device = "Computador Windows";
+  else if (/Macintosh|Mac OS/i.test(ua)) device = "Computador Mac";
+  else if (/Linux/i.test(ua)) device = "Computador Linux";
 
-  if(/Android/i.test(ua)){
-    device="Android";
-  }else if(/iPhone/i.test(ua)){
-    device="iPhone";
-  }else if(/iPad/i.test(ua)){
-    device="iPad";
-  }else if(/Windows/i.test(ua)){
-    device="Computador Windows";
-  }else if(/Macintosh|Mac OS/i.test(ua)){
-    device="Computador Mac";
-  }else if(/Linux/i.test(ua)){
-    device="Computador Linux";
-  }
-
-  let browser="Navegador";
-
-  if(/Edg/i.test(ua)){
-    browser="Edge";
-  }else if(/Chrome/i.test(ua)){
-    browser="Chrome";
-  }else if(/Firefox/i.test(ua)){
-    browser="Firefox";
-  }else if(/Safari/i.test(ua)){
-    browser="Safari";
-  }
-
-  return device+" - "+browser;
+  let browser = "Navegador";
+  if (/Edg/i.test(ua)) browser = "Edge";
+  else if (/Chrome/i.test(ua)) browser = "Chrome";
+  else if (/Firefox/i.test(ua)) browser = "Firefox";
+  else if (/Safari/i.test(ua)) browser = "Safari";
+  return device + " - " + browser;
 }
 
-function showTab(which){
-  const activate=which==="activate";
+/*
+ * Cada navegador sem sessão recebe uma identidade anónima Supabase.
+ * Se já existir uma sessão, ela é preservada para não desligar clientes atuais.
+ */
+async function ensureCustomerSession() {
+  const { data: current, error: currentError } = await db.auth.getSession();
+  if (currentError) throw currentError;
+  if (current.session && current.session.user) return current.session.user;
 
-  $("activatePane").classList.toggle("hidden",!activate);
-  $("returnPane").classList.toggle("hidden",activate);
-  $("otpPane").classList.add("hidden");
-
-  $("tabActivate").classList.toggle("active",activate);
-  $("tabReturn").classList.toggle("active",!activate);
-
-  $("tabActivate").classList.toggle("secondary",!activate);
-  $("tabReturn").classList.toggle("secondary",activate);
+  const { data, error } = await db.auth.signInAnonymously();
+  if (error) throw error;
+  if (!data.user) throw new Error("O Supabase não devolveu uma identidade de cliente.");
+  return data.user;
 }
 
-function showUser(user){
-  $("signedIn").classList.remove("hidden");
-
-  $("accountInfo").textContent=
-    "Sessão iniciada para "+
-    (user.email||"a tua conta")+
-    ". A verificar o dispositivo autorizado.";
-}
-
-async function currentUser(){
-  const {data,error}=await db.auth.getUser();
-
-  if(error){
-    say("Não foi possível consultar a sessão: "+error.message);
-    return null;
-  }
-
-  const user=data.user;
-
-  if(user){
-    showUser(user);
-    await checkAccess(false);
-  }else{
-    $("signedIn").classList.add("hidden");
-  }
-
-  return user;
-}
-
-async function registerCurrentDevice(){
+async function registerCurrentDevice() {
   let deviceId;
-
-  try{
-    deviceId=getDeviceId();
-  }catch(error){
-    say(error.message);
+  try {
+    deviceId = getDeviceId();
+  } catch (error) {
+    say("Não foi possível guardar a identificação deste dispositivo. Verifica as permissões do navegador.");
     return false;
   }
-
-  const deviceLabel=getDeviceLabel();
 
   say("A verificar o dispositivo autorizado…");
+  const { data, error } = await db.rpc("register_premium_device", {
+    p_device_id: deviceId,
+    p_device_label: getDeviceLabel()
+  });
 
-  const {data,error}=await db.rpc(
-    "register_premium_device",
-    {
-      p_device_id:deviceId,
-      p_device_label:deviceLabel
-    }
-  );
-
-  if(error){
-    say("Não foi possível registar o dispositivo: "+error.message);
+  if (error) {
+    say("Não foi possível registar o dispositivo: " + error.message);
     return false;
   }
 
-  if(data!==true){
-    say("Acesso bloqueado: esta conta Premium já está associada a outro dispositivo. Contacta o administrador para solicitar a libertação do dispositivo.");
+  if (data !== true) {
+    say("Acesso bloqueado: esta conta Premium já está associada a outro dispositivo. Contacta o administrador para autorizar a transferência.");
     return false;
   }
-
   return true;
 }
 
-async function sendOtp(mode){
-  let email,name,code;
+async function checkAccess(showSuccess = true) {
+  if (deviceCheckRunning) return;
+  deviceCheckRunning = true;
 
-  if(mode==="activate"){
-    name=$("guardianName").value.trim();
-    email=$("activationEmail").value.trim();
-    code=$("premiumCode").value.trim().toUpperCase();
-
-    if(!name||!email||!code){
-      say("Preenche o nome do encarregado, o e-mail e o código Premium.");
+  try {
+    const { data, error } = await db.rpc("check_premium_access");
+    if (error) {
+      say("Não foi possível verificar o acesso: " + error.message);
+      return;
+    }
+    if (data !== true) {
+      say("Ainda não existe um acesso Premium ativo nesta conta. Introduz o teu código Premium para ativar.");
       return;
     }
 
-    pending={mode,email,code,name};
+    const allowed = await registerCurrentDevice();
+    if (!allowed) return;
 
-  }else{
-    email=$("returnEmail").value.trim();
-
-    if(!email){
-      say("Introduz o e-mail utilizado na ativação.");
-      return;
-    }
-
-    pending={mode,email,code:null,name:null};
+    say(showSuccess
+      ? "Bem-vindo de volta! O teu acesso Premium está ativo neste dispositivo para os 13 jogos."
+      : "Acesso Premium ativo. Este dispositivo está autorizado para os 13 jogos.");
+  } finally {
+    deviceCheckRunning = false;
   }
-
-  const button=mode==="activate"
-    ?$("sendActivationOtp")
-    :$("sendLoginOtp");
-
-  button.disabled=true;
-  say("A enviar o código de confirmação para o e-mail…");
-
-  const options={
-    shouldCreateUser:mode==="activate",
-    emailRedirectTo:location.origin+location.pathname
-  };
-
-  if(mode==="activate"){
-    options.data={guardian_name:name};
-  }
-
-  const {error}=await db.auth.signInWithOtp({
-    email,
-    options
-  });
-
-  button.disabled=false;
-
-  if(error){
-    say("Não foi possível enviar o e-mail: "+error.message);
-    return;
-  }
-
-  $("otpPane").classList.remove("hidden");
-  $("emailOtp").value="";
-
-  say(
-    "Enviámos um código para "+email+
-    ". Abre o e-mail e introduz o código aqui. Não partilhes esse código com ninguém."
-  );
 }
 
-async function verifyOtp(){
-  const token=$("emailOtp").value.trim();
+async function activatePremium() {
+  if (activationRunning) return;
 
-  if(!pending.email||!token){
-    say("Introduz o código recebido por e-mail.");
+  const name = $("guardianName").value.trim();
+  const code = $("premiumCode").value.trim().toUpperCase();
+
+  if (!name || !code) {
+    say("Preenche o nome do encarregado de educação e o código Premium.");
     return;
   }
 
-  $("verifyOtp").disabled=true;
-  say("A confirmar o e-mail…");
+  activationRunning = true;
+  $("activateButton").disabled = true;
 
-  const {data,error}=await db.auth.verifyOtp({
-    email:pending.email,
-    token,
-    type:"email"
-  });
+  try {
+    say("A preparar a identidade segura deste cliente…");
+    await ensureCustomerSession();
 
-  $("verifyOtp").disabled=false;
+    say("A validar o código Premium…");
+    /*
+     * Esta chamada utiliza a versão SQL com dois argumentos:
+     * p_code e p_customer_name.
+     */
+    const { data, error } = await db.rpc("redeem_premium_code", {
+      p_code: code,
+      p_customer_name: name
+    });
 
-  if(error){
-    say("Não foi possível confirmar: "+error.message+". Confirma o código e tenta novamente.");
-    return;
-  }
-
-  showUser(data.user);
-  $("otpPane").classList.add("hidden");
-
-  const mode=pending.mode;
-  const name=pending.name;
-  const code=pending.code;
-
-  if(mode==="activate"){
-    if(name){
-      const {error:metaError}=await db.auth.updateUser({
-        data:{guardian_name:name}
-      });
-
-      if(metaError){
-        say("A conta foi confirmada, mas não foi possível guardar o nome: "+metaError.message);
-        return;
-      }
+    if (error) {
+      say("Não foi possível ativar o código: " + error.message +
+        "\nSe aparecer um erro de função inexistente ou de permissões, será necessário ajustar a função SQL/RLS antes de continuar.");
+      return;
     }
 
-    await redeem(code);
+    if (typeof data === "string" && data.trim()) {
+      say(data);
+    } else {
+      say("Código aceite. A confirmar o acesso Premium…");
+    }
 
-  }else{
+    $("activationPane").hidden = true;
+    $("accountPane").hidden = false;
+    await checkAccess(false);
+  } catch (error) {
+    say("Não foi possível iniciar a ativação: " + (error.message || String(error)));
+  } finally {
+    activationRunning = false;
+    $("activateButton").disabled = false;
+  }
+}
+
+async function loadExistingSession() {
+  const { data, error } = await db.auth.getSession();
+  if (error) {
+    say("Não foi possível consultar a sessão: " + error.message);
+    return;
+  }
+
+  if (data.session && data.session.user) {
+    $("activationPane").hidden = true;
+    $("accountPane").hidden = false;
+    const user = data.session.user;
+    $("accountInfo").textContent = user.is_anonymous
+      ? "Identidade de cliente reconhecida neste navegador."
+      : "Sessão existente reconhecida.";
     await checkAccess(true);
   }
-
-  pending={
-    mode:null,
-    email:null,
-    code:null,
-    name:null
-  };
 }
 
-async function redeem(code){
-  if(!code){
-    say("Não recebemos o código Premium. Contacta o administrador.");
-    return;
-  }
+$("activateButton").addEventListener("click", activatePremium);
+$("checkAccess").addEventListener("click", () => checkAccess(true));
 
-  say("A validar o código Premium…");
-
-  const {data,error}=await db.rpc(
-    "redeem_premium_code",
-    {p_code:code}
-  );
-
-  if(error){
-    say("Não foi possível ativar o código: "+error.message);
-    return;
-  }
-
-  say(
-    typeof data==="string"
-      ?data
-      :"Código validado. A verificar o acesso Premium…"
-  );
-
-  await checkAccess(false);
-}
-
-async function checkAccess(showMessage=true){
-  if(deviceCheckRunning){
-    return;
-  }
-
-  deviceCheckRunning=true;
-
-  try{
-    const {data,error}=await db.rpc("check_premium_access");
-
-    if(error){
-      say("Não foi possível verificar o acesso: "+error.message);
-      return;
-    }
-
-    if(data!==true){
-      say("A conta está autenticada, mas não tem um acesso Premium ativo. Introduz um código válido ou contacta o administrador.");
-      return;
-    }
-
-    const deviceAllowed=await registerCurrentDevice();
-
-    if(!deviceAllowed){
-      return;
-    }
-
-    if(showMessage){
-      say("Bem-vindo de volta! O teu acesso Premium está ativo e este dispositivo está autorizado para os 13 jogos.");
-    }else{
-      say("Acesso Premium ativo. Este dispositivo está autorizado para os 13 jogos.");
-    }
-
-  }finally{
-    deviceCheckRunning=false;
-  }
-}
-
-$("tabActivate").onclick=()=>showTab("activate");
-$("tabReturn").onclick=()=>showTab("return");
-
-$("sendActivationOtp").onclick=()=>sendOtp("activate");
-$("sendLoginOtp").onclick=()=>sendOtp("return");
-
-$("verifyOtp").onclick=verifyOtp;
-
-$("resendOtp").onclick=()=>{
-  if(pending.mode){
-    sendOtp(pending.mode);
-  }
-};
-
-$("checkAccess").onclick=()=>checkAccess(true);
-
-$("logout").onclick=async()=>{
-  const {error}=await db.auth.signOut();
-
-  if(error){
-    say("Não foi possível terminar a sessão: "+error.message);
-    return;
-  }
-
-  $("signedIn").classList.add("hidden");
-
-  say(
-    "Sessão terminada neste dispositivo. "+
-    "O dispositivo continua associado à conta Premium. "+
-    "Para entrar novamente, confirma o teu e-mail."
-  );
-};
-
-db.auth.onAuthStateChange((_event,session)=>{
-  if(session){
-    showUser(session.user);
-  }else{
-    $("signedIn").classList.add("hidden");
+db.auth.onAuthStateChange((_event, session) => {
+  if (session && session.user) {
+    $("activationPane").hidden = true;
+    $("accountPane").hidden = false;
+    $("accountInfo").textContent = session.user.is_anonymous
+      ? "Identidade de cliente reconhecida neste navegador."
+      : "Sessão existente reconhecida.";
   }
 });
 
-currentUser();
-
+loadExistingSession();
 </script>
 </body>
 </html>
